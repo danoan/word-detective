@@ -41,6 +41,7 @@ class EnglishSegmenter : public SegmenterInterface {
     void fill_up_buffer() {
       m_in_stream->seekg(m_last_pos);
 
+      memset(m_buffer,'\0',BUFFER_SIZE);
       m_in_stream->read(m_buffer, BUFFER_SIZE);
       int last = m_in_stream->gcount() - 1;
 

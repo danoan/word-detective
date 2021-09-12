@@ -114,7 +114,7 @@ TEST_CASE("Brick IO operations", "[standard-extensions][brick][io]") {
                                                                    ifs);
 
     INFO(word_map.size());
-    REQUIRE(word_map.size() == 4523);
+    REQUIRE(word_map.size() == 4522);
 
     Datastr::Brick brick_5k;
     for (auto p : word_map) brick_5k << p.first;
