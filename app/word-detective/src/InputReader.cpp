@@ -1,0 +1,52 @@
+#include "InputReader.h"
+
+void usage(char* argv[]) {
+  std::cerr << "Usage: " << argv[0] << "Input_Brick_Filepath\n"
+            << "[-l] number of letters in puzzle (default:5)\n"
+            << "[-w] minimum number of words in a puzzle (default:5)\n"
+            << "[-m] output mode (all,random,index) (default:all)\n"
+            << "[-i] puzzle index (default:0)\n"
+            << "[-o] output filepath (default: prints in stdout)\n";
+}
+
+InputData read_input(int argc, char* argv[]) {
+  InputData id;
+
+  int opt;
+  while ((opt = getopt(argc, argv, "l:L:w:m:i:o:")) != -1) {
+    switch (opt) {
+      case 'l':
+        id.num_letters = atoi(optarg);
+        break;
+      case 'w':
+        id.min_words = atoi(optarg);
+        break;
+      case 'm':
+        if (strcmp("all", optarg)==0) {
+          id.out_mode = InputData::ALL_PUZZLES;
+        } else if (strcmp("random", optarg)==0) {
+          id.out_mode = InputData::RANDOM_PUZZLE;
+        }else if (strcmp("index", optarg)==0) {
+          id.out_mode = InputData::PUZZLE_BY_INDEX;
+        }else{
+          usage(argv);
+          throw std::runtime_error("Unrecognized option");
+        }
+        break;
+      case 'i':
+        id.index = atoi(optarg);
+        break;
+      case 'o':
+        id.outputfilepath = optarg;
+        break;
+
+      default:
+        usage(argv);
+        exit(0);
+        break;
+    }
+  }
+
+  id.filepath = argv[optind++];
+  return id;
+}

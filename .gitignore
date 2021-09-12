@@ -1,0 +1,12 @@
+.vscode
+build
+ext/inja
+ext/node-v14.17.4-linux-x64
+lab/test/coverage/assets
+install
+output
+project-journal
+server
+templates/js-guidelines.md
+docs/html/*
+docs/latex*
