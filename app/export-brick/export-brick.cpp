@@ -21,7 +21,7 @@ int main(int argc, char* argv[]) {
 
   Utils::Text::FilterFunction word_filter =
       [](const std::string& s) {
-        return Utils::Text::more_than_n_characters<4>(s) &&
+        return Utils::Text::more_than_n_characters<3>(s) &&
                !Utils::Text::starts_with_capital_letter(s);
       };
 
