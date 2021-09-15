@@ -149,8 +149,8 @@ json random_puzzle(const Datastr::Brick& brick, int num_letters,
     return json( *it );
 }
 
-json puzzle_by_index(const Datastr::Brick& brick, int index, int num_letters,
-                     int min_words) {
+json puzzle_by_index(const Datastr::Brick& brick,int num_letters,
+                     int min_words, int index) {
   std::list<Puzzle::Puzzle> list_of_puzzles;
   get_all_puzzles(list_of_puzzles, brick, num_letters, min_words);
 
