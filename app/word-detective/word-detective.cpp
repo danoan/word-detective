@@ -22,8 +22,10 @@ void output(const json& jsonOutput, const std::string& outputFilepath) {
 int main(int argc, char* argv[]) {
   InputData id = read_input(argc, argv);
 
-  boost::filesystem::path p(id.outputfilepath);
-  boost::filesystem::create_directories(p.remove_filename());
+  if(id.outputfilepath!=""){
+    boost::filesystem::path p(id.outputfilepath);
+    boost::filesystem::create_directories(p.remove_filename());
+  }
 
   Datastr::Brick brick;
   StandardExtensions::Brick::IO::Load::run(brick, id.filepath);
