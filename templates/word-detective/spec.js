@@ -1,12 +1,12 @@
-import { main } from "./js/main.js"
+import { main } from "./js/main.js";
 
 let control;
 let messages;
-main(true).then(control_handler => {
+main(true).then( (control_handler) => {
   control = control_handler;
   fetch("js/modules/word-detective/assets/english_messages.json")
-  .then( response => response.json() )
-  .then( json => {
+  .then( (response) => response.json() )
+  .then( (json) => {
     messages = json;
     load_spec();
     mocha.run();
@@ -25,7 +25,7 @@ function load_spec() {
 
       gui.clear_display_value();
       expect(gui.get_display_value()).equal('');
-    })
+    });
 
     it('updates the status display', function () {
       gui.set_status_value(ontheroad);
@@ -33,7 +33,7 @@ function load_spec() {
 
       gui.clear_status_value();
       expect(gui.get_status_value()).equal('');
-    })
+    });
 
     it('updates the missing words display', function () {
       gui.set_missing_words_value(ontheroad);
@@ -41,7 +41,7 @@ function load_spec() {
 
       gui.clear_missing_words_value();
       expect(gui.get_status_value()).equal('');
-    })
+    });
 
 
   });
@@ -76,7 +76,7 @@ function load_spec() {
       //I have '_' at even positions
       let i = 1;
       for (let c of gui.get_display_value()) {
-        if (i % 2 == 0) {
+        if (i % 2 === 0) {
           expect(c).equal('_');
         }
         i++;
@@ -87,7 +87,9 @@ function load_spec() {
       let initial_hint_display = gui.get_display_value();
       let j = 0;
       for (let c of initial_hint_display) {
-        if (c === '_') j++;
+        if (c === '_'){
+          j++;
+        }
       }
 
       //After j click_letter, all '_' are gone

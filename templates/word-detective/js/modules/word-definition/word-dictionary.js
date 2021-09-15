@@ -11,8 +11,8 @@ export function collins() {
     let reg = /<div class="def">.*<\/div>/;
     let x = reg.exec(res);
 
-    if (x.length == 0) {
-      console.log("Error while processing div definition");
+    if (x.length === 0) {
+      // console.log("Error while processing div definition");
       return '';
     } else {
       //Remove html elements
@@ -24,13 +24,13 @@ export function collins() {
   function get(word) {
 
     return fetch(`https://www.collinsdictionary.com/dictionary/english/${word}`)
-      .then(response => response.text())
-      .then(html_response => new Promise(function (resolve, reject) {
+      .then( (response) => response.text())
+      .then( (html_response) => new Promise(function (resolve, reject) {
         let word_definition = extract(html_response);
 
         if (word_definition) {
           resolve({
-            "word": word,
+            word,
             "definition": word_definition
           });
         } else {

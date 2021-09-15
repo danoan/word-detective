@@ -6,7 +6,6 @@ BUILD_DIR="${PROJECT_ROOT}/build"
 
 GCOV_FILES="${BUILD_DIR}/lab/test/coverage/CMakeFiles/test-coverage.dir"
 COVERAGE_OUTPUT_FOLDER="${PROJECT_ROOT}/lab/test/coverage/output"
-CODECOV_OUTPUT_FOLDER="${PROJECT_ROOT}/codecov"
 
 "${PROJECT_ROOT}/install/lab/test-coverage"
 mkdir -p "${COVERAGE_OUTPUT_FOLDER}"

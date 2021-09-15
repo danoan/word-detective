@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-SOURCE_DIR="$( cd "$(dirname ${BASH_SOURCE[0]})" && pwd )"
+SOURCE_DIR="$( cd "$(dirname "${BASH_SOURCE[0]}")" && pwd )"
 PROJECT_ROOT="$(cd "${SOURCE_DIR}" && cd ../.. && pwd)"
 EXT_DIR="${PROJECT_ROOT}/ext"
 

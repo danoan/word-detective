@@ -39,7 +39,7 @@ class WriteFileDescriptor {
   std::unique_ptr<std::ofstream> m_ofs;
 
  public:
-  WriteFileDescriptor(const std::string& output_filepath,
+  explicit WriteFileDescriptor(const std::string& output_filepath,
                       unsigned char delimiter = '#')
       : m_ofs(new std::ofstream(output_filepath, std::ios_base::binary)),
         m_delimiter(delimiter),
@@ -114,7 +114,7 @@ class ReadFileDescriptor {
   }
 
  public:
-  ReadFileDescriptor(const std::string& output_filepath,
+  explicit ReadFileDescriptor(const std::string& output_filepath,
                      unsigned char delimiter = '#')
       : m_delimiter(delimiter),
         m_brick_length(0),
@@ -154,8 +154,6 @@ class ReadFileDescriptor {
   }
 
   void read_next_offset_pair(OffsetPair& op) {
-    auto cur_pos = m_ifs_ofstl->tellg();
-
     size_t num_words = 0;
     m_ifs_ofstl->read((char*)&op.first, sizeof(TAlphabetType));
     m_ifs_ofstl->read((char*)&num_words, sizeof(size_t));

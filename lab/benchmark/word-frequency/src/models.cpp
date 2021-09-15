@@ -10,8 +10,8 @@ void EnglishSegmenter::fill_up_buffer() {
   m_in_stream->read(m_buffer, BUFFER_SIZE);
   int last = m_in_stream->gcount() - 1;
 
-  int back_step = 0;
   if (!m_in_stream->eof()) {
+    int back_step = 0;
     while (m_buffer[last] != '\n') {
       m_buffer[last--] = '\0';
       back_step--;

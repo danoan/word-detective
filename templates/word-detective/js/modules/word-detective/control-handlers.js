@@ -21,27 +21,27 @@ export function word_control_handler() {
       number_repeated_letters += dict[c];
     }
 
-    if (length == 4 && number_repeated_letters == 0) {
+    if (length === 4 && number_repeated_letters === 0) {
       return 'super-easy';
-    } else if (length == 4 && number_repeated_letters > 0) {
+    } else if (length === 4 && number_repeated_letters > 0) {
       return 'easy';
-    } else if (length == 5 && number_repeated_letters == 0) {
+    } else if (length === 5 && number_repeated_letters === 0) {
       return 'easy';
-    } else if (length == 5 && number_repeated_letters == 1) {
+    } else if (length === 5 && number_repeated_letters === 1) {
       return 'average';
-    } else if (length == 6 && number_repeated_letters == 0) {
+    } else if (length === 6 && number_repeated_letters === 0) {
       return 'easy';
-    } else if (length == 6 && number_repeated_letters == 1) {
+    } else if (length === 6 && number_repeated_letters === 1) {
       return 'average';
-    } else if (length == 6 && number_repeated_letters > 1) {
+    } else if (length === 6 && number_repeated_letters > 1) {
       return 'quite-difficult';
-    } else if (length == 7 && number_repeated_letters == 0) {
+    } else if (length === 7 && number_repeated_letters === 0) {
       return 'quite-difficult';
-    } else if (length == 7 && number_repeated_letters == 1) {
+    } else if (length === 7 && number_repeated_letters === 1) {
       return 'difficult';
-    } else if (length == 7 && number_repeated_letters == 2) {
+    } else if (length === 7 && number_repeated_letters === 2) {
       return 'difficult';
-    } else if (length == 7 && number_repeated_letters > 2) {
+    } else if (length === 7 && number_repeated_letters > 2) {
       return 'super-difficult';
     } else if (number_repeated_letters >= 3) {
       return 'super-difficult';
@@ -70,7 +70,7 @@ export function data_control_handler(){
 
   function is_it_missing_word(input_word){
     for (let word of missing_words) {
-      if (word == input_word) {
+      if (word === input_word) {
         return true;
       }
     }

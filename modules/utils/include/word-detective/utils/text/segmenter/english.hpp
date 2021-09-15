@@ -14,10 +14,11 @@ class EnglishSegmenter : public SegmenterInterface {
  public:
   class WordIteratorImpl : public WordIterator::Interface {
    public:
-    WordIteratorImpl(std::istream* in_stream,
-                     FilterFunction filter = always_true_filter)
-        : m_in_stream(in_stream), m_filter(filter) {
-      m_last_pos = in_stream->tellg();
+    explicit WordIteratorImpl(std::istream* in_stream,
+                              FilterFunction filter = always_true_filter)
+        : m_in_stream(in_stream),
+          m_filter(filter),
+          m_last_pos(in_stream->tellg()) {
       fill_up_buffer();
     }
 
@@ -41,7 +42,7 @@ class EnglishSegmenter : public SegmenterInterface {
     void fill_up_buffer() {
       m_in_stream->seekg(m_last_pos);
 
-      memset(m_buffer,'\0',BUFFER_SIZE);
+      memset(m_buffer, '\0', BUFFER_SIZE);
       m_in_stream->read(m_buffer, BUFFER_SIZE);
       int last = m_in_stream->gcount() - 1;
 
@@ -72,7 +73,7 @@ class EnglishSegmenter : public SegmenterInterface {
   };
 
  public:
-  EnglishSegmenter(std::istream* in_stream,
+  explicit EnglishSegmenter(std::istream* in_stream,
                    FilterFunction filter = always_true_filter)
       : m_in_stream(in_stream), m_filter(filter) {}
 
@@ -80,7 +81,7 @@ class EnglishSegmenter : public SegmenterInterface {
     return WordIterator(new WordIteratorImpl(m_in_stream, m_filter));
   }
 
-  WordIterator end() { return new EmptyWordIterator(); }
+  WordIterator end() { return WordIterator(new EmptyWordIterator()); }
 
  private:
   std::istream* m_in_stream;

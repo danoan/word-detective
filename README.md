@@ -9,21 +9,21 @@ find all the missing words that can be created using only seven letters.
 
 ![Given a list of words, builds ](docs/gameplay.png)
 
-# Features
+## Features
 
-* Generate puzzles from custom text files, e.g. articles, books, list of words.
+*  Generate puzzles from custom text files, e.g. articles, books, list of words.
 
 ```bash
 ./app/render-word-detective/generate-game.sh books/jekyll.txt output/puzzle-html
 ```
 
-# Dependencies
+## Dependencies
 
-* jinja2
-* boost
-* nlohmann/json (shipped with)
+*  jinja2
+*  boost
+*  nlohmann/json (shipped with)
 
-# Installation
+## Installation
 
 ```cmake
 cd ${WORD_DETECTIVE_SOURCE}

@@ -37,13 +37,13 @@ export function slider_display_handler(gui) {
   }
 
   function hide_button(button_element) {
-    if (button_element !== undefined) {
+    if (button_element !== null) {
       toogle_class(button_element, VISIBLE_BUTTON_CLASS, HIDDEN_BUTTON_CLASS);
     }
   }
 
   function show_button(button_element) {
-    if (button_element !== undefined) {
+    if (button_element !== null) {
       toogle_class(button_element, HIDDEN_BUTTON_CLASS, VISIBLE_BUTTON_CLASS);
     }
   }

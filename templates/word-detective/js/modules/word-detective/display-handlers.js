@@ -41,7 +41,7 @@ export function hint_mode_display_handler(gui) {
     gui.set_display_value('');
     word_chars_pos = [];
     for (let i = 0; i < word.length; ++i) {
-      if (i % 2 == 0) {
+      if (i % 2 === 0) {
         gui.set_display_value( gui.get_display_value() + word[i] );
       } else {
         gui.set_display_value( gui.get_display_value() + '_' );

@@ -14,7 +14,7 @@ RENDER_PY="${SCRIPT_PATH}/render-word-detective.py"
 
 
 TEMPLATE_FOLDER="${PROJECT_PATH}/templates/word-detective"
-BRICK_OUT_PATH="${OUTPUT_FOLDER}/$( basename ${BOOK_TEXT_PATH}).brk"
+BRICK_OUT_PATH="${OUTPUT_FOLDER}/$( basename "${BOOK_TEXT_PATH}").brk"
 
 #Generate brick file
 ${BRICK_EXPORTER} "${BOOK_TEXT_PATH}" "${BRICK_OUT_PATH}"
@@ -31,5 +31,5 @@ do
   ${GAME_GEN_EXE} "${BRICK_OUT_PATH}" -mrandom -l7 -o"${JSON_PUZZLE_PATH}"
 
   #Render puzzle html
-  python3 ${RENDER_PY} "${TEMPLATE_FOLDER}" "${JSON_PUZZLE_PATH}" "${CUR_OUT_FOLDER}" "${day}"
+  python3 "${RENDER_PY}" "${TEMPLATE_FOLDER}" "${JSON_PUZZLE_PATH}" "${CUR_OUT_FOLDER}" "${day}"
 done

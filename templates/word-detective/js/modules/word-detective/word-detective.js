@@ -5,21 +5,21 @@ import {
   messages_display_handler,
   hint_mode_display_handler,
   normal_mode_display_handler
-} from "./display-handlers.js"
+} from "./display-handlers.js";
 
 let default_config = {
   "callbacks": {
-    "init": undefined,
-    "click_letter": undefined,
-    "erase_letter": undefined,
-    "check_word": undefined,
-    "hint": undefined,
-    "end": undefined
+    "init": null,
+    "click_letter": null,
+    "erase_letter": null,
+    "check_word": null,
+    "hint": null,
+    "end": null
   }
 };
 
 export function create_WORD_DETECTIVE_api(gui, messages_json, config) {
-  if(config===undefined){
+  if(config===null){
     config = default_config;
   }
 
@@ -33,7 +33,7 @@ export function create_WORD_DETECTIVE_api(gui, messages_json, config) {
   let control_handlers = {
     "word": word_control_handler(),
     "data": data_control_handler()
-  }
+  };
 
   function add_found_word(word){
     control_handlers.data.add_found_word(word);
@@ -65,16 +65,18 @@ export function create_WORD_DETECTIVE_api(gui, messages_json, config) {
     current_mode_handler.click_letter(...args);
     click_letter.unblock();
 
-    if (callbacks.click_letter !== undefined)
+    if (callbacks.click_letter !== null){
       callbacks.click_letter(pack_callback_params());
+    }
   }
 
   function erase_letter(...args) {
     current_mode_handler.erase_letter(...args);
     erase_letter.unblock();
 
-    if (callbacks.erase_letter !== undefined)
+    if (callbacks.erase_letter !== null){
       callbacks.erase_letter(pack_callback_params());
+    }
   }
 
   function hint() {
@@ -86,13 +88,14 @@ export function create_WORD_DETECTIVE_api(gui, messages_json, config) {
     current_mode_handler.init(control_handlers.data.missing_words[0]);
     hint.unblock();
 
-    if (callbacks.hint !== undefined)
+    if (callbacks.hint !== null){
       callbacks.hint(pack_callback_params());
+    }
   }
 
   function check_word() {
     let input_word = gui.get_display_value();
-    let is_missing_word = control_handlers.data.is_it_missing_word(input_word);;
+    let is_missing_word = control_handlers.data.is_it_missing_word(input_word);
 
     if (is_missing_word) {
       add_found_word(input_word);
@@ -103,21 +106,22 @@ export function create_WORD_DETECTIVE_api(gui, messages_json, config) {
 
     } else if (input_word.length <= 3) {
       display_handlers.messages.word_too_short_message();
-    } else if (control_handlers.data.words_found.find(element => element === input_word)) {
+    } else if (control_handlers.data.words_found.find( (element) => element === input_word)) {
       display_handlers.messages.word_found_already_message();
     } else {
       display_handlers.messages.word_not_in_dictionary_message();
     }
 
-    if (callbacks.check_word !== undefined)
+    if (callbacks.check_word !== null) {
       callbacks.check_word(pack_callback_params(), is_missing_word);
+    }
 
     setTimeout(() => {
       current_mode_handler.init(control_handlers.data.missing_words[0]);
       gui.clear_status_value();
       check_word.unblock();
 
-      if (control_handlers.data.missing_words.length == 0) {
+      if (control_handlers.data.missing_words.length === 0) {
         callbacks.end(pack_callback_params());
       }
     }, 1500);
@@ -134,7 +138,7 @@ export function create_WORD_DETECTIVE_api(gui, messages_json, config) {
 
 }
 
-let block_decorator = function () {
+let block_decorator = (function () {
   let flag_block = false;
 
   function unblock() {
@@ -144,19 +148,21 @@ let block_decorator = function () {
   return function (fn) {
     fn.unblock = unblock;
     return function () {
-      if (flag_block) return;
+      if (flag_block){
+        return;
+      }
       flag_block = true;
       fn.apply(this, arguments);
     }
   }
-}();
+})();
 
 function setup_messages(messages_json) {
   function get_random_item(list) {
     let max_index = list.length - 1;
     let index = Math.trunc(Math.random() * max_index);
     return list[index];
-  }
+  };
 
   function super_difficult_word_message() {
     return `${get_random_item(messages_json.author_prefix_message)} \

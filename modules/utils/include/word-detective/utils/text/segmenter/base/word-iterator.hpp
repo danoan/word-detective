@@ -15,7 +15,7 @@ class WordIterator {
     using iterator_category = std::input_iterator_tag;
     using value_type = std::string;
 
-    WordIteratorBase() : m_the_end(false) {}
+    WordIteratorBase() : m_words_read(0), m_the_end(false) {}
     value_type get_word() { return m_current_word; }
 
     friend bool operator==(const WordIteratorBase& a,
@@ -49,7 +49,7 @@ class WordIterator {
   using value_type = WordIteratorBase::value_type;
   using Interface = WordIteratorBase;
 
-  WordIterator(WordIteratorBase* word_iterator_ptr)
+  explicit WordIterator(WordIteratorBase* word_iterator_ptr)
       : m_word_iterator(word_iterator_ptr) {
     m_word_iterator->next_word();
   }

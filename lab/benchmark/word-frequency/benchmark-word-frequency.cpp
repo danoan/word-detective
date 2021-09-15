@@ -36,6 +36,9 @@ string traversal(unordered_map<string, int>& word_frequency_map, istream* is) {
   for (auto my_pair : word_frequency_map) {
     traversal_frequency += my_pair.second;
   }
+  // Force variable usage to avoid compiler optimization
+  std::cout << "Traversal frequency: " << traversal_frequency << std::endl;
+
   timer.end(ss);
 
   return ss.str();
@@ -88,6 +91,9 @@ string traversal(list<WordFrequencyElement>& word_frequency_list, istream* is) {
   for (auto WFE : word_frequency_list) {
     traversal_frequency += WFE.frequency;
   }
+  // Force variable usage to avoid compiler optimization
+  std::cout << "Traversal frequency: " << traversal_frequency << std::endl;
+
   timer.end(ss);
 
   return ss.str();
@@ -116,6 +122,9 @@ string query(list<WordFrequencyElement>& word_frequency_list, istream* is) {
                               word_frequency_list.end(), keys[uid(rd)]));
     query_frequency += keys[uid(rd)].frequency;
   }
+  // Force variable usage to avoid compiler optimization
+  std::cout << "Query frequency: " << query_frequency << std::endl;
+
   timer.end(ss);
 
   return ss.str();
@@ -208,6 +217,9 @@ string traversal(WordDetective::Datastr::Trie& word_frequency_trie,
       },
       word_frequency_trie);
 
+  // Force variable usage to avoid compiler optimization
+  std::cout << "Traversal frequency: " << traversal_frequency << std::endl;
+
   timer.end(ss);
   return ss.str();
 }
@@ -235,6 +247,9 @@ string query(WordDetective::Datastr::Trie& word_frequency_trie, istream* is) {
     assert(frequency == keys[id].frequency);
     query_frequency += frequency;
   }
+  // Force variable usage to avoid compiler optimization
+  std::cout << "Query frequency: " << query_frequency << std::endl;
+
   timer.end(ss);
 
   return ss.str();

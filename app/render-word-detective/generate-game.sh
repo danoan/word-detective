@@ -14,7 +14,7 @@ RENDER_PY="${SCRIPT_PATH}/render-word-detective.py"
 
 
 TEMPLATE_FOLDER="${PROJECT_PATH}/templates/word-detective"
-BRICK_OUT_PATH="${OUTPUT_FOLDER}/assets/"$( basename "${BOOK_TEXT_PATH}")".brk"
+BRICK_OUT_PATH="${OUTPUT_FOLDER}/assets/$( basename "${BOOK_TEXT_PATH}").brk"
 JSON_PUZZLE_PATH="${OUTPUT_FOLDER}/assets/puzzle.json"
 
 #Generate brick file

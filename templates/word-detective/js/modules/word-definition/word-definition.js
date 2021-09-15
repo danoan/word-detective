@@ -1,4 +1,4 @@
-import { collins } from "./word-dictionary.js"
+import { collins } from "./word-dictionary.js";
 import { select_word_handler } from "./display-handlers.js";
 
 export function word_definition(gui) {
@@ -32,7 +32,9 @@ export function word_definition(gui) {
   function get_selected_words() {
     let list_words = [];
     for (let key in selected_words) {
-      if (key !== "length") list_words.push(key);
+      if (key !== "length") {
+        list_words.push(key);
+      }
     }
     return list_words;
   }

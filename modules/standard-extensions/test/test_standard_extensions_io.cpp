@@ -45,7 +45,7 @@ TEST_CASE("Brick IO operations", "[standard-extensions][brick][io]") {
       Brick::IO::Save<unsigned char>::run(simple_brick_filepath_one_byte,
                                           brick);
       REQUIRE(true);
-    } catch (std::exception ex) {
+    } catch (std::exception& ex) {
       REQUIRE(false);
     }
   }
@@ -66,7 +66,7 @@ TEST_CASE("Brick IO operations", "[standard-extensions][brick][io]") {
 
       for (auto w : words)
         REQUIRE(word_collection.find(w) != word_collection.end());
-    } catch (std::exception ex) {
+    } catch (std::exception& ex) {
       REQUIRE(false);
     }
   }
@@ -77,7 +77,7 @@ TEST_CASE("Brick IO operations", "[standard-extensions][brick][io]") {
     try {
       Brick::IO::Save<int>::run(simple_brick_filepath_four_bytes, brick);
       REQUIRE(true);
-    } catch (std::exception ex) {
+    } catch (std::exception& ex) {
       REQUIRE(false);
     }
   }
@@ -98,7 +98,7 @@ TEST_CASE("Brick IO operations", "[standard-extensions][brick][io]") {
 
       for (auto w : words)
         REQUIRE(word_collection.find(w) != word_collection.end());
-    } catch (std::exception ex) {
+    } catch (std::exception& ex) {
       REQUIRE(false);
     }
   }
@@ -123,7 +123,7 @@ TEST_CASE("Brick IO operations", "[standard-extensions][brick][io]") {
     try {
       Brick::IO::Save<unsigned char>::run(brick_5k_filepath, brick_5k);
       REQUIRE(true);
-    } catch (std::exception ex) {
+    } catch (std::exception& ex) {
       REQUIRE(false);
     }
 
@@ -131,7 +131,7 @@ TEST_CASE("Brick IO operations", "[standard-extensions][brick][io]") {
     try {
       Brick::IO::Load::run(loaded_brick, brick_5k_filepath);
       REQUIRE(true);
-    } catch (std::exception ex) {
+    } catch (std::exception& ex) {
       REQUIRE(false);
     }
 

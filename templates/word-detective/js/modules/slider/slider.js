@@ -2,16 +2,16 @@ import { slider_display_handler } from "./display-handlers.js";
 
 let default_config = {
   "callbacks": {
-    "init": undefined,
-    "pre_slide_left": undefined,
-    "slide_left": undefined,
-    "pre_slide_right": undefined,
-    "slide_right": undefined
+    "init": null,
+    "pre_slide_left": null,
+    "slide_left": null,
+    "pre_slide_right": null,
+    "slide_right": null
   }
-}
+};
 
 export function slider(gui, config) {
-  if (config === undefined) {
+  if (config === null) {
     config = default_config;
   }
 
@@ -30,13 +30,17 @@ export function slider(gui, config) {
     display_handler.transition_left_to_right(slides_containers[0]);
     update_button_visibility();
 
-    if (gui.next_button !== undefined)
+    if (gui.next_button !== null) {
       gui.next_button.onclick = slide_left;
+    }
 
-    if (gui.previous_button !== undefined)
+    if (gui.previous_button !== null) {
       gui.previous_button.onclick = slide_right;
+    }
 
-    if(config.callbacks.init) config.callbacks.init();
+    if (config.callbacks.init) {
+      config.callbacks.init();
+    }
   }
 
 
@@ -55,7 +59,9 @@ export function slider(gui, config) {
   }
 
   function slide_left() {
-    if (config.callbacks.pre_slide_left) config.callbacks.pre_slide_left(index_show_element);
+    if (config.callbacks.pre_slide_left) {
+      config.callbacks.pre_slide_left(index_show_element);
+    }
 
     let next_index = index_show_element + 1;
     if (next_index >= slides_containers.length) return;
@@ -64,7 +70,9 @@ export function slider(gui, config) {
     let next_element = slides_containers[next_index];
 
     let is_next_slide_the_last = next_index === slides_containers.length - 1;
-    if (config.callbacks.slide_left) config.callbacks.slide_left(next_element, is_next_slide_the_last);
+    if (config.callbacks.slide_left) {
+      config.callbacks.slide_left(next_element, is_next_slide_the_last);
+    }
 
     display_handler.transition_right_to_left(current_element);
     display_handler.transition_left_to_right(next_element);
@@ -74,7 +82,9 @@ export function slider(gui, config) {
   }
 
   function slide_right() {
-    if (config.callbacks.pre_slide_right) config.callbacks.pre_slide_right(index_show_element);
+    if (config.callbacks.pre_slide_right){
+      config.callbacks.pre_slide_right(index_show_element);
+    }
 
     let next_index = index_show_element - 1;
     if (next_index < 0) return;
@@ -83,7 +93,9 @@ export function slider(gui, config) {
     let previous_element = slides_containers[next_index];
 
     let is_previous_slide_the_first = next_index === 0;
-    if (config.callbacks.slide_right) config.callbacks.slide_right(previous_element, is_previous_slide_the_first);
+    if (config.callbacks.slide_right){
+      config.callbacks.slide_right(previous_element, is_previous_slide_the_first);
+    }
 
     display_handler.transition_left_to_right(current_element);
     display_handler.transition_right_to_left(previous_element);

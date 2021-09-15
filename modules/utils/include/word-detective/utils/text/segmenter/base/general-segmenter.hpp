@@ -23,12 +23,12 @@ class DefaultSegmenter {
  public:
   //TODO: Make something like static_assert (I tried but didnt work)
   template <class... Types>
-  DefaultSegmenter(Types... args) {
+  explicit DefaultSegmenter(Types... args) {
     throw std::runtime_error("Segmenter is missing for this language. Make sure to include the language segmenter .hpp file. For example, english.hpp");
   }
 
-  WordIterator begin() { return nullptr; }
-  WordIterator end() { return nullptr; }
+  WordIterator begin() { return WordIterator(nullptr); }
+  WordIterator end() { return WordIterator(nullptr); }
 };
 
 template <Languages language>
@@ -43,7 +43,7 @@ class GeneralSegmenter : public SegmenterInterface {
   using Segmenter = typename SegmenterSelector<language>::Segmenter;
 
  public:
-  GeneralSegmenter(std::istream* in_stream,
+  explicit GeneralSegmenter(std::istream* in_stream,
                    FilterFunction filter = always_true_filter) {
     m_segmenter.reset(new Segmenter(in_stream, filter));
   }

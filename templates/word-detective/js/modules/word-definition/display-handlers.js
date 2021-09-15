@@ -1,9 +1,11 @@
 export function select_word_handler(gui){
   const CSS_CLASS_WORD_SELECTED = 'word-selected';
+  const CSS_CLASS_WORD_UNSELECTED = 'word-unselected';
 
   function show_word_list(list_words, select_word_fn) {
     for (let word of list_words) {
-      gui.add_to_word_list( word,select_word_fn );
+      let li_item = gui.add_to_word_list( word,select_word_fn );
+      unselect(li_item);
     }
 
     gui.display_word_list();
@@ -15,9 +17,11 @@ export function select_word_handler(gui){
 
   function unselect(li_element){
     li_element.classList.remove(CSS_CLASS_WORD_SELECTED);
+    li_element.classList.add(CSS_CLASS_WORD_UNSELECTED);
   }
 
   function select(li_element){
+    li_element.classList.remove(CSS_CLASS_WORD_UNSELECTED);
     li_element.classList.add(CSS_CLASS_WORD_SELECTED);
   }
 

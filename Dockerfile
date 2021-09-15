@@ -1,17 +1,15 @@
 # Use gcc as base image
 FROM gcc:9.4
 
-# Update indices for apt-get
-RUN apt-get update
-
-# Install cmake
-RUN apt-get install -y cmake
-
-# Install boost
-RUN apt-get install -y libboost-filesystem-dev libboost-system-dev
-
-# Install lcov
-RUN apt-get install -y lcov curl --fix-missing
+# Update indices for apt-get and install dependencies
+RUN apt-get update && \
+apt-get install --fix-missing -y \
+cmake \
+libboost-filesystem-dev \
+libboost-system-dev \
+lcov curl && \
+apt-get clean && \
+rm -rf /var/lib/apt/lists/*
 
 # Set the working directory to /app
 WORKDIR /word-detective
