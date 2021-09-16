@@ -21,7 +21,7 @@ JSON_PUZZLE_PATH="${OUTPUT_FOLDER}/assets/puzzle.json"
 ${BRICK_EXPORTER} "${BOOK_TEXT_PATH}" "${BRICK_OUT_PATH}"
 
 #Generate json puzzle
-${GAME_GEN_EXE} "${BRICK_OUT_PATH}" -mrandom -l7 -L7 -o"${JSON_PUZZLE_PATH}"
+${GAME_GEN_EXE} "${BRICK_OUT_PATH}" -mindex -i0 -l4 -w0 -o"${JSON_PUZZLE_PATH}"
 
 #Render puzzle html
 python3 "${RENDER_PY}" "${TEMPLATE_FOLDER}" "${JSON_PUZZLE_PATH}" "${OUTPUT_FOLDER}"
