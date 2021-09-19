@@ -106,7 +106,7 @@ class ReadFileDescriptor {
   inline size_t read_brick_length(size_t& brick_length) const {
     auto cur_pos = m_ifs->tellg();
 
-    m_ifs->seekg(-sizeof(size_t), std::ios_base::end);
+    m_ifs->seekg(- (int) sizeof(size_t), std::ios_base::end);
     m_ifs->read((char*)&brick_length, sizeof(size_t));
     m_ifs->seekg(cur_pos, std::ios_base::beg);
 
