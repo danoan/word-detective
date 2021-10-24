@@ -101,7 +101,7 @@ void get_all_puzzles(std::list<Puzzle::Puzzle>& list_of_puzzles,
   auto callback = [&list_of_puzzles, &brick, &num_letters, &min_words](
                       const Datastr::BrickInterface& brick_node, int level) {
     if (brick_node.beginWords() != brick_node.endWords() &&
-        level == num_letters-1) {
+        level == num_letters - 1) {
       std::string letters = path_from_word(*brick_node.beginWords());
 
       std::unordered_set<std::string> word_collection;
@@ -140,16 +140,19 @@ json random_puzzle(const Datastr::Brick& brick, int num_letters,
   get_all_puzzles(list_of_puzzles, brick, num_letters, min_words);
 
   std::random_device rd;
-  std::uniform_int_distribution<int> distr(0,list_of_puzzles.size()-1);
+  std::uniform_int_distribution<int> distr(0, list_of_puzzles.size() - 1);
 
   auto it = list_of_puzzles.begin();
-  for(int i=distr(rd);i>0;--i) ++it;
+  for (int i = distr(rd); i > 0; --i) ++it;
 
-
-    return json( *it );
+  if (list_of_puzzles.size() > 0) {
+    return json(*it);
+  } else {
+    return json({});
+  }
 }
 
-json puzzle_by_index(const Datastr::Brick& brick,int num_letters,
+json puzzle_by_index(const Datastr::Brick& brick, int num_letters,
                      int min_words, int index) {
   std::list<Puzzle::Puzzle> list_of_puzzles;
   get_all_puzzles(list_of_puzzles, brick, num_letters, min_words);
@@ -158,8 +161,11 @@ json puzzle_by_index(const Datastr::Brick& brick,int num_letters,
     throw std::runtime_error("The puzzle index does not exist");
 
   auto it = list_of_puzzles.begin();
-  for (int i = 0; i < index; ++i, ++it)
-    ;
+  for (int i = 0; i < index; ++i) ++it;
 
-  return json(*it);
+  if (list_of_puzzles.size() > 0) {
+    return json(*it);
+  } else {
+    return json({});
+  }
 }
