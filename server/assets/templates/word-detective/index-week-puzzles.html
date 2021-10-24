@@ -30,7 +30,7 @@
 
     config.words_found_cookie_id = '{{puzzleId}}_words_found_{{cookieUniqueId}}';
     config.iso_expiration_date = '{{expirationDate}}';
-    config.puzzle_json_filepath = '/api/random-puzzle';
+    config.puzzle_json_filepath = 'assets/puzzle.json';
 
     config.onload = function () {
       if (should_redirect_to_today_puzzle()) {
@@ -60,12 +60,7 @@
 
     <div class="display-text" id="display-text"></div>
 
-    <div class="container-hexagons">
-      {% for letter in jpuzzle.puzzle.letters %}
-      <div class="hexagon hexagon-pos-{{loop.index}}" onclick="control.click_letter('{{letter}}')">
-        <div class="letter-hex">{{letter}}</div>
-      </div>
-      {% endfor %}
+    <div class="container-hexagons" id="container-hexagons">
 
     </div>
 

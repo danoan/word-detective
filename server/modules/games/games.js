@@ -19,3 +19,9 @@ games.get('/puzzle-of-day', (req, res) => {
   console.info(GAMES_DIR);
   res.sendFile(path.resolve(GAMES_DIR,"puzzle-of-day/index.html"));
 });
+
+games.use("/week-puzzles", express.static(`${GAMES_DIR}/week-puzzles`));
+games.get('/week-puzzles', (req, res) => {
+  console.info(GAMES_DIR);
+  res.sendFile(path.resolve(GAMES_DIR,"week-puzzles/index.html"));
+});
