@@ -166,6 +166,7 @@ body {
   font-weight: lighter;
   z-index: 100;
   color: var(--pallete-5);
+  cursor: pointer;
 }
 
 .top-status {

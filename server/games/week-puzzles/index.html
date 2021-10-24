@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>Spelling bee</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+  <script>
+    let today = new Date();
+    switch(today.getDay()){
+      case 0:
+        window.location.href="sunday/index.html";
+        break;
+      case 1:
+        window.location.href="monday/index.html";
+        break;
+      case 2:
+        window.location.href="tuesday/index.html";
+        break;
+      case 3:
+        window.location.href="wednesday/index.html";
+        break;
+      case 4:
+        window.location.href="thursday/index.html";
+        break;
+      case 5:
+        window.location.href="friday/index.html";
+        break;
+      case 6:
+        window.location.href="saturday/index.html";
+        break;
+    }
+  </script>
+</head>
+
+</html>

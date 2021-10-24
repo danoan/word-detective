@@ -144,24 +144,20 @@ function gui_WORD_DETECTIVE_api() {
 }
 
 function load_assets() {
-  const ASSETS_FOLDER = "js/modules/word-detective/assets";
-  let messages_json_filepath = `${ASSETS_FOLDER}/english_messages.json`;
-  let puzzle_json_filepath = "assets/puzzle.json";
-
   let assets = {
     "messages": null,
     "puzzle": null
   };
 
-  //It may be better to use Promise.all() here
-  return fetch(messages_json_filepath)
-    .then( (response) => response.json())
-    .then( (response_json) => {
+  //TODO: It may be better to use Promise.all() here
+  return fetch(config.messages_json_filepath)
+    .then((response) => response.json())
+    .then((response_json) => {
       assets.messages = response_json;
     })
-    .then(() => fetch(puzzle_json_filepath))
-    .then( (response) => response.json())
-    .then( (response_json) => new Promise(function (resolve) {
+    .then(() => fetch(config.puzzle_json_filepath))
+    .then((response) => response.json())
+    .then((response_json) => new Promise(function (resolve) {
       assets.puzzle = response_json.puzzle;
       resolve(assets);
     }));
@@ -171,52 +167,49 @@ function handle_error(error) {
   alert(error);
 }
 
-function set_puzzle_cookie() {
-  let words_found_cookie_id = '{{puzzleId}}_words_found_{{dayOfWeekName}}';
-  let iso_expiration_date = '{{expirationDate}}';
-
+function set_puzzle_cookie(words_found_cookie_id, iso_expiration_date) {
   return cookie_manager(words_found_cookie_id, iso_expiration_date);
 }
 
-function should_redirect_to_today_puzzle() {
-  let now = new Date();
-  let ten_minutes_expire = new Date(now.getTime() + 1000 * 60 * 10);
-
-  let cm = cookie_manager('recently_accessed', ten_minutes_expire);
-
-  if (cm.get() === '') {
-    cm.set('recently_visited');
-    return true;
-  } else {
-    return false;
-  }
-}
+export let config = {
+  "words_found_cookie_id": "",
+  "iso_expiration_date": "",
+  "puzzle_json_filepath": "js/modules/word-detective/assets/puzzle.json",
+  "messages_json_filepath": "js/modules/word-detective/assets/english_messages.json",
+  "onload": null,
+  "load_assets": null
+};
 
 export function main(is_in_test_mode = false) {
-  let puzzle_cookie = set_puzzle_cookie();
+  let puzzle_cookie = set_puzzle_cookie(config.words_found_cookie_id, config.iso_expiration_date);
   let WD = word_definition(gui_word_definition());
   let SD = configure_slider();
-    
-  if (should_redirect_to_today_puzzle()) {
-    window.location.href = "../index.html";
-  } else {
-    return load_assets()
-      .then( (assets) => new Promise(function (resolve) {
-        let config = configure_WORD_DETECTIVE_(assets);
-        let control = create_WORD_DETECTIVE_api(gui_WORD_DETECTIVE_api(), assets.messages, config);
 
-        if (is_in_test_mode) {
-          control.ephemeral = {
-            gui_slider,
-            gui_word_definition,
-            gui_WORD_DETECTIVE_api
-          };
-        }
-
-        resolve(control);
-
-      }));
+  if (config.onload !== null) {
+    config.onload();
   }
+
+  let custom_load_assets = load_assets;
+  if (config.load_assets !== null) {
+    custom_load_assets = config.load_assets;
+  }
+
+  return custom_load_assets(load_assets)
+    .then((assets) => new Promise(function (resolve) {
+      let config = configure_WORD_DETECTIVE_(assets);
+      let control = create_WORD_DETECTIVE_api(gui_WORD_DETECTIVE_api(), assets.messages, config);
+
+      if (is_in_test_mode) {
+        control.ephemeral = {
+          gui_slider,
+          gui_word_definition,
+          gui_WORD_DETECTIVE_api
+        };
+      }
+
+      resolve(control);
+
+    }));
 
   function configure_slider() {
     let config = { "callbacks": {} };
@@ -260,6 +253,8 @@ export function main(is_in_test_mode = false) {
   }
 
   function init_puzzle(puzzle, control_members) {
+    render_puzzle_letters(puzzle);
+
     for (let word of puzzle.words) {
       control_members.add_missing_word(word);
     }
@@ -267,11 +262,31 @@ export function main(is_in_test_mode = false) {
     load_found_words_from_cookie(control_members);
   }
 
+  function render_puzzle_letters(puzzle) {
+    //TODO: Think about replacing this by a template strategy instead
+    let i = 1;
+    for (let letter of puzzle.letters) {
+      let div_root = document.createElement("div");
+      let div_kid = document.createElement("div");
+
+      div_root.className = `hexagon hexagon-pos-${i}`;
+      div_root.onclick = () => control.click_letter(letter);
+
+      div_kid.className = "letter-hex";
+      div_kid.innerHTML = letter;
+
+      div_root.appendChild(div_kid);
+
+      document.getElementById("container-hexagons").appendChild(div_root);
+      i += 1;
+    }
+  }
+
   function load_found_words_from_cookie(control_members) {
     let str_words_found = puzzle_cookie.get();
 
     let _words_found = str_words_found.split(',');
-    _words_found.forEach( (word) => {
+    _words_found.forEach((word) => {
       if (word.length > 0) {
         control_members.add_found_word(word);
       }
@@ -281,7 +296,7 @@ export function main(is_in_test_mode = false) {
   function save_found_words_in_cookie(control_members) {
     let words_found_cookie = '';
 
-    control_members.get_words_found().forEach( (word) => {
+    control_members.get_words_found().forEach((word) => {
       if (word.length > 0) {
         words_found_cookie += word + ',';
       }

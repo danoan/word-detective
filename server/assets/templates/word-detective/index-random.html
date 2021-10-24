@@ -4,14 +4,18 @@
 <head>
   <meta charset='utf-8'>
   <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-  <title>Spelling bee</title>
+  <title>Word Detective</title>
   <meta name='viewport' content='width=device-width, initial-scale=1'>
   <link rel='stylesheet' type='text/css' media='screen' href='css/main.css'>
   <script>
     let control;
   </script>
   <script type="module">
-    import { main } from "./js/main.js"
+    import { config, main } from "./js/main.js";
+
+    config.words_found_cookie_id = '';
+    config.iso_expiration_date = '';
+    config.puzzle_json_filepath = '/api/random-puzzle';
 
     main().then(control_handler => {
       control = control_handler;
@@ -34,13 +38,7 @@
 
     <div class="display-text" id="display-text"></div>
 
-    <div class="container-hexagons">
-      {% for letter in jpuzzle.puzzle.letters %}
-      <div class="hexagon hexagon-pos-{{loop.index}}" onclick="control.click_letter('{{letter}}')">
-        <div class="letter-hex">{{letter}}</div>
-      </div>
-      {% endfor %}
-
+    <div class="container-hexagons" id="container-hexagons">
     </div>
 
     <div class="container-buttons">

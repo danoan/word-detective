@@ -18,9 +18,11 @@ let default_config = {
   }
 };
 
-export function create_WORD_DETECTIVE_api(gui, messages_json, config) {
-  if(config===null){
-    config = default_config;
+export function create_WORD_DETECTIVE_api(gui, messages_json, _config) {
+  let config = {...default_config};
+
+  for(let key in _config.callbacks){
+    config.callbacks[key] =  _config.callbacks[key];
   }
 
   let messages = setup_messages(messages_json);

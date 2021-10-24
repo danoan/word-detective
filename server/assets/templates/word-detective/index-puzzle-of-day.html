@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>Word Detective</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <link rel='stylesheet' type='text/css' media='screen' href='css/main.css'>
+  <script>
+    let control;
+  </script>
+  <script type="module">
+    import { config, main } from "./js/main.js";
+    import { cookie_manager } from "./js/modules/cookie-manager.js";
+
+    let today = new Date();
+    today.setHours(0);
+    today.setMinutes(0);
+    today.setSeconds(0);
+    today.setMilliseconds(0);
+    let tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
+
+    config.words_found_cookie_id = `${today.toISOString()}_words_found`;
+    config.iso_expiration_date = `${tomorrow.toISOString()}`;
+    config.puzzle_json_filepath = '/api/random-puzzle';
+
+    config.load_assets = function (default_load_assets) {
+      let cm = cookie_manager(`${today.toISOString()}_puzzle`, config.iso_expiration_date);
+
+      return default_load_assets()
+        .then(default_assets => new Promise(function (resolve) {
+
+          let puzzle = default_assets.puzzle;
+          if (cm.get() !== '') {
+            puzzle = JSON.parse( cm.get() );
+          }else{
+            cm.set( JSON.stringify(puzzle) );
+          }
+
+          let assets = {
+            "messages": default_assets.messages,
+            "puzzle": puzzle
+          };
+
+          resolve(assets);
+        }));
+    };
+
+    main().then(control_handler => {
+      control = control_handler;
+    }).catch(error => alert(error));
+  </script>
+</head>
+
+<body>
+  <div class="container-main">
+
+    <div class="top-status">
+      <span id="missing-words">Missing words:</span>
+      <div class="container-words">
+        <div class="words-found">
+          <ul id="words-list">
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="display-text" id="display-text"></div>
+
+    <div class="container-hexagons" id="container-hexagons">
+    </div>
+
+    <div class="container-buttons">
+      <div class="button" onclick="control.erase_letter()">Erase</div>
+      <div class="button" onclick="control.hint()">Hint</div>
+      <div class="button" onclick="control.check_word()">Check</div>
+    </div>
+
+    <div class="bottom-status" id="bottom-status">
+
+    </div>
+
+    <div id="evidence-list" class="evidence-list slide-deck">
+      <div class="slide word-selection" id="slide-1">
+        <h1>Puzzle words</h1>
+        <h2>(Select up to 3 words to get their definitions)</h2>
+        <ul id="evidence-list-words">
+        </ul>
+      </div>
+      <div class="slide word-definition" id="slide-2">
+        <h1></h1>
+        <h2></h2>
+        <h3><a href="https://www.collinsdictionary.com">Source: Collins Dictionary</a></h3>
+      </div>
+      <div class="slide word-definition" id="slide-3">
+        <h1></h1>
+        <h2></h2>
+        <h3><a href="https://www.collinsdictionary.com">Source: Collins Dictionary</a></h3>
+      </div>
+      <div class="slide word-definition" id="slide-4">
+        <h1></h1>
+        <h2></h2>
+        <h3><a href="https://www.collinsdictionary.com">Source: Collins Dictionary</a></h3>
+      </div>
+      <div class="slide word-definition" id="slide-5">
+        <div class="final-message">Well done, champs!</div>
+      </div>
+      <div id="slide-next-button" class="next"><span>></span></div>
+    </div>
+  </div>
+  <div id="evidence-list-overlay" class="container-overlay"></div>
+</body>
+
+</html>

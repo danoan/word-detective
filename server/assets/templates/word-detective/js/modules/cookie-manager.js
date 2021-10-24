@@ -19,7 +19,8 @@ export function cookie_manager(cookie_id, iso_expiration_date) {
   function set(cname, cvalue, iso_date) {
     let d = new Date(iso_date);
     let expires = 'expires=' + d.toUTCString();
-    document.cookie = cname + '=' + cvalue + ';' + expires + 'domain=.danoan.github.io;path=/;SameSite=None; Secure';
+    // document.cookie = cname + '=' + cvalue + ';' + expires + 'domain=.danoan.github.io;path=/;SameSite=None; Secure';
+    document.cookie = cname + '=' + cvalue + ';' + expires + 'domain=192.168.0.22;path=/;SameSite=Lax;';
   }
 
   return {
