@@ -9,7 +9,7 @@ services:
   - docker
 
 before_install:
-  - docker build . -t word-detective:build
+  - docker build . -f Dockerfile.travis -t word-detective:build
   
 script:
   - ci_env=$(bash <(curl -s https://codecov.io/env))
