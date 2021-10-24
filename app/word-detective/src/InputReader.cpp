@@ -13,7 +13,7 @@ InputData read_input(int argc, char* argv[]) {
   InputData id;
 
   int opt;
-  while ((opt = getopt(argc, argv, "l:L:w:m:i:o:")) != -1) {
+  while ((opt = getopt(argc, argv, "l:w:m:i:o:")) != -1) {
     switch (opt) {
       case 'l':
         id.num_letters = atoi(optarg);
