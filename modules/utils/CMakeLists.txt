@@ -1,4 +1,4 @@
-add_library(utils SHARED
+add_library(utils
 src/text/filter.cpp
 src/text/english.cpp
 src/timer.cpp
@@ -7,7 +7,6 @@ src/timer.cpp
 target_include_directories(utils
   PUBLIC
     include
-    ${BOOST_INCLUDES_DIR}
 )
 
 target_link_libraries(utils

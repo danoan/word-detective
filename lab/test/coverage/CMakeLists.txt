@@ -9,6 +9,7 @@ add_executable(test-coverage
   ${CMAKE_SOURCE_DIR}/app/word-detective/src/word-detective-api.cpp
 )
 
+find_package(Boost 1.67 REQUIRED filesystem system)
 add_dependencies(test-coverage
   utils
   datastr
@@ -23,7 +24,7 @@ target_include_directories(test-coverage
   ${CMAKE_SOURCE_DIR}/modules/datastr/include
   ${CMAKE_SOURCE_DIR}/modules/standard-extensions/include
   ${CMAKE_SOURCE_DIR}/app/word-detective/include
-  ${BOOST_INCLUDES_DIR}
+  ${Boost_INCLUDE_DIRS}
 )
 
 target_link_directories(test-coverage
@@ -31,7 +32,7 @@ target_link_directories(test-coverage
    ${CMAKE_BINARY_DIR}/modules/utils
    ${CMAKE_BINARY_DIR}/modules/datastr
    ${CMAKE_BINARY_DIR}/modules/standard-extensions
-   ${BOOST_LIBS_DIR}
+   ${Boost_LIBRARY_DIRS}
 )
 
 target_link_libraries(test-coverage
@@ -39,9 +40,8 @@ target_link_libraries(test-coverage
   -lutils
   -ldatastr
   -lstandard-extensions
-  -lboost_filesystem
-  -lboost_system
   -lgcov
+  ${Boost_LIBRARIES}
 )
 
 target_compile_options(test-coverage PRIVATE

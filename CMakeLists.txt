@@ -4,18 +4,23 @@ project(word-detective)
 # Set constant to project root folder
 add_definitions(-DPROJECT_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
 
-# Default path to required libraries
-set(BOOST_INCLUDES_DIR "/usr/local/include" CACHE PATH "Path to boost includes directory" )
-set(BOOST_LIBS_DIR "/usr/local/lib" CACHE PATH "Path to boost libraries directory" )
-
 # Set build configuration variables
 set(BUILD_BENCHMARKS OFF CACHE BOOL "if true, build benchmark executables")
 set(BUILD_TESTS OFF CACHE BOOL "if true, build test executables")
 
+# Control if build use shared or static libraries
+set(BUILD_STATIC ON CACHE BOOL "if true, all libraries are built and linked staticaly.")
 
-# Export libraries locations to binaries
-set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib:${BOOST_LIBS_DIR}")
-set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+if( ${BUILD_STATIC} )
+  message("Building static libraries")
+  set(BUILD_SHARED_LIBS OFF)
+  set(Boost_USE_STATIC_LIBS ON)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static")
+else()
+  # Export libraries locations to binaries
+  set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib:${Boost_LIBRARY_DIRS}")
+  set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+endif()
 
 add_subdirectory(modules/datastr)
 add_subdirectory(modules/standard-extensions)

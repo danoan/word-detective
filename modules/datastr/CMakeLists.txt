@@ -1,6 +1,6 @@
 project(datastr)
 
-add_library(datastr SHARED
+add_library(datastr
 src/Brick.cpp
 src/Trie.cpp
 )

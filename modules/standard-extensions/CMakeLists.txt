@@ -1,6 +1,6 @@
 project(standard-extensions)
 
-add_library(standard-extensions SHARED
+add_library(standard-extensions
 src/brick/traversal.cpp)
 
 add_dependencies(standard-extensions datastr)

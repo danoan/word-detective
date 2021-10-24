@@ -6,6 +6,7 @@ src/word-detective-api.cpp
 src/InputReader.cpp
 )
 
+find_package(Boost 1.67 REQUIRED filesystem system)
 add_dependencies(word-detective utils datastr standard-extensions)
 
 target_include_directories(word-detective
@@ -15,7 +16,7 @@ target_include_directories(word-detective
     ${CMAKE_SOURCE_DIR}/modules/datastr/include
     ${CMAKE_SOURCE_DIR}/modules/standard-extensions/include
     ${CMAKE_SOURCE_DIR}/ext/json/include
-    ${BOOST_INCLUDES_DIR}
+    ${Boost_INCLUDE_DIRS}
 )
 
 target_link_directories(word-detective
@@ -23,7 +24,7 @@ PUBLIC
   ${CMAKE_BINARY_DIR}/modules/utils
   ${CMAKE_BINARY_DIR}/modules/datastr
   ${CMAKE_BINARY_DIR}/modules/standard-extensions
-  ${BOOST_LIBS_DIR}
+  ${Boost_LIBRARY_DIRS}
 )
 
 target_link_libraries(word-detective
@@ -31,8 +32,7 @@ PUBLIC
  -lutils
  -ldatastr
  -lstandard-extensions
- -lboost_filesystem
- -lboost_system)
+ ${Boost_LIBRARIES})
 
 install(TARGETS word-detective
 DESTINATION ${CMAKE_INSTALL_PREFIX}/app)
