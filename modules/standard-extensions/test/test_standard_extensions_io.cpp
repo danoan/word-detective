@@ -42,7 +42,8 @@ TEST_CASE("Brick IO operations", "[standard-extensions][brick][io]") {
       output_folder + "/simple_brick_one_byte.brk";
   SECTION("Save a one byte simple Brick") {
     try {
-      Brick::IO::Save<unsigned char>::run(simple_brick_filepath_one_byte,
+      auto fd = std::ofstream(simple_brick_filepath_one_byte,std::ios_base::binary);
+      Brick::IO::Save<unsigned char>::run(fd,
                                           brick);
       REQUIRE(true);
     } catch (std::exception& ex) {
@@ -54,8 +55,9 @@ TEST_CASE("Brick IO operations", "[standard-extensions][brick][io]") {
     using WordIterator = std::list<std::string>::const_iterator;
 
     try {
+      auto fd = std::ifstream(simple_brick_filepath_one_byte,std::ios_base::binary);
       Datastr::Brick loaded_brick;
-      Brick::IO::Load::run(loaded_brick, simple_brick_filepath_one_byte);
+      Brick::IO::Load::run(loaded_brick, fd);
 
       std::set<std::string> word_collection;
       Traverse::run(
@@ -75,7 +77,8 @@ TEST_CASE("Brick IO operations", "[standard-extensions][brick][io]") {
       output_folder + "/simple_brick_four_bytes.brk";
   SECTION("Save a four bytes simple Brick") {
     try {
-      Brick::IO::Save<int>::run(simple_brick_filepath_four_bytes, brick);
+      auto fd = std::ofstream(simple_brick_filepath_four_bytes,std::ios_base::binary);
+      Brick::IO::Save<int>::run(fd, brick);
       REQUIRE(true);
     } catch (std::exception& ex) {
       REQUIRE(false);
@@ -86,8 +89,9 @@ TEST_CASE("Brick IO operations", "[standard-extensions][brick][io]") {
     using WordIterator = std::list<std::string>::const_iterator;
 
     try {
+      auto fd = std::ifstream(simple_brick_filepath_four_bytes,std::ios_base::binary);
       Datastr::Brick loaded_brick;
-      Brick::IO::Load::run(loaded_brick, simple_brick_filepath_four_bytes);
+      Brick::IO::Load::run(loaded_brick, fd);
 
       std::set<std::string> word_collection;
       Traverse::run(
@@ -121,7 +125,8 @@ TEST_CASE("Brick IO operations", "[standard-extensions][brick][io]") {
 
     std::string brick_5k_filepath = output_folder + "/list_5k_words.brk";
     try {
-      Brick::IO::Save<unsigned char>::run(brick_5k_filepath, brick_5k);
+      auto fd = std::ofstream(brick_5k_filepath,std::ios_base::binary);
+      Brick::IO::Save<unsigned char>::run(fd, brick_5k);
       REQUIRE(true);
     } catch (std::exception& ex) {
       REQUIRE(false);
@@ -129,7 +134,8 @@ TEST_CASE("Brick IO operations", "[standard-extensions][brick][io]") {
 
     Datastr::Brick loaded_brick;
     try {
-      Brick::IO::Load::run(loaded_brick, brick_5k_filepath);
+      auto fd = std::ifstream(brick_5k_filepath,std::ios_base::binary);
+      Brick::IO::Load::run(loaded_brick, fd);
       REQUIRE(true);
     } catch (std::exception& ex) {
       REQUIRE(false);

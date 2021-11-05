@@ -1,14 +1,12 @@
+#include <boost/filesystem.hpp>
 #include <fstream>
 #include <iostream>
-#include <boost/filesystem.hpp>
-
-#include "nlohmann/json.hpp"
-
-#include "word-detective/standard-extensions/brick/io.hpp"
 
 #include "InputData.h"
 #include "InputReader.h"
+#include "nlohmann/json.hpp"
 #include "word-detective-api.h"
+#include "word-detective/standard-extensions/brick/io.hpp"
 
 void output(const json& jsonOutput, const std::string& outputFilepath) {
   if (outputFilepath != "") {
@@ -22,25 +20,33 @@ void output(const json& jsonOutput, const std::string& outputFilepath) {
 int main(int argc, char* argv[]) {
   InputData id = read_input(argc, argv);
 
-  if(id.outputfilepath!=""){
+  if (id.outputfilepath != "") {
     boost::filesystem::path p(id.outputfilepath);
     boost::filesystem::create_directories(p.remove_filename());
   }
 
   Datastr::Brick brick;
-  StandardExtensions::Brick::IO::Load::run(brick, id.filepath);
+  if (id.filepath == "stdin") {
+    std::cin >> id.filepath;
+  }
+
+  auto fd = std::ifstream(id.filepath, std::ios_base::binary);
+  StandardExtensions::Brick::IO::Load::run(brick, fd);
 
   switch (id.out_mode) {
     case InputData::ALL_PUZZLES: {
-      output(all_puzzles(brick, id.num_letters,id.min_words), id.outputfilepath);
+      output(all_puzzles(brick, id.num_letters, id.min_words),
+             id.outputfilepath);
       break;
     }
     case InputData::RANDOM_PUZZLE: {
-      output(random_puzzle(brick, id.num_letters,id.min_words), id.outputfilepath);
+      output(random_puzzle(brick, id.num_letters, id.min_words),
+             id.outputfilepath);
       break;
     }
     case InputData::PUZZLE_BY_INDEX: {
-      output(puzzle_by_index(brick, id.num_letters,id.min_words,id.index), id.outputfilepath);
+      output(puzzle_by_index(brick, id.num_letters, id.min_words, id.index),
+             id.outputfilepath);
       break;
     }
     default:

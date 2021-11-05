@@ -32,7 +32,8 @@ int main(int argc, char* argv[]) {
     b.insert_word(w.first);
   }
 
-  StandardExtensions::Brick::IO::Save<unsigned char>::run(id.output_filepath,
+  ofstream ofs(id.output_filepath,ios_base::binary);
+  StandardExtensions::Brick::IO::Save<unsigned char>::run(ofs,
                                                           b);
 
   return 0;
