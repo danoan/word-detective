@@ -16,9 +16,7 @@ class EnglishSegmenter : public SegmenterInterface {
    public:
     explicit WordIteratorImpl(std::istream* in_stream,
                               FilterFunction filter = always_true_filter)
-        : m_in_stream(in_stream),
-          m_filter(filter),
-          m_last_pos(in_stream->tellg()) {
+        : m_in_stream(in_stream), m_filter(filter), m_last_back_step(-1) {
       fill_up_buffer();
     }
 
@@ -40,33 +38,36 @@ class EnglishSegmenter : public SegmenterInterface {
 
    private:
     void fill_up_buffer() {
-      m_in_stream->seekg(m_last_pos);
+      unsigned int read_start = 0;
+      for (; m_last_back_step >= 0; ++read_start, --m_last_back_step) {
+        m_buffer[read_start] = m_buffer[BUFFER_HALF_SIZE + m_last_back_step];
+      }
 
-      memset(m_buffer, '\0', BUFFER_SIZE);
-      m_in_stream->read(m_buffer, BUFFER_SIZE);
+      memset((m_buffer + read_start), '\0', BUFFER_HALF_SIZE - read_start);
+      m_in_stream->read((m_buffer + read_start), BUFFER_HALF_SIZE - read_start);
       int last = m_in_stream->gcount() - 1;
 
-      int back_step = 0;
+      m_last_back_step = -1;
       if (!m_in_stream->eof()) {
         while (m_buffer[last] != '\n') {
+          m_last_back_step++;
+          m_buffer[BUFFER_HALF_SIZE + m_last_back_step] = m_buffer[last];
           m_buffer[last--] = '\0';
-          back_step--;
         }
-        m_in_stream->seekg(back_step, std::ios_base::cur);
       }
 
       m_buffer_begin = m_buffer;
-      m_last_pos = m_in_stream->tellg();
     }
 
    private:
     static std::regex rgx;
-    static constexpr unsigned int BUFFER_SIZE = 32000;
+    static constexpr unsigned int BUFFER_SIZE = 64000;
+    static constexpr unsigned int BUFFER_HALF_SIZE = 32000;
 
     std::istream* m_in_stream;
     char m_buffer[BUFFER_SIZE];
     const char* m_buffer_begin;
-    std::streampos m_last_pos;
+    int m_last_back_step;
 
     std::cmatch m_match;
     FilterFunction m_filter;
@@ -74,7 +75,7 @@ class EnglishSegmenter : public SegmenterInterface {
 
  public:
   explicit EnglishSegmenter(std::istream* in_stream,
-                   FilterFunction filter = always_true_filter)
+                            FilterFunction filter = always_true_filter)
       : m_in_stream(in_stream), m_filter(filter) {}
 
   WordIterator begin() {
