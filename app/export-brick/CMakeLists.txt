@@ -2,7 +2,8 @@ project(export-brick)
 
 add_executable(export-brick
 export-brick.cpp
-src/InputReader.cpp)
+src/InputReader.cpp
+src/export-brick-api.cpp)
 
 add_dependencies(export-brick utils datastr standard-extensions)
 

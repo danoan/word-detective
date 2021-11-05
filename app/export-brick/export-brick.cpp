@@ -4,6 +4,7 @@
 
 #include "InputData.h"
 #include "InputReader.h"
+#include "export-brick-api.h"
 #include "word-detective/datastr/Brick.h"
 #include "word-detective/standard-extensions/brick/io.hpp"
 #include "word-detective/utils/text/filter.hpp"
