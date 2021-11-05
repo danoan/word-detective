@@ -9,6 +9,7 @@
 #include "nlohmann/json.hpp"
 #include "word-detective/datastr/Brick.h"
 #include "word-detective/standard-extensions/brick/traversal.hpp"
+#include "word-detective/utils/text/filter.hpp"
 #include "word-detective/utils/text/segmenter.hpp"
 #include "word-detective/utils/text/segmenter/english.hpp"
 
@@ -29,6 +30,8 @@ ostream& operator<<(ostream& os, const Puzzle& puzzle);
 ostream& operator<<(ostream& os, const std::list<Puzzle>& list_of_puzzles);
 
 };  // namespace Puzzle
+
+Datastr::Brick create_brick(std::istream& book_stream);
 
 class SubPath : Datastr::BrickExtension {
   using Brick = Datastr::Brick;
@@ -56,6 +59,7 @@ void get_all_puzzles(std::list<Puzzle::Puzzle>& list_of_puzzles,
                      const Datastr::Brick& brick, int num_letters);
 json all_puzzles(const Datastr::Brick& brick, int num_letters, int min_words);
 json random_puzzle(const Datastr::Brick& brick, int num_letters, int min_words);
-json puzzle_by_index(const Datastr::Brick& brick, int num_letters,int min_words,int index);
+json puzzle_by_index(const Datastr::Brick& brick, int num_letters,
+                     int min_words, int index);
 
 #endif

@@ -27,11 +27,13 @@ int main(int argc, char* argv[]) {
 
   Datastr::Brick brick;
   if (id.filepath == "stdin") {
-    std::cin >> id.filepath;
+    // Create brick from book
+    brick = create_brick(std::cin);
+  } else {
+    // Create brick fro, brick file
+    auto fd = std::ifstream(id.filepath, std::ios_base::binary);
+    StandardExtensions::Brick::IO::Load::run(brick, fd);
   }
-
-  auto fd = std::ifstream(id.filepath, std::ios_base::binary);
-  StandardExtensions::Brick::IO::Load::run(brick, fd);
 
   switch (id.out_mode) {
     case InputData::ALL_PUZZLES: {

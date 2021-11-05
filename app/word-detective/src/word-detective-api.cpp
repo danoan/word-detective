@@ -25,6 +25,24 @@ ostream& operator<<(ostream& os, const std::list<Puzzle>& list_of_puzzles) {
 
 };  // namespace Puzzle
 
+Datastr::Brick create_brick(std::istream& book_stream) {
+  Utils::Text::FilterFunction word_filter = [](const std::string& s) {
+    return Utils::Text::more_than_n_characters<3>(s) &&
+           !Utils::Text::starts_with_capital_letter(s);
+  };
+
+  unordered_map<string, int> corpora;
+  Utils::Text::segment_into_map<Utils::Text::Languages::English>(
+      corpora, book_stream, word_filter);
+
+  Datastr::Brick b;
+  for (auto w : corpora) {
+    b.insert_word(w.first);
+  }
+
+  return b;
+}
+
 void SubPath::run(const std::string& path, int path_index, std::string subpath,
                   std::unordered_set<std::string>& subpaths,
                   const BrickInterface* brick) {
