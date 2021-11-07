@@ -21,7 +21,7 @@ do
   JSON_PUZZLE_PATH="${CUR_OUT_FOLDER}/assets/puzzle.json"
 
   #Generate json puzzle
-  ${PUZZLE_GEN_EXE} -mrandom -l7 -o"${JSON_PUZZLE_PATH}" "${ASSETS_PATH}/corpora/ef-5000.brk"
+  ${PUZZLE_GEN_EXE} -mrandom -l7 -o"${JSON_PUZZLE_PATH}" -b"${ASSETS_PATH}/corpora/ef-5000.brk"
 
   #Render puzzle html
   python3 "${RENDER_PUZZLE}" "${ASSETS_PATH}/templates/word-detective" "${JSON_PUZZLE_PATH}" "${CUR_OUT_FOLDER}" "${day}"

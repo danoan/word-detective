@@ -12,7 +12,7 @@ const app = express();
 app.use(middlewares.setUpAccessControlHeader);
 
 app.use('/games',games);
-app.use('/api',api)
+app.use('/api',api);
 
 
 app.listen(port, hostname, () => {

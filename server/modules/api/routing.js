@@ -1,4 +1,3 @@
-import * as fetch from 'node-fetch';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { binServices } from '../binary-services.js';
@@ -13,7 +12,7 @@ export let routing = function () {
 
   function randomPuzzle(req,res){
    let corporaBrickFilePath = `${ASSETS_DIR}/corpora/ef-5000.brk`;
-   binServices.generatePuzzle(corporaBrickFilePath)
+   binServices.generatePuzzle({"brick_filepath":corporaBrickFilePath})
    .then( jsonPuzzle => res.send(jsonPuzzle) )
    .catch(() => {
     res.status(500);
@@ -21,30 +20,9 @@ export let routing = function () {
    });
   }
 
-  function puzzleFromURL(req, res) {
-    let textFilepath = `${TEMP_DIR}/book.txt`;
-    let brickFilepath = `${OUT_DIR}/book-brick.txt`;
-
-    fetch(req.query.url)
-      .then(response => response.text())
-      .then(text => binServices.writeToTextFile(text, textFilepath))
-      .then(() => binServices.exportBrick(textFilepath, brickFilepath))
-      .then(() => binServices.generatePuzzle(brickFilepath))
-      .then(puzzle => res.send(puzzle))
-      .catch(() => {
-        res.status(500);
-        res.send("Sorry, an error has occured.")
-      });
-  }
-
-  function puzzleFromText(req,res) {
-    let textFilepath = `${TEMP_DIR}/input.txt`;
-    let brickFilepath = `${OUT_DIR}/brick.txt`;
-
-    binServices.writeToTextFile(req.query.text, textFilepath)
-      .then(() => binServices.exportBrick(textFilepath, brickFilepath))
-      .then(() => binServices.generatePuzzle(brickFilepath))
-      .then(puzzle => res.send(puzzle))
+  function puzzleFromBook(req, res) {
+    binServices.generatePuzzle({"input_stream":req})
+      .then(jsonPuzzle => res.send(jsonPuzzle))
       .catch(() => {
         res.status(500);
         res.send("Sorry, an error has occured.")
@@ -52,8 +30,7 @@ export let routing = function () {
   }
 
   return {
-    puzzleFromURL,
-    puzzleFromText,
+    puzzleFromBook,
     randomPuzzle
   };
 

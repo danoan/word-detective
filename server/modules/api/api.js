@@ -7,10 +7,6 @@ api.get('/random-puzzle', (req,res) => {
     routing.randomPuzzle(req,res);
 });
 
-api.get('/puzzle-from-text', (req, res) => {
-    routing.puzzleFromText(req,res);
-});
-
-api.get('/puzzle-from-url', (req, res) => {
-    routing.puzzleFromURL(req,res);
+api.post('/puzzle-from-book', (req, res) => {
+    routing.puzzleFromBook(req,res);
 });
