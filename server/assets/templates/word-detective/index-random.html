@@ -15,7 +15,28 @@
 
     config.words_found_cookie_id = '';
     config.iso_expiration_date = '';
-    config.puzzle_json_filepath = '/api/random-puzzle';
+
+    config.load_assets = function() {
+      let assets = {
+        "messages": null,
+        "puzzle": null
+      };
+
+      let messages_json_location = "js/modules/word-detective/assets/english_messages.json";
+      let puzzle_json_location = "/api/random-puzzle";
+
+      return fetch(messages_json_location)
+        .then((response) => response.json())
+        .then((response_json) => {
+          assets.messages = response_json;
+        })
+        .then(() => fetch(puzzle_json_location))
+        .then((response) => response.json())
+        .then((response_json) => new Promise(function (resolve) {
+          assets.puzzle = response_json.puzzle;
+          resolve(assets);
+        }));
+    };
 
     main().then(control_handler => {
       control = control_handler;
@@ -42,9 +63,9 @@
     </div>
 
     <div class="container-buttons">
-      <div class="button" onclick="control.erase_letter()">Erase</div>
-      <div class="button" onclick="control.hint()">Hint</div>
-      <div class="button" onclick="control.check_word()">Check</div>
+      <div class="button button-inline" onclick="control.erase_letter()">Erase</div>
+      <div class="button button-inline" onclick="control.hint()">Hint</div>
+      <div class="button button-inline" onclick="control.check_word()">Check</div>
     </div>
 
     <div class="bottom-status" id="bottom-status">

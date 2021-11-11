@@ -19,6 +19,7 @@ let default_config = {
 };
 
 export function create_WORD_DETECTIVE_api(gui, messages_json, _config) {
+  gui.reset();
   let config = {...default_config};
 
   for(let key in _config.callbacks){

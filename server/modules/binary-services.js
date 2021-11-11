@@ -15,15 +15,16 @@ export let binServices = function(){
     function exportBrick(inputFilepath, outputFilepath) {
         const exportBrickApp = `${BIN_DIR}/export-brick`;
 
-        console.info("Export brick");
-        console.info(inputFilepath);
-        console.info(outputFilepath);
+        console.info("[export-brick][inputFilepath]:",inputFilepath);
+        console.info("[export-brick][inputFilepath]:",outputFilepath);
 
         return p_execFile(exportBrickApp, [inputFilepath, outputFilepath])
             .then(result => {
-                console.info("after brick");
-                console.error(result.stderr);
-                console.log(result.stdout);
+                console.info("[export-brick][stdout]:",result.stdout);
+                console.error("[export-brick][stderr]:",result.stderr);
+            })
+            .catch( () => {
+                return new Error("Error during export-brick execution.");
             });
       }
 
@@ -39,24 +40,24 @@ export let binServices = function(){
         }
 
         return wd.then(result => new Promise(function(resolve) {
-            console.info("after puzzle");
-            console.error(result.stderr);
+            console.info("[generate-puzzle][stdout]:",result.stdout);
+            console.error("[generate-puzzle][stderr]:",result.stderr);
 
             resolve(result.stdout);
         }))
         .catch( () => {
-            console.log("Error generate puzzle");
-            console.log(wd);
+            return new Error("Error during generate-puzzle execution.");
         });
 
     }
 
     function writeToTextFile(text, outputFilepath) {
-        console.info("Write to text file");
-
         return writeFile(outputFilepath, text)
             .then(() => {
-                console.info("after write");
+                console.info("[write-to-text-file]:","writing succeeded!");
+            })
+            .catch( () => {
+                return new Error("Error during write-to-text-file execution.");
             });
     }
 

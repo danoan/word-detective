@@ -30,7 +30,28 @@
 
     config.words_found_cookie_id = '{{puzzleId}}_words_found_{{cookieUniqueId}}';
     config.iso_expiration_date = '{{expirationDate}}';
-    config.puzzle_json_filepath = 'assets/puzzle.json';
+
+    config.load_assets = function() {
+      let assets = {
+        "messages": null,
+        "puzzle": null
+      };
+
+      let messages_json_location = "js/modules/word-detective/assets/english_messages.json";
+      let puzzle_json_location = "assets/puzzle.json";
+
+      return fetch(messages_json_location)
+        .then((response) => response.json())
+        .then((response_json) => {
+          assets.messages = response_json;
+        })
+        .then(() => fetch(puzzle_json_location))
+        .then((response) => response.json())
+        .then((response_json) => new Promise(function (resolve) {
+          assets.puzzle = response_json.puzzle;
+          resolve(assets);
+        }));
+    };
 
     config.onload = function () {
       if (should_redirect_to_today_puzzle()) {
@@ -65,9 +86,9 @@
     </div>
 
     <div class="container-buttons">
-      <div class="button" onclick="control.erase_letter()">Erase</div>
-      <div class="button" onclick="control.hint()">Hint</div>
-      <div class="button" onclick="control.check_word()">Check</div>
+      <div class="button button-inline" onclick="control.erase_letter()">Erase</div>
+      <div class="button button-inline" onclick="control.hint()">Hint</div>
+      <div class="button button-inline" onclick="control.check_word()">Check</div>
     </div>
 
     <div class="bottom-status" id="bottom-status">

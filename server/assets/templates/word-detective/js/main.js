@@ -129,6 +129,14 @@ function gui_WORD_DETECTIVE_api() {
     gui.word_list.appendChild(li);
   }
 
+  function clear_word_list() {
+    while (gui.word_list.childElementCount > 0) gui.word_list.removeChild(gui.word_list.childNodes[0]);
+  }
+
+  function reset(){
+    clear_word_list();
+  }
+
   return {
     set_display_value,
     get_display_value,
@@ -139,28 +147,10 @@ function gui_WORD_DETECTIVE_api() {
     set_missing_words_value,
     get_missing_words_value,
     clear_missing_words_value,
-    add_to_word_list
+    add_to_word_list,
+    clear_word_list,
+    reset
   };
-}
-
-function load_assets() {
-  let assets = {
-    "messages": null,
-    "puzzle": null
-  };
-
-  //TODO: It may be better to use Promise.all() here
-  return fetch(config.messages_json_filepath)
-    .then((response) => response.json())
-    .then((response_json) => {
-      assets.messages = response_json;
-    })
-    .then(() => fetch(config.puzzle_json_filepath))
-    .then((response) => response.json())
-    .then((response_json) => new Promise(function (resolve) {
-      assets.puzzle = response_json.puzzle;
-      resolve(assets);
-    }));
 }
 
 function handle_error(error) {
@@ -174,8 +164,6 @@ function set_puzzle_cookie(words_found_cookie_id, iso_expiration_date) {
 export let config = {
   "words_found_cookie_id": "",
   "iso_expiration_date": "",
-  "puzzle_json_filepath": "js/modules/word-detective/assets/puzzle.json",
-  "messages_json_filepath": "js/modules/word-detective/assets/english_messages.json",
   "onload": null,
   "load_assets": null
 };
@@ -189,12 +177,7 @@ export function main(is_in_test_mode = false) {
     config.onload();
   }
 
-  let custom_load_assets = load_assets;
-  if (config.load_assets !== null) {
-    custom_load_assets = config.load_assets;
-  }
-
-  return custom_load_assets(load_assets)
+  return config.load_assets()
     .then((assets) => new Promise(function (resolve) {
       let config = configure_WORD_DETECTIVE_(assets);
       let control = create_WORD_DETECTIVE_api(gui_WORD_DETECTIVE_api(), assets.messages, config);

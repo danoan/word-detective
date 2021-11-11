@@ -9,71 +9,110 @@
   <link rel='stylesheet' type='text/css' media='screen' href='css/main.css'>
   <script>
     let control;
+    let refreshPuzzle;
   </script>
   <script type="module">
     import { config, main } from "./js/main.js";
     import { cookie_manager } from "./js/modules/cookie-manager.js";
 
-    let today = new Date();
-    today.setHours(0);
-    today.setMinutes(0);
-    today.setSeconds(0);
-    today.setMilliseconds(0);
-    let tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
+    config.onload = function () {
+      let div_hexagons = document.getElementById("container-hexagons");
+      while (div_hexagons.childElementCount > 0) div_hexagons.removeChild(div_hexagons.childNodes[0]);
+    }
 
-    config.words_found_cookie_id = `${today.toISOString()}_words_found`;
-    config.iso_expiration_date = `${tomorrow.toISOString()}`;
-    config.load_assets = function () {
+    let today = new Date();
+    let next_year = new Date(today.getTime() + 360 * 24 * 60 * 60 * 1000);
+
+    config.words_found_cookie_id = 'puzzle_from_text_#checksum#_words_found';
+    config.iso_expiration_date = next_year.toISOString();
+
+
+    let cm = cookie_manager('puzzle_from_text_#checksum#_puzzle', config.iso_expiration_date);
+    let cm_words_found = cookie_manager(config.words_found_cookie_id, config.iso_expiration_date);
+
+    function load_assets(reset_cookie) {
       let assets = {
         "messages": null,
         "puzzle": null
       };
 
       let messages_json_location = "js/modules/word-detective/assets/english_messages.json";
-      let puzzle_json_location = "/api/random-puzzle";
-
       let assets_promise = fetch(messages_json_location)
         .then((response) => response.json())
         .then((response_json) => {
           assets.messages = response_json;
         });
 
-      let cm = cookie_manager(`${today.toISOString()}_puzzle`, config.iso_expiration_date);
-      if (cm.get() !== '') {
-        assets.puzzle = JSON.parse(cm.get());
-      } else {
+      if (reset_cookie || cm.get() === '') {
+        cm_words_found.set('');
         assets_promise = assets_promise
-          .then(() => fetch(puzzle_json_location))
-          .then((response) => response.json())
-          .then((response_json) => {
-            cm.set(JSON.stringify(response_json.puzzle));
-            assets.puzzle = response_json.puzzle;
+          .then(() => getPuzzle())
+          .then((puzzle_json) => {
+            cm.set(JSON.stringify(puzzle_json));
+            assets.puzzle = puzzle_json;
           });
+      } else {
+        assets.puzzle = JSON.parse(cm.get());
       }
 
       return assets_promise
-        .then(() => new Promise(function (resolve, error) {
+        .then(() => new Promise(function (resolve) {
           resolve(assets);
         }));
-    };
+    }
 
-    main().then(control_handler => {
-      control = control_handler;
-    }).catch(error => alert(error));
+    function getPuzzle() {
+      let text = `#text#`;
+      const formData = new FormData();
+      formData.append('text', new Blob([text]));
+
+      return fetch('/api/puzzle-from-file', {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        redirect: 'follow', // manual, *follow, error
+        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: formData // body data type must match "Content-Type" header
+      })
+        .then(response => response.json())
+        .then(puzzleJson => new Promise(function (resolve, error) {
+          resolve(puzzleJson.puzzle);
+        }))
+        .catch(() => {
+          throw new Error("Error in puzzle generation")
+        });
+    }
+
+    function _refreshPuzzle(reset_cookie = true) {
+      config.load_assets = () => load_assets(reset_cookie);
+      main().then(control_handler => {
+        control = control_handler;
+      }).catch(error => alert(error));
+    }
+
+    _refreshPuzzle(false);
+    refreshPuzzle = _refreshPuzzle;
+
   </script>
 </head>
 
 <body>
   <div class="container-main">
-
     <div class="top-status">
       <span id="missing-words">Missing words:</span>
+      <div id="refresh-puzzle" class="refresh-puzzle" onclick="refreshPuzzle()"><img src="assets/icons/refresh.svg"
+          width="30px"></div>
       <div class="container-words">
         <div class="words-found">
           <ul id="words-list">
           </ul>
         </div>
       </div>
+
     </div>
 
     <div class="display-text" id="display-text"></div>
