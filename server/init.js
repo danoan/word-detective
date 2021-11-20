@@ -8,6 +8,7 @@ import { fileURLToPath } from 'url';
 import { middlewares } from './modules/middlewares.js';
 import { api } from './modules/api/api.js'
 import { games } from './modules/games/games.js'
+import { errors } from './modules/errors/errors.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(__dirname);
@@ -52,11 +53,13 @@ app.use(middlewares.setUpAccessControlHeader);
 
 //Make general css folder accessible
 app.use("/assets/css",express.static(`${PROJECT_ROOT}/assets/css`));
+app.use("/assets/js",express.static(`${PROJECT_ROOT}/assets/js`));
 app.use("/assets/fonts",express.static(`${PROJECT_ROOT}/assets/fonts`));
 
 //Set paths to routers (sub-apps)
 app.use('/games', games);
 app.use('/api', api);
+app.use('/error',errors);
 
 //Start the server
 app.listen(port, hostname, () => {

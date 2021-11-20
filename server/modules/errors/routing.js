@@ -1,4 +1,4 @@
-export let errors = function(){
+export let routing = function(){
 
   function genericError(req,res){
     res.status(500);

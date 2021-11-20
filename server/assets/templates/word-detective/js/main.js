@@ -153,10 +153,6 @@ function gui_WORD_DETECTIVE_api() {
   };
 }
 
-function handle_error(error) {
-  alert(error);
-}
-
 function set_puzzle_cookie(words_found_cookie_id, iso_expiration_date) {
   return cookie_manager(words_found_cookie_id, iso_expiration_date);
 }
@@ -165,7 +161,9 @@ export let config = {
   "words_found_cookie_id": "",
   "iso_expiration_date": "",
   "onload": null,
-  "load_assets": null
+  "load_assets": null,
+  "default_error_handler": (error) => alert(error),
+  "fatal_error_handler": null
 };
 
 export function main(is_in_test_mode = false) {
@@ -220,7 +218,7 @@ export function main(is_in_test_mode = false) {
             slide_element.children[0].innerHTML = meaning_response.word;
             slide_element.children[1].innerHTML = meaning_response.definition;
           },
-          function (error) { handle_error(error); }
+          function (error) { config.default_error_handler(error); }
         );
       }
     }

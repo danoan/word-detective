@@ -12,19 +12,21 @@ export let routing = function () {
   function randomPuzzle(req, res) {
     let corporaBrickFilePath = `${ASSETS_DIR}/corpora/ef-5000.brk`;
     binServices.generatePuzzle({ "brick_filepath": corporaBrickFilePath })
-      .then(jsonPuzzle => res.send(jsonPuzzle))
-      .catch(() => {
-        res.status(500);
-        res.send("Sorry, an error has occured.")
+      .then(jsonPuzzle => {
+        res.send(jsonPuzzle);
+      })
+      .catch( error => {
+        console.info(error);
+        res.redirect("/error/500");
       });
   }
 
   function puzzleFromFile(req, res) {
     binServices.generatePuzzle({ "input_stream": req })
       .then(jsonPuzzle => res.send(jsonPuzzle))
-      .catch(() => {
-        res.status(500);
-        res.send("Sorry, an error has occured.")
+      .catch( error => {
+        console.info(error);
+        res.redirect("/error/500");
       });
   }
 
@@ -33,14 +35,15 @@ export let routing = function () {
     input_stream.push(req.body.text);
     input_stream.push(null); //signal the end of the input.
     input_stream.on('error', function(error){
-
+      console.info(error);
+      res.redirect("/error/500");
     });
 
     binServices.generatePuzzle({ "input_stream": input_stream })
       .then(jsonPuzzle => res.send(jsonPuzzle))
-      .catch(() => {
-        res.status(500);
-        res.send("Sorry, an error has occured.")
+      .catch( error => {
+        console.info(error);
+        res.redirect("/error/500");
       });
   }
 

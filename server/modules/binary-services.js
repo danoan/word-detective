@@ -3,7 +3,6 @@ import { fileURLToPath } from 'url';
 import { writeFile } from 'fs/promises'
 import { promisify } from 'util';
 import { execFile } from 'child_process';
-import { createReadStream } from 'fs';
 
 const p_execFile = promisify(execFile);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -23,8 +22,9 @@ export let binServices = function(){
                 console.info("[export-brick][stdout]:",result.stdout);
                 console.error("[export-brick][stderr]:",result.stderr);
             })
-            .catch( () => {
-                return new Error("Error during export-brick execution.");
+            .catch( error => {
+                throw error;
+                // return new Error("Error during export-brick execution.");
             });
       }
 
@@ -45,8 +45,9 @@ export let binServices = function(){
 
             resolve(result.stdout);
         }))
-        .catch( () => {
-            return new Error("Error during generate-puzzle execution.");
+        .catch( error => {
+            throw error;
+            // throw new Error("Error during generate-puzzle execution.");
         });
 
     }
@@ -56,8 +57,9 @@ export let binServices = function(){
             .then(() => {
                 console.info("[write-to-text-file]:","writing succeeded!");
             })
-            .catch( () => {
-                return new Error("Error during write-to-text-file execution.");
+            .catch( error => {
+                throw error;
+                // return new Error("Error during write-to-text-file execution.");
             });
     }
 

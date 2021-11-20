@@ -8,6 +8,7 @@
   <meta name='viewport' content='width=device-width, initial-scale=1'>
   <link rel='stylesheet' type='text/css' media='screen' href='/assets/css/master.css'>
   <link rel='stylesheet' type='text/css' media='screen' href='css/game-interface.css'>
+  <script src="/assets/js/game-util.js"></script>
   <script>
     let control;
     let refreshPuzzle;
@@ -23,6 +24,8 @@
 
     let today = new Date();
     let next_year = new Date(today.getTime() + 360 * 24 * 60 * 60 * 1000);
+
+    setDefaultConfiguration(config);
 
     config.words_found_cookie_id = 'puzzle_from_text_#checksum#_words_found';
     config.iso_expiration_date = next_year.toISOString();
@@ -59,7 +62,8 @@
       return assets_promise
         .then(() => new Promise(function (resolve) {
           resolve(assets);
-        }));
+        }))
+        .catch( (error) => config.fatal_error_handler(error) );
     }
 
     function getPuzzle() {
@@ -81,18 +85,20 @@
       })
         .then(response => response.json())
         .then(puzzleJson => new Promise(function (resolve, error) {
-          resolve(puzzleJson.puzzle);
+          if('puzzle' in puzzleJson){
+            resolve(puzzleJson.puzzle);
+          }else{
+            error(new Error("There is no puzzle in this text."));
+          }
         }))
-        .catch(() => {
-          throw new Error("Error in puzzle generation")
-        });
+        .catch( (error) => config.fatal_error_handler(error) );
     }
 
     function _refreshPuzzle(reset_cookie = true) {
       config.load_assets = () => load_assets(reset_cookie);
       main().then(control_handler => {
         control = control_handler;
-      }).catch(error => alert(error));
+      }).catch(error => config.default_error_handler(error));
     }
 
     _refreshPuzzle(false);
