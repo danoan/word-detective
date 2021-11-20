@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="icons"
+   viewBox="0 0 89.980896 97.998634"
+   version="1.1"
+   sodipodi:docname="refresh.svg"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
+   width="89.980896"
+   height="97.998634"
+   inkscape:export-filename="/home/daniel/Projects/Git/word-detective/server/assets/templates/word-detective/assets/icons/masks/refresh.png"
+   inkscape:export-xdpi="57.610001"
+   inkscape:export-ydpi="57.610001">
+  <metadata
+     id="metadata21">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>refresh</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1848"
+     inkscape:window-height="1016"
+     id="namedview19"
+     showgrid="false"
+     inkscape:zoom="5.2149125"
+     inkscape:cx="63.399193"
+     inkscape:cy="51.465251"
+     inkscape:window-x="72"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="icons"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <defs
+     id="defs4">
+    <style
+       id="style2">.cls-1{fill:#92be00;}.cls-2{fill:#303442;opacity:0.08;}.cls-3{fill:none;stroke:#303442;stroke-linecap:round;stroke-linejoin:round;stroke-width:4px;}</style>
+  </defs>
+  <title
+     id="title6">refresh</title>
+  <path
+     class="cls-1"
+     d="m 83.050447,48.519316 a 4.99364,4.99364 0 0 1 4.93,5.06 43.15606,43.15606 0 0 1 -42.99,42.42 42.85044,42.85044 0 0 1 -29.6,-11.81 c -0.03,-0.03 -0.05,-0.06 -0.08,-0.09 l -5.94,5.94 a 0.89733,0.89733 0 0 1 -1.51,-0.44 l -5.68,-24.59 a 0.89944,0.89944 0 0 1 1.08,-1.08 l 24.59,5.68 a 0.89733,0.89733 0 0 1 0.44,1.51 l -5.91,5.91 a 32.79168,32.79168 0 0 0 22.61,8.97 33.10742,33.10742 0 0 0 32.99,-32.55 5.00679,5.00679 0 0 1 5,-4.93 z"
+     id="path8"
+     inkscape:connector-curvature="0"
+     style="fill:#92be00" />
+  <path
+     class="cls-2"
+     d="m 44.990447,90.999316 a 42.85027,42.85027 0 0 1 -29.6,-11.81006 c -0.03,-0.03 -0.05,-0.05994 -0.08,-0.09 l -5.94,5.94006 a 0.89733,0.89733 0 0 1 -1.51,-0.44 l -4.77857,-20.6874 a 0.89564,0.89564 0 0 0 -0.90143,1.0974 l 5.68,24.59 a 0.89733,0.89733 0 0 0 1.51,0.44006 l 5.94,-5.94006 c 0.03,0.03 0.05,0.05993 0.08,0.09 a 42.99525,42.99525 0 0 0 72.59,-30.61 4.92339,4.92339 0 0 0 -0.20941,-1.42176 43.17139,43.17139 0 0 1 -42.78059,38.84176 z"
+     id="path10"
+     style="opacity:1;fill:#f55600;fill-opacity:1"
+     inkscape:connector-curvature="0" />
+  <path
+     class="cls-3"
+     d="m 83.050447,48.519316 h -0.07 a 5.00679,5.00679 0 0 0 -5,4.93 33.10742,33.10742 0 0 1 -32.99,32.55 32.79168,32.79168 0 0 1 -22.61,-8.97 l 5.91,-5.91 a 0.89733,0.89733 0 0 0 -0.44,-1.51 l -24.59,-5.68 a 0.89944,0.89944 0 0 0 -1.08,1.08 l 5.68,24.59 a 0.89733,0.89733 0 0 0 1.51,0.44 l 5.94,-5.94 c 0.03,0.03 0.05,0.06 0.08,0.09 a 42.99531,42.99531 0 0 0 72.59,-30.61 4.99364,4.99364 0 0 0 -4.93,-5.06 z"
+     id="path14"
+     style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:4px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+     inkscape:connector-curvature="0" />
+  <path
+     class="cls-1"
+     d="m 87.800447,32.989316 a 0.89944,0.89944 0 0 1 -1.08,1.08 l -24.59,-5.68 a 0.89733,0.89733 0 0 1 -0.44,-1.51 l 5.91,-5.91 a 32.79168,32.79168 0 0 0 -22.61,-8.97 33.10742,33.10742 0 0 0 -32.99,32.55 5.00679,5.00679 0 0 1 -5,4.93 h -0.07 a 4.99364,4.99364 0 0 1 -4.93,-5.06 43.15606,43.15606 0 0 1 42.99,-42.4200004 42.85044,42.85044 0 0 1 29.6,11.8100004 c 0.03,0.03 0.05,0.06 0.08,0.09 l 5.94,-5.9400004 a 0.89733,0.89733 0 0 1 1.51,0.44 z"
+     id="path12"
+     inkscape:connector-curvature="0"
+     style="fill:#92be00" />
+  <path
+     class="cls-3"
+     d="m 87.800447,32.989316 -5.68,-24.5900004 a 0.89733,0.89733 0 0 0 -1.51,-0.44 l -5.94,5.9400004 c -0.03,-0.03 -0.05,-0.06 -0.08,-0.09 a 42.99531,42.99531 0 0 0 -72.59,30.61 4.99364,4.99364 0 0 0 4.93,5.06 h 0.07 a 5.00679,5.00679 0 0 0 5,-4.93 33.10742,33.10742 0 0 1 32.99,-32.55 32.79168,32.79168 0 0 1 22.61,8.97 l -5.91,5.91 a 0.89733,0.89733 0 0 0 0.44,1.51 l 24.59,5.68 a 0.89944,0.89944 0 0 0 1.08,-1.08 z"
+     id="path16"
+     style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:4px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+     inkscape:connector-curvature="0" />
+</svg>

@@ -1,0 +1,60 @@
+:root {
+  --pallete-1: #00520c;
+  --pallete-2: #f5c800;
+  --pallete-3: #ddecdd;
+  --pallete-4: #1e5fba;
+  --pallete-5: white;
+}
+
+@font-face {
+  font-family: ubuntu;
+  src: url("/assets/fonts/Ubuntu-Regular.ttf");
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: ubuntu;
+  src: url("/assets/fonts/Ubuntu-Light.ttf");
+  font-weight: lighter;
+}
+
+@font-face {
+  font-family: ubuntu;
+  src: url("/assets/fonts/Ubuntu-Bold.ttf");
+  font-weight: bold;
+}
+
+body {
+  text-align: center;
+  margin: 0px;
+  padding: 0px;
+  background-color: var(--pallete-3);
+  font-family: ubuntu, sans-serif;
+}
+
+.container-main {
+  width: 290px;
+  height: 520px;
+  text-align: center;
+  padding: 0px;
+  margin: 20px auto 0 auto;
+}
+
+h1,h2,h3{
+  font-weight: lighter;
+}
+
+h1{
+  font-size: 20px;
+  color: var(--pallete-1);
+}
+
+h2{
+  font-size: 16px;
+  color: var(--pallete-4);
+}
+
+h3{
+  font-size: 13px;
+  color: var(--pallete-4);
+}

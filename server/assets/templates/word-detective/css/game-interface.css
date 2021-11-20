@@ -1,37 +1,3 @@
-:root {
-  --pallete-1: #00520c;
-  --pallete-2: #f5c800;
-  --pallete-3: #ddecdd;
-  --pallete-4: #1e5fba;
-  --pallete-5: white;
-}
-
-@font-face {
-  font-family: ubuntu;
-  src: url(../assets/fonts/Ubuntu-Regular.ttf);
-  font-weight: normal;
-}
-
-@font-face {
-  font-family: ubuntu;
-  src: url(../assets/fonts/Ubuntu-Light.ttf);
-  font-weight: lighter;
-}
-
-@font-face {
-  font-family: ubuntu;
-  src: url(../assets/fonts/Ubuntu-Bold.ttf);
-  font-weight: bold;
-}
-
-body {
-  text-align: center;
-  margin: 0px;
-  padding: 0px;
-  background-color: var(--pallete-3);
-  font-family: ubuntu, sans-serif;
-}
-
 .bottom-status {
   font-size: 24px;
   color: var(--pallete-4);
@@ -69,15 +35,6 @@ body {
   text-align: left;
   position: relative;
   left: calc(50% - calc(1.5 * var(--h-width-plus-margin)));
-}
-
-.container-main {
-  width: 100%;
-  height: 520px;
-  text-align: center;
-  padding: 0px;
-  margin: 20px auto 0 auto;
-  position: absolute;
 }
 
 .container-words {
@@ -176,10 +133,13 @@ body {
   display: inline-block;
   margin-left: 10px;
   cursor: pointer;
-}
 
-.refresh-puzzle img{
+  background-color: var(--pallete-2);
   width: 15px;
+  height: 15px;
+  -webkit-mask-image: url("/games/assets/icons/masks/mask-refresh.png");
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
 }
 
 .top-status {

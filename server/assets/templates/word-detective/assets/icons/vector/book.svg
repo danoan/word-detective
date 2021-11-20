@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="178.43764mm"
+   height="242.56775mm"
+   viewBox="0 0 178.43764 242.56775"
+   version="1.1"
+   id="svg32743"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
+   sodipodi:docname="book.svg"
+   inkscape:export-filename="/home/daniel/Projects/Git/word-detective/server/games/puzzle-from-text/masks/mask-book.png"
+   inkscape:export-xdpi="56.939999"
+   inkscape:export-ydpi="56.939999">
+  <defs
+     id="defs32737">
+    <mask
+       maskUnits="userSpaceOnUse"
+       id="mask6358-2-1-4">
+      <g
+         transform="matrix(2.1777427,0,0,2.1777427,375.15882,-52.194002)"
+         id="g6380-9-0-9">
+        <g
+           id="g6378-3-2-9"
+           transform="matrix(0.78306,0,0,0.78306,-90.507,-132.91)">
+          <g
+             id="g6364-1-2-1"
+             transform="translate(152,18)">
+            <path
+               inkscape:connector-curvature="0"
+               id="path6360-9-9-9"
+               style="fill:#ffffff;stroke:#000000;stroke-width:3.85890007;stroke-linejoin:round"
+               d="m 29.742,196.36 h 81.388 l -1.89,30.57 29.02,-0.07 v 115.5 H 29.74 Z" />
+            <path
+               inkscape:connector-curvature="0"
+               id="path6362-4-7-4"
+               style="fill:none;stroke:#000000;stroke-width:4.25;stroke-linecap:round"
+               d="m 110.81,197.01 26.91,28.67" />
+          </g>
+          <path
+             inkscape:connector-curvature="0"
+             id="path6366-7-5-2"
+             style="fill:none;stroke:#000000;stroke-width:2.375"
+             d="m 196,234.36 h 64" />
+          <path
+             inkscape:connector-curvature="0"
+             id="path6368-8-6-0"
+             style="fill:none;stroke:#000000;stroke-width:2.61350012"
+             d="m 196.25,254.36 h 77.5" />
+          <path
+             inkscape:connector-curvature="0"
+             id="path6370-4-4-6"
+             style="fill:none;stroke:#000000;stroke-width:2.61350012"
+             d="m 196.25,274.36 h 77.5" />
+          <path
+             inkscape:connector-curvature="0"
+             id="path6372-5-6-5"
+             style="fill:none;stroke:#000000;stroke-width:2.61350012"
+             d="m 196.25,294.36 h 77.5" />
+          <path
+             inkscape:connector-curvature="0"
+             id="path6374-0-3-9"
+             style="fill:none;stroke:#000000;stroke-width:2.61350012"
+             d="m 196.25,314.36 h 77.5" />
+          <path
+             inkscape:connector-curvature="0"
+             id="path6376-3-7-5"
+             style="fill:none;stroke:#000000;stroke-width:2.61350012"
+             d="m 196.25,334.36 h 77.5" />
+        </g>
+      </g>
+    </mask>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath33323">
+      <rect
+         style="opacity:1;fill:#ff5ef6;fill-opacity:1;stroke:none;stroke-width:2.19986868;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="rect33325"
+         width="178.43764"
+         height="242.56775"
+         x="491.32394"
+         y="27.118242" />
+    </clipPath>
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Greyscale"
+       id="filter33348">
+      <feColorMatrix
+         values="0.21 0.72 0.072 0 0 0.21 0.72 0.072 0 0 0.21 0.72 0.072 0 0 0 0 0 1 0 "
+         id="feColorMatrix33346" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.35"
+     inkscape:cx="348.22628"
+     inkscape:cy="614.60808"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1848"
+     inkscape:window-height="1016"
+     inkscape:window-x="72"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <metadata
+     id="metadata32740">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Calque 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-18.548884,-20.772125)">
+    <rect
+       transform="translate(-472.77506,-6.3461177)"
+       style="opacity:1;fill:#1b3276;fill-opacity:1;stroke:#1b3276;stroke-width:0.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;filter:url(#filter33348)"
+       id="rect6356-6-4"
+       width="277.9603"
+       height="324.99973"
+       x="447.94373"
+       y="-1.2727926"
+       mask="url(#mask6358-2-1-4)"
+       clip-path="url(#clipPath33323)" />
+  </g>
+</svg>

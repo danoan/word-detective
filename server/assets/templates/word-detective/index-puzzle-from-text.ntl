@@ -6,7 +6,8 @@
   <meta http-equiv='X-UA-Compatible' content='IE=edge'>
   <title>Word Detective</title>
   <meta name='viewport' content='width=device-width, initial-scale=1'>
-  <link rel='stylesheet' type='text/css' media='screen' href='css/main.css'>
+  <link rel='stylesheet' type='text/css' media='screen' href='/assets/css/master.css'>
+  <link rel='stylesheet' type='text/css' media='screen' href='css/game-interface.css'>
   <script>
     let control;
     let refreshPuzzle;
@@ -104,8 +105,7 @@
   <div class="container-main">
     <div class="top-status">
       <span id="missing-words">Missing words:</span>
-      <div id="refresh-puzzle" class="refresh-puzzle" onclick="refreshPuzzle()"><img src="assets/icons/refresh.svg"
-          width="30px"></div>
+      <div id="refresh-puzzle" class="refresh-puzzle" onclick="refreshPuzzle()"></div>
       <div class="container-words">
         <div class="words-found">
           <ul id="words-list">

@@ -11,14 +11,14 @@ export let routing = function () {
     let text = req.files.text_file.data.toString();
     let checksum = md5(text);
 
-    res.render('index.ntl', { vars: { text, checksum } });
+    res.render('games/puzzle-from-text/index.ntl', { vars: { text, checksum } });
   }
 
   function fromString(req, res) {
     let text = req.body.text;
     let checksum = md5(text);
 
-    res.render('index.ntl', { vars: { text, checksum } });
+    res.render('games/puzzle-from-text/index.ntl', { vars: { text, checksum } });
   }
 
   return {

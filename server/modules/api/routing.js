@@ -7,8 +7,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(__dirname, "../..");
 
 export let routing = function () {
-  const TEMP_DIR = path.resolve(PROJECT_ROOT, "temp");
-  const OUT_DIR = path.resolve(PROJECT_ROOT, "temp");
   const ASSETS_DIR = path.resolve(PROJECT_ROOT, "assets");
 
   function randomPuzzle(req, res) {
@@ -34,6 +32,9 @@ export let routing = function () {
     let input_stream = new Stream.Readable({ read() { } });
     input_stream.push(req.body.text);
     input_stream.push(null); //signal the end of the input.
+    input_stream.on('error', function(error){
+
+    });
 
     binServices.generatePuzzle({ "input_stream": input_stream })
       .then(jsonPuzzle => res.send(jsonPuzzle))

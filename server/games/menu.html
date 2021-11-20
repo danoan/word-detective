@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel='stylesheet' type='text/css' media='screen' href='/assets/css/master.css'>
+  <link rel='stylesheet' type='text/css' media='screen' href='css/menu.css'>
+  <title>Word Detective</title>
+
+  <script>
+    let root = document.documentElement;
+    function set_pallete_brazil() {
+      root.style.setProperty('--pallete-1', '#00520c');
+      root.style.setProperty('--pallete-2', '#f5c800');
+      root.style.setProperty('--pallete-3', '#ddecdd');
+      root.style.setProperty('--pallete-4', '#1e5fba');
+      root.style.setProperty('--pallete-5', 'white');
+    }
+
+    function set_pallete_usa() {
+      root.style.setProperty('--pallete-1', '#c62424');
+      root.style.setProperty('--pallete-2', '#1745c4');
+      root.style.setProperty('--pallete-3', '#bed2e9');
+      root.style.setProperty('--pallete-4', 'white');
+      root.style.setProperty('--pallete-5', '#c62424');
+    }
+
+    function update_pallete(pallete_name) {
+      if (pallete_name === 'brazil') set_pallete_brazil();
+      else if (pallete_name === 'usa') set_pallete_usa();
+    }
+  </script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="title">Word Detective</div>
+    <div class="container-flags">
+      <div class="flag brazil" onclick="update_pallete('brazil')"></div>
+      <div class="flag usa" onclick="update_pallete('usa')"></div>
+    </div>
+    <div class="container-buttons">
+      <div class="button left" onclick="document.location.href='/games/random-puzzle'">
+        <div class="button-label">Random Puzzle</div>
+        <div class="button-image-common lens"></div>
+        <div class="button-image-common stripes"></div>
+        <div class="button-image-common zoomed-interrogation-mark circle-clip"></div>
+      </div>
+
+      <div class="button right" onclick="document.location.href='/games/puzzle-from-text/upload'">
+        <div class="button-label">Book Puzzle</div>
+        <div class="button-image-common lens"></div>
+        <div class="button-image-common stripes"></div>
+        <div class="button-image-common zoomed-book circle-clip"></div>
+      </div>
+
+      <div class="clear"></div>
+
+      <div class="button left" onclick="document.location.href='/games/week-puzzles'">
+        <div class="button-label">Week Puzzle</div>
+        <div class="button-image-common lens"></div>
+        <div class="button-image-common stripes"></div>
+        <div class="button-image-common zoomed-calendar circle-clip"></div>
+      </div>
+
+      <div class="button right" onclick="document.location.href='/games/puzzle-of-day'">
+        <div class="button-label">Dayly Puzzle</div>
+        <div class="button-image-common lens"></div>
+        <div class="button-image-common stripes"></div>
+        <div class="button-image-common zoomed-newspaper circle-clip"></div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

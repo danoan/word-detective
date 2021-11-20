@@ -40,3 +40,8 @@ games.post('/puzzle-from-text/from-file', (req, res) => {
 games.post('/puzzle-from-text/from-string', (req, res) => {
   routing.fromString(req,res);
 });
+
+games.use("/", express.static(`${GAMES_DIR}/puzzle-from-text`));
+games.get('/', (req, res) => {
+  res.sendFile(path.resolve(GAMES_DIR, "menu.html"));
+});
