@@ -25,7 +25,7 @@ app.engine('ntl', function (filepath, options, callback) {
         var rendered = content.toString();
 
         for (let el in options.vars) {
-            rendered = rendered.replace(new RegExp(`#${el}#`,'g'), options.vars[el]);
+            rendered = rendered.replace(new RegExp(`#${el}#`, 'g'), options.vars[el]);
         }
 
         return callback(null, rendered);
@@ -52,14 +52,14 @@ app.use(express.urlencoded({
 app.use(middlewares.setUpAccessControlHeader);
 
 //Make general css folder accessible
-app.use("/assets/css",express.static(`${PROJECT_ROOT}/assets/css`));
-app.use("/assets/js",express.static(`${PROJECT_ROOT}/assets/js`));
-app.use("/assets/fonts",express.static(`${PROJECT_ROOT}/assets/fonts`));
+app.use("/assets/css", express.static(`${PROJECT_ROOT}/assets/css`));
+app.use("/assets/js", express.static(`${PROJECT_ROOT}/assets/js`));
+app.use("/assets/fonts", express.static(`${PROJECT_ROOT}/assets/fonts`));
 
 //Set paths to routers (sub-apps)
 app.use('/games', games);
 app.use('/api', api);
-app.use('/error',errors);
+app.use('/error', errors);
 
 //Start the server
 app.listen(port, hostname, () => {

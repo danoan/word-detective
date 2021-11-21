@@ -6,7 +6,13 @@ export let routing = function(){
     res.render('errors/generic-error.ntl', { vars: { errorMessage } });
   }
 
+  function noPuzzleGenerated(req,res){
+    res.status(500);
+    res.render('errors/no-puzzle-generated.ntl', { vars: { errorMessage: req.query['errorMessage'] } });
+  }
+
   return {
-    genericError
+    genericError,
+    noPuzzleGenerated
   };
 }();

@@ -1,4 +1,5 @@
 import * as path from 'path';
+
 import { Stream } from 'stream';
 import { fileURLToPath } from 'url';
 import { binServices } from '../binary-services.js';
@@ -22,7 +23,8 @@ export let routing = function () {
   }
 
   function puzzleFromFile(req, res) {
-    binServices.generatePuzzle({ "input_stream": req })
+    let input_stream = Stream.Readable.from(req.files.text_file.data.toString());
+    binServices.generatePuzzle({ input_stream })
       .then(jsonPuzzle => res.send(jsonPuzzle))
       .catch( error => {
         console.info(error);

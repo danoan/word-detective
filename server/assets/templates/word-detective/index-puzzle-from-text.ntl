@@ -69,16 +69,13 @@
     function getPuzzle() {
       let text = `#text#`;
       const formData = new FormData();
-      formData.append('text', new Blob([text]));
+      formData.append('text_file', new Blob([text]));
 
       return fetch('/api/puzzle-from-file', {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, *cors, same-origin
         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
         credentials: 'same-origin', // include, *same-origin, omit
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
         redirect: 'follow', // manual, *follow, error
         referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
         body: formData // body data type must match "Content-Type" header
@@ -88,10 +85,9 @@
           if('puzzle' in puzzleJson){
             resolve(puzzleJson.puzzle);
           }else{
-            error(new Error("There is no puzzle in this text."));
+            error(new NoPuzzleGenerated("The input text is too short and there is no puzzle inside. Try with a longer text."));
           }
-        }))
-        .catch( (error) => config.fatal_error_handler(error) );
+        }));
     }
 
     function _refreshPuzzle(reset_cookie = true) {
