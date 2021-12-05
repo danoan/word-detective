@@ -33,9 +33,8 @@ export let routing = function () {
   }
 
   function puzzleFromString(req, res) {
-    let input_stream = new Stream.Readable({ read() { } });
-    input_stream.push(req.body.text);
-    input_stream.push(null); //signal the end of the input.
+    let input_stream = new Stream.Readable.from(req.body.text);
+
     input_stream.on('error', function(error){
       console.info(error);
       res.redirect("/error/500");
