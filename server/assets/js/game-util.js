@@ -1,11 +1,13 @@
 class MyError extends Error {
-  constructor(message) {
+  constructor(message,cause) {
     super(message);
     this.name = this.constructor.name;
+    this.cause = cause
   }
 }
 
 class NoPuzzleGenerated extends MyError {};
+class MissingResource extends MyError {};
 
 function setDefaultConfiguration(config) {
   config.fatal_error_handler = function (error) {

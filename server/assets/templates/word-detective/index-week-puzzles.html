@@ -35,7 +35,7 @@
     config.words_found_cookie_id = '{{puzzleId}}_words_found_{{cookieUniqueId}}';
     config.iso_expiration_date = '{{expirationDate}}';
 
-    config.load_assets = function() {
+    config.load_assets = async function() {
       let assets = {
         "messages": null,
         "puzzle": null
@@ -44,18 +44,22 @@
       let messages_json_location = "js/modules/word-detective/assets/english_messages.json";
       let puzzle_json_location = "assets/puzzle.json";
 
-      return fetch(messages_json_location)
-        .then((response) => response.json())
-        .then((response_json) => {
-          assets.messages = response_json;
-        })
-        .then(() => fetch(puzzle_json_location))
-        .then((response) => response.json())
-        .then((response_json) => new Promise(function (resolve) {
-          assets.puzzle = response_json.puzzle;
-          resolve(assets);
-        }))
-        .catch( (error) => config.fatal_error_handler(error) );
+      try{
+        let response = await fetch(messages_json_location);
+        assets.messages = await response.json();
+      }catch(err){
+        throw new MissingResource("Messages file could not be loaded.",err);
+      }
+
+      try{
+        let response = await fetch(puzzle_json_location);
+        let puzzle_json = await response.json();
+        assets.puzzle = puzzle_json.puzzle;
+      }catch(err){
+        throw new MissingResource("Puzzle could not be loaded.",err);
+      }
+
+      return assets;
     };
 
     config.onload = function () {
@@ -66,7 +70,7 @@
 
     main().then(control_handler => {
       control = control_handler;
-    }).catch(error => config.default_error_handler(error));
+    }).catch(error => config.fatal_error_handler(error));
 
   </script>
 </head>

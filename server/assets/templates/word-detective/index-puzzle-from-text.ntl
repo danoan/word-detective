@@ -34,36 +34,35 @@
     let cm = cookie_manager('puzzle_from_text_#checksum#_puzzle', config.iso_expiration_date);
     let cm_words_found = cookie_manager(config.words_found_cookie_id, config.iso_expiration_date);
 
-    function load_assets(reset_cookie) {
+    async function load_assets(reset_cookie) {
       let assets = {
         "messages": null,
         "puzzle": null
       };
 
       let messages_json_location = "js/modules/word-detective/assets/english_messages.json";
-      let assets_promise = fetch(messages_json_location)
-        .then((response) => response.json())
-        .then((response_json) => {
-          assets.messages = response_json;
-        });
 
-      if (reset_cookie || cm.get() === '') {
-        cm_words_found.set('');
-        assets_promise = assets_promise
-          .then(() => getPuzzle())
-          .then((puzzle_json) => {
-            cm.set(JSON.stringify(puzzle_json));
-            assets.puzzle = puzzle_json;
-          });
-      } else {
-        assets.puzzle = JSON.parse(cm.get());
+      try{
+        let response = await fetch(messages_json_location);
+        assets.messages = await response.json();
+      }catch(err){
+        throw new MissingResource("Messages file could not be loaded.",err);
       }
 
-      return assets_promise
-        .then(() => new Promise(function (resolve) {
-          resolve(assets);
-        }))
-        .catch( (error) => config.fatal_error_handler(error) );
+      try{
+        if (reset_cookie || cm.get() === '') {
+          assets.puzzle = await getPuzzle();
+
+          cm_words_found.set('');
+          cm.set(JSON.stringify(assets.puzzle));
+        }else{
+          assets.puzzle = JSON.parse(cm.get());
+        }
+      }catch(err){
+        throw new MissingResource("Puzzle could not be loaded.",err);
+      }
+
+      return assets;
     }
 
     function getPuzzle() {
@@ -94,7 +93,7 @@
       config.load_assets = () => load_assets(reset_cookie);
       main().then(control_handler => {
         control = control_handler;
-      }).catch(error => config.default_error_handler(error));
+      }).catch(error => config.fatal_error_handler(error));
     }
 
     _refreshPuzzle(false);
