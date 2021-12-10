@@ -137,7 +137,7 @@
   background-color: var(--pallete-2);
   width: 15px;
   height: 15px;
-  -webkit-mask-image: url("/games/assets/icons/masks/mask-refresh.png");
+  -webkit-mask-image: url("/assets/icons/masks/mask-refresh.png");
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-size: contain;
 }

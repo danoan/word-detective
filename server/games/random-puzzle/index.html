@@ -7,37 +7,27 @@
   <title>Word Detective</title>
   <meta name='viewport' content='width=device-width, initial-scale=1'>
   <link rel='stylesheet' type='text/css' media='screen' href='/assets/css/master.css'>
-  <link rel='stylesheet' type='text/css' media='screen' href='css/game-interface.css'>
-  <script src="/assets/js/game-util.js"></script>
+  <link rel='stylesheet' type='text/css' media='screen' href='/assets/css/game-interface.css'>
   <script>
     let control;
-    let refreshPuzzle;
   </script>
   <script type="module">
-    import { setupWordDetective } from "./js/puzzle-from-text.js"
-
-    function _refreshPuzzle(resetCookie){
-      let text = `#text#`;
-      control = setupWordDetective(resetCookie,text);
-    }
-
-    refreshPuzzle = () => _refreshPuzzle(true);
-    _refreshPuzzle(false);
+    import {setupWordDetective} from "./js/random-puzzle.js"
+    control = setupWordDetective();
   </script>
 </head>
 
 <body>
   <div class="container-main">
+
     <div class="top-status">
       <span id="missing-words">Missing words:</span>
-      <div id="refresh-puzzle" class="refresh-puzzle" onclick="refreshPuzzle()"></div>
       <div class="container-words">
         <div class="words-found">
           <ul id="words-list">
           </ul>
         </div>
       </div>
-
     </div>
 
     <div class="display-text" id="display-text"></div>

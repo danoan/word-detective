@@ -31,6 +31,7 @@ app.engine('ntl', function (filepath, options, callback) {
         return callback(null, rendered);
     });
 });
+
 app.set('views', './assets/views')
 app.set('view engine', 'ntl');
 
@@ -52,9 +53,7 @@ app.use(express.urlencoded({
 app.use(middlewares.setUpAccessControlHeader);
 
 //Make general css folder accessible
-app.use("/assets/css", express.static(`${PROJECT_ROOT}/assets/css`));
-app.use("/assets/js", express.static(`${PROJECT_ROOT}/assets/js`));
-app.use("/assets/fonts", express.static(`${PROJECT_ROOT}/assets/fonts`));
+app.use("/assets", express.static(`${PROJECT_ROOT}/assets/public`));
 
 //Set paths to routers (sub-apps)
 app.use('/games', games);

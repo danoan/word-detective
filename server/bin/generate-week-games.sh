@@ -24,5 +24,9 @@ do
   ${PUZZLE_GEN_EXE} -mrandom -l7 -o"${JSON_PUZZLE_PATH}" -b"${ASSETS_PATH}/corpora/ef-5000.brk"
 
   #Render puzzle html
-  python3 "${RENDER_PUZZLE}" "${ASSETS_PATH}/templates/word-detective" "${JSON_PUZZLE_PATH}" "${CUR_OUT_FOLDER}" "${day}"
+  python3 "${RENDER_PUZZLE}" "${PROJECT_PATH}/games/week-puzzles/templates/index-week-puzzles.html" "${JSON_PUZZLE_PATH}" "${CUR_OUT_FOLDER}" "${day}"
+
+  #Copy js files
+  cp -r "${ASSETS_PATH}/templates/word-detective/js" "${CUR_OUT_FOLDER}"
+  cp "${OUTPUT_FOLDER}/js/week-puzzles.js" "${CUR_OUT_FOLDER}/js/week-puzzles.js"
 done

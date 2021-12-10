@@ -4,7 +4,7 @@
 }
 
 .brazil{
-  background-image: url("/games/assets/icons/brazil.png");
+  background-image: url("/assets/icons/brazil.png");
 }
 
 .button{
@@ -74,7 +74,7 @@
 .lens{
   background-color: var(--pallete-4);
 
-  -webkit-mask-image: url("/games/assets/icons/masks/mask-lens.png");
+  -webkit-mask-image: url("/assets/icons/masks/mask-lens.png");
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-size: contain;
   z-index:2;
@@ -89,7 +89,7 @@
 .stripes{
   background-color: var(--pallete-5);
 
-  -webkit-mask-image: url("/games/assets/icons/masks/mask-stripes.png");
+  -webkit-mask-image: url("/assets/icons/masks/mask-stripes.png");
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-size: contain;
 
@@ -106,14 +106,14 @@
 }
 
 .usa{
-  background-image: url("/games/assets/icons/usa.png");
+  background-image: url("/assets/icons/usa.png");
 }
 
 
 .zoomed-calendar{
   background-color: var(--pallete-4);
 
-  -webkit-mask-image: url("/games/assets/icons/masks/mask-calendar.png");
+  -webkit-mask-image: url("/assets/icons/masks/mask-calendar.png");
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-size: contain;
   -webkit-mask-position: 0px calc(-0.1*var(--b-width));
@@ -126,7 +126,7 @@
 .zoomed-interrogation-mark{
   background-color: var(--pallete-4);
 
-  -webkit-mask-image: url("/games/assets/icons/masks/mask-interrogation.png");
+  -webkit-mask-image: url("/assets/icons/masks/mask-interrogation.png");
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-size: contain;
   -webkit-mask-position: calc(0.2*var(--b-width)) 0px;
@@ -140,7 +140,7 @@
 .zoomed-newspaper{
   background-color: var(--pallete-4);
 
-  -webkit-mask-image: url("/games/assets/icons/masks/mask-newspaper.png");
+  -webkit-mask-image: url("/assets/icons/masks/mask-newspaper.png");
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-size: contain;
   -webkit-mask-position: calc(-0.15*var(--b-width)) 0px;
@@ -154,7 +154,7 @@
 .zoomed-book{
   background-color: var(--pallete-4);
 
-  -webkit-mask-image: url("/games/assets/icons/masks/mask-book.png");
+  -webkit-mask-image: url("/assets/icons/masks/mask-book.png");
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-size: contain;
   -webkit-mask-position: calc(0.1*var(--b-width)) 0px;
