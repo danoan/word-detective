@@ -4,7 +4,9 @@ RUN apk add --update --no-cache \
 bash \
 g++ \
 make \
-cmake
+cmake \
+nodejs \
+npm
 
 WORKDIR /word-detective-build
 
@@ -13,6 +15,8 @@ COPY . /word-detective-build
 RUN ./lab/docker-scripts/install-deps.sh && \
 ./lab/docker-scripts/build-install.sh && \
 ./lab/docker-scripts/run-tests.sh
+
+RUN ./lab/docker-scripts/minify-word-detective-js.sh
 
 #-----------------------------------------#
 
@@ -23,3 +27,6 @@ WORKDIR /word-detective
 COPY --from=build /word-detective-build/install /word-detective/install/
 COPY app/render-word-detective/*.sh /word-detective/install/render-word-detective/
 COPY app/render-word-detective/*.py /word-detective/install/render-word-detective/
+
+COPY --from=build /word-detective-build/word-detective-js/dist/word-detective-min.js \
+/word-detective/install/word-detective-js/word-detective-min.js

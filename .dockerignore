@@ -7,3 +7,6 @@ output
 project-journal
 server
 Dockerfile*
+word-detective-js/node_modules
+word-detective-js/dist
+word-detective-js/package-lock.json

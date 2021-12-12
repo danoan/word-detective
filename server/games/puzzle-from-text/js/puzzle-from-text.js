@@ -1,8 +1,7 @@
-import { config, main } from "./main.js";
-import { cookie_manager } from "./modules/cookie-manager.js";
-import { MissingResource, setDefaultConfiguration, DateGen } from "/assets/js/game-util.js"
+import { cookie_manager, config, main } from "/assets/js/word-detective-min.js";
+import { NoPuzzleGenerated, MissingResource, setDefaultConfiguration, DateGen } from "/assets/js/game-util.js"
 
-export async function setupWordDetective(reset_cookie=false,text=''){
+export async function setupWordDetective(reset_cookie=false,text='',text_checksum=''){
   setDefaultConfiguration(config);
 
   config.onload = function () {
@@ -12,10 +11,10 @@ export async function setupWordDetective(reset_cookie=false,text=''){
 
   let next_year = DateGen.generate(DateGen.DateFormula.OneYearFromNow);
 
-  config.words_found_cookie_id = 'puzzle_from_text_#checksum#_words_found';
+  config.words_found_cookie_id = `puzzle_from_text_${text_checksum}_words_found`;
   config.iso_expiration_date = next_year.toISOString();
 
-  config.load_assets = () => load_assets(reset_cookie,text);
+  config.load_assets = () => load_assets(reset_cookie,text,text_checksum);
 
   try{
     return await main();
@@ -24,8 +23,8 @@ export async function setupWordDetective(reset_cookie=false,text=''){
   }
 }
 
-async function load_assets(reset_cookie,text) {
-  let cm = cookie_manager('puzzle_from_text_#checksum#_puzzle', config.iso_expiration_date);
+async function load_assets(reset_cookie,text,text_checksum) {
+  let cm = cookie_manager(`puzzle_from_text_${text_checksum}_puzzle`, config.iso_expiration_date);
   let cm_words_found = cookie_manager(config.words_found_cookie_id, config.iso_expiration_date);
 
   let assets = {
@@ -33,7 +32,7 @@ async function load_assets(reset_cookie,text) {
     "puzzle": null
   };
 
-  let messages_json_location = "js/modules/word-detective/assets/english_messages.json";
+  let messages_json_location = "/assets/js/english_messages.json";
 
   try {
     let response = await fetch(messages_json_location);

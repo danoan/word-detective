@@ -20,6 +20,7 @@ COPY . /word-detective-server/
 RUN ln /word-detective/install/app/word-detective /word-detective-server/bin/word-detective
 RUN ln /word-detective/install/app/export-brick /word-detective-server/bin/export-brick
 RUN ln /word-detective/install/render-word-detective/render-word-detective.py /word-detective-server/bin/render-word-detective.py
+RUN ln /word-detective/install/word-detective-js/word-detective-min.js /word-detective-server/assets/public/js/word-detective-min.js
 
 RUN ./conf/scripts/init-server.sh
 

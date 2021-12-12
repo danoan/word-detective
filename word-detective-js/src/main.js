@@ -1,4 +1,4 @@
-import { cookie_manager } from "./modules/cookie-manager.js";
+import * as _cookie_manager  from "./modules/cookie-manager.js";
 import { create_WORD_DETECTIVE_api } from "./modules/word-detective/word-detective.js";
 
 import { word_definition } from "./modules/word-definition/word-definition.js";
@@ -165,6 +165,8 @@ export let config = {
   "default_error_handler": (error) => alert(error),
   "fatal_error_handler": null
 };
+
+export let cookie_manager = _cookie_manager.cookie_manager;
 
 export function main(is_in_test_mode = false) {
   let puzzle_cookie = set_puzzle_cookie(config.words_found_cookie_id, config.iso_expiration_date);

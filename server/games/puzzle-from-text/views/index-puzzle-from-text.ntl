@@ -8,21 +8,6 @@
   <meta name='viewport' content='width=device-width, initial-scale=1'>
   <link rel='stylesheet' type='text/css' media='screen' href='/assets/css/master.css'>
   <link rel='stylesheet' type='text/css' media='screen' href='/assets/css/game-interface.css'>
-  <script>
-    let control;
-    let refreshPuzzle;
-  </script>
-  <script type="module">
-    import { setupWordDetective } from "./js/puzzle-from-text.js"
-
-    function _refreshPuzzle(resetCookie){
-      let text = `#text#`;
-      control = setupWordDetective(resetCookie,text);
-    }
-
-    refreshPuzzle = () => _refreshPuzzle(true);
-    _refreshPuzzle(false);
-  </script>
 </head>
 
 <body>
@@ -83,6 +68,21 @@
     </div>
   </div>
   <div id="evidence-list-overlay" class="container-overlay"></div>
+  <script>
+    let control;
+    let refreshPuzzle;
+  </script>
+  <script type="module">
+    import { setupWordDetective } from "./js/puzzle-from-text.js"
+
+    function _refreshPuzzle(resetCookie){
+      let text = `#text#`;
+      control = setupWordDetective(resetCookie,text,"#checksum#");
+    }
+
+    refreshPuzzle = () => _refreshPuzzle(true);
+    _refreshPuzzle(false);
+  </script>
 </body>
 
 </html>

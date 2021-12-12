@@ -8,13 +8,6 @@
   <meta name='viewport' content='width=device-width, initial-scale=1'>
   <link rel='stylesheet' type='text/css' media='screen' href='/assets/css/master.css'>
   <link rel='stylesheet' type='text/css' media='screen' href='/assets/css/game-interface.css'>
-  <script>
-    let control;
-  </script>
-  <script type="module">
-    import { setupWordDetective } from "./js/puzzle-of-day.js";
-    control = setupWordDetective()
-  </script>
 </head>
 
 <body>
@@ -74,6 +67,13 @@
     </div>
   </div>
   <div id="evidence-list-overlay" class="container-overlay"></div>
+  <script>
+    let control;
+  </script>
+  <script type="module">
+    import { setupWordDetective } from "./js/puzzle-of-day.js";
+    control = setupWordDetective()
+  </script>
 </body>
 
 </html>

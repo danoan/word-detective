@@ -179,4 +179,3 @@
    38. .then( fn_res,fn_rej )
        ==>
        return new Promisse( fn_res,fn_rej )
-

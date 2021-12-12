@@ -9,5 +9,4 @@ PUZZLE_FROM_TEXT_VIEWS_DIR="${SERVER_ROOT}/assets/views/games/puzzle-from-text"
 mkdir -p "${PUZZLE_FROM_TEXT_DIR}"
 mkdir -p "${PUZZLE_FROM_TEXT_VIEWS_DIR}"
 
-cp -r "${SERVER_ROOT}/assets/templates/word-detective/js" "${PUZZLE_FROM_TEXT_DIR}"
 cp -r "${PUZZLE_FROM_TEXT_DIR}/views/index-puzzle-from-text.ntl" "${PUZZLE_FROM_TEXT_VIEWS_DIR}/index.ntl"

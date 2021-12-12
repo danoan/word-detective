@@ -1,4 +1,4 @@
-import { config, main } from "./main.js";
+import { config, main } from "/assets/js/word-detective-min.js";
 import { MissingResource,setDefaultConfiguration } from "/assets/js/game-util.js";
 
 export async function  setupWordDetective(){
@@ -13,7 +13,7 @@ export async function  setupWordDetective(){
       "puzzle": null
     };
 
-    let messages_json_location = "js/modules/word-detective/assets/english_messages.json";
+    let messages_json_location = "/assets/js/english_messages.json";
     let puzzle_json_location = "/api/random-puzzle";
 
     try {

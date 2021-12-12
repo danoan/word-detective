@@ -11,7 +11,5 @@ SERVER_ROOT="$(cd "${SCRIPT_DIR}" && cd ../.. && pwd)"
 
 # Init games
 
-"${SCRIPT_DIR}/init-random-puzzle.sh"
 "${SCRIPT_DIR}/init-week-puzzles.sh"
-"${SCRIPT_DIR}/init-puzzle-of-day.sh"
 "${SCRIPT_DIR}/init-puzzle-from-text.sh"
