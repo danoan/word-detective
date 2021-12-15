@@ -10,3 +10,4 @@ server-no-docker
 templates/js-guidelines.md
 docs/html/*
 docs/latex*
+server/certificates

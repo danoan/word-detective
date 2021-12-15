@@ -1,3 +1,5 @@
+import https from 'https'
+import http from 'http'
 import express from 'express';
 import fileUpload from 'express-fileupload';
 import fs from 'fs'
@@ -60,7 +62,15 @@ app.use('/games', games);
 app.use('/api', api);
 app.use('/error', errors);
 
-//Start the server
-app.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`);
-});
+// You should setup your private and public keys
+// or use the http server
+const options = {
+    key: fs.readFileSync('certificates/word-detective.key'),
+    cert: fs.readFileSync('certificates/word-detective.crt')
+};
+
+let httpServer = http.createServer(options,app);
+let httpsServer = https.createServer(options,app);
+
+httpsServer.listen(4958);
+// httpServer.listen(4958);
