@@ -72,7 +72,10 @@
   </script>
   <script type="module">
     import { setupWordDetective } from "./js/puzzle-of-day.js";
-    control = setupWordDetective()
+
+    setupWordDetective().then( function(_control) {
+      control = _control;
+    });
   </script>
 </body>
 

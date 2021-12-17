@@ -8,6 +8,7 @@
   <meta name='viewport' content='width=device-width, initial-scale=1'>
   <link rel='stylesheet' type='text/css' media='screen' href='/assets/css/master.css'>
   <link rel='stylesheet' type='text/css' media='screen' href='/assets/css/game-interface.css'>
+  <link rel='stylesheet' type='text/css' media='screen' href='css/text-coverage.css'>
 </head>
 
 <body>
@@ -21,7 +22,22 @@
           </ul>
         </div>
       </div>
-
+      <div class="text-coverage">
+        <span>Text coverage:</span><br>
+        <div class="text-coverage-range-container">
+          <div class="text-coverage-range-slider-track"></div>
+          <input type="range" min="0" max="5" value="0" id="text-coverage-left-range" oninput="updateLeftRange()">
+          <input type="range" min="0" max="5" value="5" id="text-coverage-right-range" oninput="updateRightRange()">
+        </div>
+        <ul>
+          <li>0</li>
+          <li>⅕</li>
+          <li>⅖</li>
+          <li>⅗</li>
+          <li>⅘</li>
+          <li style="margin-right: 0px !important;">⅟</li>
+        </ul>
+      </div>
     </div>
 
     <div class="display-text" id="display-text"></div>
@@ -71,17 +87,54 @@
   <script>
     let control;
     let refreshPuzzle;
+    let updateLeftRange;
+    let updateRightRange;
   </script>
   <script type="module">
     import { setupWordDetective } from "./js/puzzle-from-text.js"
+    import * as textCoverage from "./js/text-coverage.js"
 
     function _refreshPuzzle(resetCookie){
       let text = `#text#`;
-      control = setupWordDetective(resetCookie,text,"#checksum#");
+      let one_fifth = Math.floor(text.length/5);
+
+      let start = textCoverage.getLeftRangeValue()*one_fifth;
+      let end = textCoverage.getRightRangeValue()*one_fifth;
+
+      start = advanceUntilWhitespace(text,start);
+      end = returnUntilWhitespace(text,end);
+
+      if (textCoverage.getLeftRangeValue()==0){
+        start = 0;
+      }
+
+      if (textCoverage.getRightRangeValue()==5){
+        end = text.length -1;
+      }
+
+      setupWordDetective(resetCookie,text.substring(start,end),"#checksum#")
+      .then( function(_control) {
+        control = _control;
+      });
     }
 
+    function advanceUntilWhitespace(text,index){
+      while(index < text.length && text[index]!=' ') index++;
+      return index;
+    }
+
+    function returnUntilWhitespace(text,index){
+      while(index > 0 && text[index]!=' ') index--;
+      return index;
+    }
+
+    updateLeftRange = textCoverage.updateLeftRange;
+    updateRightRange = textCoverage.updateRightRange;
     refreshPuzzle = () => _refreshPuzzle(true);
+
     _refreshPuzzle(false);
+    updateLeftRange();
+    updateRightRange();
   </script>
 </body>
 

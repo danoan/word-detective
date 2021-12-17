@@ -73,7 +73,10 @@
   </script>
   <script type="module">
     import {setupWordDetective} from "./js/random-puzzle.js"
-    control = setupWordDetective();
+
+    setupWordDetective().then( function(_control) {
+      control = _control;
+    });
   </script>
 </body>
 

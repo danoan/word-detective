@@ -73,7 +73,11 @@
   </script>
   <script type="module">
     import { setupWordDetective } from "./js/week-puzzles.js"
-    control = setupWordDetective("{{puzzleId}}","{{cookieUniqueId}}","{{expirationDate}}");
+
+    setupWordDetective("{{puzzleId}}","{{cookieUniqueId}}","{{expirationDate}}")
+    .then( function(_control) {
+      control = _control;
+    });
   </script>
 </body>
 
