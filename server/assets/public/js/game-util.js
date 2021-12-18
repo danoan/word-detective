@@ -33,6 +33,13 @@ export function setDefaultConfiguration(config) {
   };
 }
 
+export function showUI(){
+  setTimeout( function(){
+    document.getElementById("container-loading").style.display = "none";
+    document.getElementById("container-main").style.display = "block";
+  },250);
+}
+
 export class DateGen {}
 
 //Static properties is a recent addition to the language.

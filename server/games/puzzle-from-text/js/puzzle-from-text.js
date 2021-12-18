@@ -51,7 +51,7 @@ async function load_assets(reset_cookie,text,text_checksum) {
       assets.puzzle = JSON.parse(cm.get());
     }
   } catch (err) {
-    throw new MissingResource("Puzzle could not be loaded.", err);
+    throw err;
   }
 
   return assets;

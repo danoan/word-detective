@@ -8,7 +8,7 @@
   <title>Word Detective</title>
 </head>
 <body>
-  <div class="container-main">
+  <div class="container-main" style="display: block !important;">
     <h1>Word Detective</h1>
     <h3>No puzzle was generated because: #errorMessage#</h3>
   </div>

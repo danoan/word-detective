@@ -11,7 +11,8 @@
 </head>
 
 <body>
-  <div class="container-main">
+  <div id="container-loading" class="container-loading">Loading...</div>
+  <div id="container-main" class="container-main">
 
     <div class="top-status">
       <span id="missing-words">Missing words:</span>
@@ -73,10 +74,12 @@
   </script>
   <script type="module">
     import { setupWordDetective } from "./js/week-puzzles.js"
+    import {showUI} from "/assets/js/game-util.js"
 
     setupWordDetective("{{puzzleId}}","{{cookieUniqueId}}","{{expirationDate}}")
     .then( function(_control) {
       control = _control;
+      showUI();
     });
   </script>
 </body>

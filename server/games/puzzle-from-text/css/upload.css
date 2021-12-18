@@ -28,6 +28,7 @@
   padding: 0px;
   margin: 20px auto 0 auto;
   position: absolute;
+  display: block;
 }
 
 .form-element {
