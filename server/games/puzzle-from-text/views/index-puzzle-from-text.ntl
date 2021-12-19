@@ -48,7 +48,7 @@
 
     <div class="container-buttons">
       <div class="button button-inline" onclick="control.erase_letter()">Erase</div>
-      <div class="button button-inline" onclick="control.hint()">Hint</div>
+      <div class="button button-inline" onclick="set_default_hint_style();control.hint()">Hint</div>
       <div class="button button-inline" onclick="control.check_word()">Check</div>
     </div>
 
@@ -90,45 +90,143 @@
     let refreshPuzzle;
     let updateLeftRange;
     let updateRightRange;
+    let set_default_hint_style;
   </script>
   <script type="module">
     import { setupWordDetective } from "./js/puzzle-from-text.js"
-    import {showUI} from "/assets/js/game-util.js"
+    import { showUI } from "/assets/js/game-util.js"
     import * as textCoverage from "./js/text-coverage.js"
 
-    function _refreshPuzzle(resetCookie){
+    set_default_hint_style = function () {
+      document.getElementById("display-text").style.fontSize = "32px";
+    }
+
+    function _refreshPuzzle(resetCookie) {
       let text = `#text#`;
-      let one_fifth = Math.floor(text.length/5);
+      let one_fifth = Math.floor(text.length / 5);
 
-      let start = textCoverage.getLeftRangeValue()*one_fifth;
-      let end = textCoverage.getRightRangeValue()*one_fifth;
+      let start = textCoverage.getLeftRangeValue() * one_fifth;
+      let end = textCoverage.getRightRangeValue() * one_fifth;
 
-      start = advanceUntilWhitespace(text,start);
-      end = returnUntilWhitespace(text,end);
+      start = advanceUntilWhitespace(text, start);
+      end = returnUntilWhitespace(text, end);
 
-      if (textCoverage.getLeftRangeValue()==0){
+      if (textCoverage.getLeftRangeValue() == 0) {
         start = 0;
       }
 
-      if (textCoverage.getRightRangeValue()==5){
-        end = text.length -1;
+      if (textCoverage.getRightRangeValue() == 5) {
+        end = text.length - 1;
       }
 
-      setupWordDetective(resetCookie,text.substring(start,end),"#checksum#")
-      .then( function(_control) {
-        control = _control;
-        showUI();
-      });
-    }
+      function advanceUntilWhitespace(text, index) {
+        while (index < text.length && text[index] != ' ') index++;
+        return index;
+      }
 
-    function advanceUntilWhitespace(text,index){
-      while(index < text.length && text[index]!=' ') index++;
-      return index;
-    }
+      function returnUntilWhitespace(text, index) {
+        while (index > 0 && text[index] != ' ') index--;
+        return index;
+      }
 
-    function returnUntilWhitespace(text,index){
-      while(index > 0 && text[index]!=' ') index--;
-      return index;
+      setupWordDetective(resetCookie, text.substring(start, end), "#checksum#")
+        .then(function (_control) {
+          control = _control;
+
+          control.add_hint_handler(function (gui) {
+            let r_word = '\\b[\\S\\-]+\\b'
+            let r_spaces = '[^\\w\\d]+'
+
+            function get_n_words_before(text, n, word) {
+              let r = new RegExp(`(${r_word}${r_spaces}){2}${word}`)
+
+              let match = text.match(r)[0];
+              return match.substring(0, match.length - word.length);
+            }
+
+            function get_n_words_after(text, n, word) {
+              let r = new RegExp(`${word}(${r_spaces}${r_word}){2}`)
+
+              let match = text.match(r)[0];
+              return match.substring(word.length + 1, match.length);
+            }
+
+            let word_chars_pos = [];
+            let display_text_prefix = '';
+            let display_text = '';
+            let display_text_suffix = '';
+
+            function replace_a_char(text, pos, new_char) {
+              let replaced_text = text.substring(0, pos) + new_char;
+              replaced_text += text.substring(pos + 1);
+              return replaced_text;
+            }
+
+            function update_display() {
+              document.getElementById("display-text").style.fontSize = "20px";
+              gui.set_display_value(display_text_prefix, 'var(--pallete-7)');
+              gui.append_display_value(display_text);
+              gui.append_display_value(display_text_suffix, 'var(--pallete-7)');
+            }
+
+            function init(word) {
+              display_text = '';
+              display_text_prefix = get_n_words_before(text, 2, word) + ' ';
+              display_text_suffix = " " + get_n_words_after(text, 2, word);
+
+              word_chars_pos = [];
+              for (let i = 0; i < word.length; ++i) {
+                if (i % 2 === 0) {
+                  display_text += word[i];
+                } else {
+                  display_text += '_';
+                  word_chars_pos.push(i);
+                }
+              }
+
+              update_display();
+            }
+
+            function erase_letter() {
+              let char_pos_list = word_chars_pos;
+              for (let i = char_pos_list.length - 1; i >= 0; --i) {
+                let pos = char_pos_list[i];
+                if (pos < 0) {
+                  display_text = replace_a_char(display_text, -pos, '_');
+                  word_chars_pos[i] = -pos;
+                  break;
+                }
+              }
+              update_display();
+            }
+
+            function click_letter(letter) {
+              let char_pos_list = word_chars_pos;
+              for (let i = 0; i < char_pos_list.length; ++i) {
+                let pos = char_pos_list[i];
+                if (pos >= 0) {
+                  display_text = replace_a_char(display_text, pos, letter);
+                  word_chars_pos[i] = -pos;
+                  break;
+                }
+              }
+              update_display();
+            }
+
+            function get_user_input_word() {
+              return display_text;
+            }
+
+            return {
+              init,
+              erase_letter,
+              click_letter,
+              get_user_input_word
+            };
+          });
+
+          showUI();
+        });
     }
 
     updateLeftRange = textCoverage.updateLeftRange;

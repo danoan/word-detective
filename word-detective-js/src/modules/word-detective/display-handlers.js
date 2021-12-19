@@ -25,7 +25,7 @@ export function normal_mode_display_handler(gui) {
   }
 
   function get_user_input_word(){
-    return gui.get_display_value();
+    return display_text;
   }
 
   function reset(){}
