@@ -87,8 +87,18 @@ function gui_WORD_DETECTIVE_api() {
 
   let gui = html_objects();
 
-  function set_display_value(value) {
-    gui.display.innerHTML = value;
+  function set_display_value(value,color=null) {
+    clear_display_value();
+    append_display_value(value,color);
+  }
+
+  function append_display_value(value,color=null) {
+    let span_color = document.createElement('span');
+    if(color){
+      span_color.style.color = color;
+    }
+    span_color.innerHTML = value;
+    gui.display.appendChild(span_color);
   }
 
   function get_display_value() {
@@ -96,6 +106,7 @@ function gui_WORD_DETECTIVE_api() {
   }
 
   function clear_display_value() {
+    while(gui.display.childElementCount>0) gui.display.removeChild(gui.display.children[0]);
     gui.display.innerHTML = '';
   }
 
@@ -139,6 +150,7 @@ function gui_WORD_DETECTIVE_api() {
 
   return {
     set_display_value,
+    append_display_value,
     get_display_value,
     clear_display_value,
     set_status_value,

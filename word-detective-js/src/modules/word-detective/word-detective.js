@@ -85,8 +85,10 @@ export function create_WORD_DETECTIVE_api(gui, messages_json, _config) {
   function hint() {
     if (current_mode_handler === display_handlers.normal_mode) {
       current_mode_handler = display_handlers.hint_mode;
-    } else {
-      current_mode_handler = display_handlers.normal_mode;
+    } else if(current_mode_handler === display_handlers.hint_mode) {
+      if(!display_handlers.hint_mode.next_handler()){
+        current_mode_handler = display_handlers.normal_mode;
+      }
     }
     current_mode_handler.init(control_handlers.data.missing_words[0]);
     hint.unblock();
@@ -97,11 +99,12 @@ export function create_WORD_DETECTIVE_api(gui, messages_json, _config) {
   }
 
   function check_word() {
-    let input_word = gui.get_display_value();
+    let input_word = current_mode_handler.get_user_input_word();
     let is_missing_word = control_handlers.data.is_it_missing_word(input_word);
 
     if (is_missing_word) {
       add_found_word(input_word);
+      current_mode_handler.reset();
       current_mode_handler = display_handlers.normal_mode;
 
       display_handlers.messages.valid_word_message(control_handlers.word.get_difficulty(input_word));
@@ -136,7 +139,8 @@ export function create_WORD_DETECTIVE_api(gui, messages_json, _config) {
     click_letter: block_decorator(click_letter),
     erase_letter: block_decorator(erase_letter),
     check_word: block_decorator(check_word),
-    hint: block_decorator(hint)
+    hint: block_decorator(hint),
+    add_hint_handler: display_handlers.hint_mode.add_hint_handler
   };
 
 }
