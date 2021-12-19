@@ -25,6 +25,8 @@ class EnglishSegmenter : public SegmenterInterface {
         m_words_read++;
         m_buffer_begin = m_match[0].second;
         m_current_word = m_match.str();
+
+        if(m_current_word.find("-")!=std::string::npos) next_word();
         if (!m_filter(m_current_word)) next_word();
       } else {
         if (m_in_stream->eof()) {

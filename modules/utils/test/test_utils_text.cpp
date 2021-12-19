@@ -11,7 +11,7 @@ using namespace WordDetective::Utils;
 
 TEST_CASE("ASCII document", "[english][utils][text]") {
   std::unordered_map<std::string, int> word_frequency_map;
-  std::string text = "You get a shiver in the dark it's a raining in the park but meantime...";
+  std::string text = "You get a shiver in the dark it's a raining cats-and-dogs in the park but meantime...";
 
   SECTION("it segments a ASCII document") {
     std::stringstream ss(text);
