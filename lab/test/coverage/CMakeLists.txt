@@ -35,12 +35,18 @@ target_link_directories(test-coverage
    ${Boost_LIBRARY_DIRS}
 )
 
+if(${APPLE})
+  set(GCOV_LIBRARY "--coverage")
+else()
+  set(GCOV_LIBRARY "-lgcov")
+endif()
+
 target_link_libraries(test-coverage
   PRIVATE
   -lutils
   -ldatastr
   -lstandard-extensions
-  -lgcov
+  ${GCOV_LIBRARY}
   ${Boost_LIBRARIES}
 )
 
