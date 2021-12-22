@@ -15,6 +15,7 @@ bool always_true_filter(const std::string& s);
 
 class SegmenterInterface {
  public:
+  virtual ~SegmenterInterface(){};
   virtual WordIterator begin() = 0;
   virtual WordIterator end() = 0;
 };

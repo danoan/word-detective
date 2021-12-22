@@ -28,7 +28,7 @@ class RandomPath : public WordDetective::Datastr::BrickExtension {
 
   template<class TForwardIterator>
   static typename TForwardIterator::value_type _at(TForwardIterator begin, TForwardIterator end, size_t index){
-    for(int i=0;i<index && begin!=end;++i){
+    for(size_t i=0;i<index && begin!=end;++i){
       begin++;
     }
     if(begin==end) throw std::runtime_error("Index out of bounds");
@@ -36,7 +36,7 @@ class RandomPath : public WordDetective::Datastr::BrickExtension {
   }
 
   static const BrickInterface* _run(const BrickInterface* b, std::string& path,
-                   int path_length_target) {
+                   size_t path_length_target) {
     path.push_back(b->key());
 
     if (path_length_target == path.size()) {
@@ -49,7 +49,6 @@ class RandomPath : public WordDetective::Datastr::BrickExtension {
     std::random_device rd;
     std::uniform_int_distribution<int> distr(0,static_cast<const _Brick*>(b)->num_nodes()-1);
 
-    const BrickInterface* found = nullptr;
     return _run(_at(b->begin(),b->end(), distr(rd)) ,path, path_length_target);
   }
 

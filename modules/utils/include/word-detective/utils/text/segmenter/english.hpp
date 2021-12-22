@@ -67,12 +67,13 @@ class EnglishSegmenter : public SegmenterInterface {
     static constexpr unsigned int BUFFER_HALF_SIZE = 32000;
 
     std::istream* m_in_stream;
-    char m_buffer[BUFFER_SIZE];
-    const char* m_buffer_begin;
+    FilterFunction m_filter;
     int m_last_back_step;
 
+    char m_buffer[BUFFER_SIZE];
+    const char* m_buffer_begin;
+
     std::cmatch m_match;
-    FilterFunction m_filter;
   };
 
  public:

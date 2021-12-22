@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.13)
 project(word-detective)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_FLAGS "-Wall")
+
 # Set constant to project root folder
 add_definitions(-DPROJECT_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
 

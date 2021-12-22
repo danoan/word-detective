@@ -25,6 +25,8 @@ class BrickInterface {
   using Iterator = std::list<BrickInterface*>::const_iterator;
   using WordIterator = std::list<std::string>::const_iterator;
 
+  virtual ~BrickInterface(){};
+
   virtual Iterator begin() const = 0;
   virtual Iterator end() const = 0;
 
@@ -60,12 +62,13 @@ class Brick {
   BrickInterface::Iterator end() const;
 };
 
-struct Brick::_Brick : public BrickInterface {
+class Brick::_Brick : public BrickInterface {
   bool m_is_root;
   char m_c;
   std::list<BrickInterface*> m_children;
   std::list<std::string> m_words;
 
+ public:
   _Brick(bool is_root=false) : m_is_root(is_root){};
   _Brick(char c) : m_c(c) {}
   ~_Brick();

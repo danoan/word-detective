@@ -52,7 +52,7 @@ int main(int argc, char* argv[]) {
       break;
     }
     default:
-      throw std::runtime_error("Unrecognized option: " + id.out_mode);
+      throw std::runtime_error("Unrecognized option");
   }
 
   return 0;

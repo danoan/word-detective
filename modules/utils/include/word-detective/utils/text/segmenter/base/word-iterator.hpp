@@ -16,6 +16,8 @@ class WordIterator {
     using value_type = std::string;
 
     WordIteratorBase() : m_words_read(0), m_the_end(false) {}
+    virtual ~WordIteratorBase(){};
+
     value_type get_word() { return m_current_word; }
 
     friend bool operator==(const WordIteratorBase& a,

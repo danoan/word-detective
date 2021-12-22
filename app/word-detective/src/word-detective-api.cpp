@@ -74,7 +74,7 @@ void collect_words(unordered_set<string>& words, const string& letters,
                    const Datastr::Brick& brick) {
   auto bit = brick.begin();
   auto pit = letters.begin();
-  int length = 0;
+  size_t length = 0;
   while (pit != letters.end()) {
     if ((*bit)->key() == *pit) {
       length++;
@@ -114,10 +114,10 @@ std::string path_from_word(const std::string& word) {
 }
 
 void get_all_puzzles(std::list<Puzzle::Puzzle>& list_of_puzzles,
-                     const Datastr::Brick& brick, int num_letters,
-                     int min_words) {
+                     const Datastr::Brick& brick, size_t num_letters,
+                     size_t min_words) {
   auto callback = [&list_of_puzzles, &brick, &num_letters, &min_words](
-                      const Datastr::BrickInterface& brick_node, int level) {
+                      const Datastr::BrickInterface& brick_node, size_t level) {
     if (brick_node.beginWords() != brick_node.endWords() &&
         level == num_letters - 1) {
       std::string letters = path_from_word(*brick_node.beginWords());
@@ -134,25 +134,15 @@ void get_all_puzzles(std::list<Puzzle::Puzzle>& list_of_puzzles,
   StandardExtensions::Brick::Traversal::PreOrder::run(callback, brick);
 }
 
-json all_puzzles(const Datastr::Brick& brick, int num_letters, int min_words) {
+json all_puzzles(const Datastr::Brick& brick, size_t num_letters, size_t min_words) {
   std::list<Puzzle::Puzzle> list_of_puzzles;
   get_all_puzzles(list_of_puzzles, brick, num_letters, min_words);
   return json(list_of_puzzles);
 }
 
-json random_puzzle(const Datastr::Brick& brick, int num_letters,
-                   int min_words) {
+json random_puzzle(const Datastr::Brick& brick, size_t num_letters,
+                   size_t min_words) {
   Puzzle::Puzzle puzzle;
-  auto callback = [&brick, &puzzle](const Datastr::BrickInterface& brick_node,
-                                    const std::string& path) {
-    puzzle.letters = path;
-    puzzle.words.clear();
-
-    std::unordered_set<std::string> word_collection;
-    collect_words_from_all_subpaths(word_collection, path, brick);
-    puzzle.words.insert(puzzle.words.begin(), word_collection.begin(),
-                        word_collection.end());
-  };
 
   std::list<Puzzle::Puzzle> list_of_puzzles;
   get_all_puzzles(list_of_puzzles, brick, num_letters, min_words);
@@ -170,8 +160,8 @@ json random_puzzle(const Datastr::Brick& brick, int num_letters,
   }
 }
 
-json puzzle_by_index(const Datastr::Brick& brick, int num_letters,
-                     int min_words, int index) {
+json puzzle_by_index(const Datastr::Brick& brick, size_t num_letters,
+                     size_t min_words, int index) {
   std::list<Puzzle::Puzzle> list_of_puzzles;
   get_all_puzzles(list_of_puzzles, brick, num_letters, min_words);
 

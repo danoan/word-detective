@@ -57,9 +57,9 @@ std::string path_from_word(const std::string& word);
 
 void get_all_puzzles(std::list<Puzzle::Puzzle>& list_of_puzzles,
                      const Datastr::Brick& brick, int num_letters);
-json all_puzzles(const Datastr::Brick& brick, int num_letters, int min_words);
-json random_puzzle(const Datastr::Brick& brick, int num_letters, int min_words);
-json puzzle_by_index(const Datastr::Brick& brick, int num_letters,
-                     int min_words, int index);
+json all_puzzles(const Datastr::Brick& brick, size_t num_letters, size_t min_words);
+json random_puzzle(const Datastr::Brick& brick, size_t num_letters, size_t min_words);
+json puzzle_by_index(const Datastr::Brick& brick, size_t num_letters,
+                     size_t min_words, int index);
 
 #endif

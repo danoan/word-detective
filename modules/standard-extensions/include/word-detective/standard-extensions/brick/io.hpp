@@ -32,12 +32,11 @@ class WriteFileDescriptor {
   using WordIterator = std::list<std::string>::const_iterator;
 
  private:
+  std::ostream& m_out_stream;
   unsigned char m_delimiter;
   size_t m_brick_length;
+
   std::list<OffsetPair> m_offset_pair_list;
-
-  std::ostream& m_out_stream;
-
  public:
   explicit WriteFileDescriptor(std::ostream& out_stream,
                       unsigned char delimiter = '#')
