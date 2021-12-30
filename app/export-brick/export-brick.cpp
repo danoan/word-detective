@@ -10,6 +10,7 @@
 #include "word-detective/utils/text/filter.hpp"
 #include "word-detective/utils/text/segmenter.hpp"
 #include "word-detective/utils/text/segmenter/english.hpp"
+#include "word-detective/utils/text/segmenter/italian.hpp"
 
 using namespace std;
 using namespace WordDetective;
@@ -18,13 +19,24 @@ int main(int argc, char* argv[]) {
   InputData id = read_input(argc, argv);
 
   unordered_map<string, int> corpora;
-  if (id.input_filepath == "stdin") {
-    Utils::Text::segment_into_map<Utils::Text::Languages::English>(
-        corpora, cin, ExportBrick::word_filter);
-  } else {
-    fstream f(id.input_filepath, ios_base::in);
-    Utils::Text::segment_into_map<Utils::Text::Languages::English>(
-        corpora, f, ExportBrick::word_filter);
+
+  istream* is = &cin;
+  unique_ptr<fstream> fs;
+  if (id.input_filepath != "stdin") {
+    fs.reset(new fstream(id.input_filepath, ios_base::in));
+    is = fs.get();
+  }
+
+  switch (id.language) {
+    case InputData::Languages::Italian:
+      Utils::Text::segment_into_map<Utils::Text::Languages::Italian>(
+          corpora, *is, ExportBrick::word_filter);
+      break;
+    case InputData::Languages::English:
+    default:
+      Utils::Text::segment_into_map<Utils::Text::Languages::English>(
+          corpora, *is, ExportBrick::word_filter);
+      break;
   }
 
   Datastr::Brick b;
@@ -33,7 +45,7 @@ int main(int argc, char* argv[]) {
   }
 
   ofstream ofs(id.output_filepath, ios_base::binary);
-  StandardExtensions::Brick::IO::Save<unsigned char>::run(ofs, b);
+  StandardExtensions::Brick::IO::Save<int>::run(ofs, b);
 
   return 0;
 }
