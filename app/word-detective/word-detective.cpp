@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
     // Create brick from book
     brick = create_brick(std::cin);
   } else {
-    // Create brick fro, brick file
+    // Create brick from, brick file
     auto fd = std::ifstream(id.filepath, std::ios_base::binary);
     StandardExtensions::Brick::IO::Load::run(brick, fd);
   }

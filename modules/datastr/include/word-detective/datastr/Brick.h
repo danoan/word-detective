@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 
+#include "word-detective/utils/unicode.h"
+
 namespace WordDetective::Datastr {
 
 /*
@@ -19,6 +21,9 @@ namespace WordDetective::Datastr {
  * that can be constructed using only the characters in the path.
  *
  * At each level of the brick, the characters are sorted in ascending order.
+ *
+ * Keys are stores as 32 bits integers. They represent their unicode code
+ * point.
  */
 class BrickInterface {
  public:
@@ -33,11 +38,12 @@ class BrickInterface {
   virtual WordIterator beginWords() const = 0;
   virtual WordIterator endWords() const = 0;
 
-  virtual char key() const = 0;
+  virtual int key() const = 0;
   virtual bool is_root() const = 0;
 };
 
 class Brick {
+ public:
   friend class BrickExtension;
   class _Brick;
 
@@ -63,14 +69,15 @@ class Brick {
 };
 
 class Brick::_Brick : public BrickInterface {
+ public:
   bool m_is_root;
-  char m_c;
+  int m_key;
   std::list<BrickInterface*> m_children;
   std::list<std::string> m_words;
 
  public:
-  _Brick(bool is_root=false) : m_is_root(is_root){};
-  _Brick(char c) : m_c(c) {}
+  _Brick(bool is_root = false) : m_is_root(is_root){};
+  _Brick(int key) : m_key(key) {}
   ~_Brick();
 
   _Brick(const _Brick&) = delete;
@@ -83,8 +90,8 @@ class Brick::_Brick : public BrickInterface {
               std::back_inserter(this->m_words));
   }
 
-  _Brick* insert(char new_c, Iterator pos_it);
-  _Brick* insert(char new_c);
+  _Brick* insert(int new_key, Iterator pos_it);
+  _Brick* insert(int new_key);
 
   inline Iterator begin() const { return m_children.begin(); }
   inline Iterator end() const { return m_children.end(); }
@@ -92,12 +99,12 @@ class Brick::_Brick : public BrickInterface {
   inline WordIterator beginWords() const { return m_words.begin(); }
   inline WordIterator endWords() const { return m_words.end(); }
 
-  inline char key() const { return m_c; }
+  inline int key() const { return m_key; }
   inline void add_word(const std::string& word) { m_words.push_back(word); }
 
   inline size_t num_nodes() const { return m_children.size(); }
   inline size_t num_words() const { return m_words.size(); }
-  inline bool is_root() const { return m_is_root;}
+  inline bool is_root() const { return m_is_root; }
 };
 
 class BrickExtension {

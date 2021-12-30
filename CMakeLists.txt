@@ -12,7 +12,7 @@ set(BUILD_BENCHMARKS OFF CACHE BOOL "if true, build benchmark executables")
 set(BUILD_TESTS OFF CACHE BOOL "if true, build test executables")
 
 # Control if build use shared or static libraries
-set(BUILD_STATIC ON CACHE BOOL "if true, all libraries are built and linked staticaly.")
+set(BUILD_STATIC OFF CACHE BOOL "if true, all libraries are built and linked staticaly.")
 
 if( ${BUILD_STATIC} )
   message("Building static libraries")
@@ -21,7 +21,10 @@ if( ${BUILD_STATIC} )
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static")
 else()
   # Export libraries locations to binaries
-  set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib:${Boost_LIBRARY_DIRS}")
+  message("Building dynamic libraries")
+  set(BUILD_SHARED_LIBS ON)
+  set(Boost_USE_STATIC_LIBS OFF)
+  set(CMAKE_INSTALL_RPATH "${CMAKE_PREFIX_PATH}/lib:${CMAKE_INSTALL_PREFIX}/lib:${Boost_LIBRARY_DIRS}")
   set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 endif()
 

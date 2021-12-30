@@ -24,6 +24,7 @@ PUBLIC
   ${CMAKE_BINARY_DIR}/modules/utils
   ${CMAKE_BINARY_DIR}/modules/datastr
   ${CMAKE_BINARY_DIR}/modules/standard-extensions
+  ${CMAKE_PREFIX_PATH}/lib
   ${Boost_LIBRARY_DIRS}
 )
 
@@ -32,6 +33,8 @@ PUBLIC
  -lutils
  -ldatastr
  -lstandard-extensions
+ -licuuc
+ -licudata
  ${Boost_LIBRARIES})
 
 install(TARGETS word-detective

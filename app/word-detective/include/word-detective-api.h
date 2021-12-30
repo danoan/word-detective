@@ -12,6 +12,7 @@
 #include "word-detective/utils/text/filter.hpp"
 #include "word-detective/utils/text/segmenter.hpp"
 #include "word-detective/utils/text/segmenter/english.hpp"
+#include "word-detective/utils/unicode.h"
 
 using namespace std;
 using namespace WordDetective;
@@ -37,7 +38,8 @@ class SubPath : Datastr::BrickExtension {
   using Brick = Datastr::Brick;
   using BrickInterface = Datastr::BrickInterface;
 
-  void static run(const std::string& path, int path_index, std::string subpath,
+  void static run(const std::vector<int>& path, size_t path_index,
+                  icu::UnicodeString subpath,
                   std::unordered_set<std::string>& subpaths,
                   const BrickInterface* brick);
 
@@ -57,9 +59,11 @@ std::string path_from_word(const std::string& word);
 
 void get_all_puzzles(std::list<Puzzle::Puzzle>& list_of_puzzles,
                      const Datastr::Brick& brick, int num_letters);
-json all_puzzles(const Datastr::Brick& brick, size_t num_letters, size_t min_words);
-json random_puzzle(const Datastr::Brick& brick, size_t num_letters, size_t min_words);
+json all_puzzles(const Datastr::Brick& brick, size_t num_letters,
+                 size_t min_words);
+json random_puzzle(const Datastr::Brick& brick, size_t num_letters,
+                   size_t min_words);
 json puzzle_by_index(const Datastr::Brick& brick, size_t num_letters,
-                     size_t min_words, int index);
+                     size_t min_words, size_t index);
 
 #endif

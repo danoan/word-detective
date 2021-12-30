@@ -43,44 +43,50 @@ Datastr::Brick create_brick(std::istream& book_stream) {
   return b;
 }
 
-void SubPath::run(const std::string& path, int path_index, std::string subpath,
+void SubPath::run(const std::vector<int>& path, size_t path_index, icu::UnicodeString subpath,
                   std::unordered_set<std::string>& subpaths,
                   const BrickInterface* brick) {
   // TODO: Use a list instead of unordered_set
   // TODO: Include only the longest path (no subpath
   // should be a substring of any other)
-  if (path_index >= path.length()) {
+  if (path_index >= path.size()) {
     return;
   }
 
   run(path, path_index + 1, subpath, subpaths, brick);
-  char c = brick->key();
-  if (path.at(path_index) == c) {
+  int key = brick->key();
+  if (path.at(path_index) == key) {
     for (auto it = brick->begin(); it != brick->end(); ++it) {
-      run(path, path_index + 1, subpath + c, subpaths, *it);
+      run(path, path_index + 1, subpath + key, subpaths, *it);
     }
-    subpaths.insert(subpath + c);
+    string s;
+    (subpath + key).toUTF8String(s);
+    subpaths.insert(s);
   }
 }
 
 void SubPath::run(std::unordered_set<std::string>& subpaths,
                   const std::string& path, const Brick& brick) {
+  auto vuc = WordDetective::Utils::to_unicode_codes(path);
   for (auto it = brick.begin(); it != brick.end(); ++it) {
-    run(path, 0, "", subpaths, *it);
+    run(vuc, 0, "", subpaths, *it);
   }
 }
 
 void collect_words(unordered_set<string>& words, const string& letters,
                    const Datastr::Brick& brick) {
   auto bit = brick.begin();
-  auto pit = letters.begin();
+
+  auto vuc = WordDetective::Utils::to_unicode_codes(letters);
+  auto pit = vuc.begin();
+
   size_t length = 0;
-  while (pit != letters.end()) {
+  while (pit != vuc.end()) {
     if ((*bit)->key() == *pit) {
       length++;
       pit++;
 
-      if (length == letters.size()) {
+      if (length == vuc.size()) {
         for (auto it = (*bit)->beginWords(); it != (*bit)->endWords(); ++it) {
           words.insert(*it);
         }
@@ -102,15 +108,13 @@ void collect_words_from_all_subpaths(unordered_set<string>& word_collection,
   for (auto subpath : subpaths) collect_words(word_collection, subpath, brick);
 }
 
-std::string path_from_word(const std::string& word) {
-  std::string letters = word;
-  sort(letters.begin(), letters.end());
-  for (int i = letters.size() - 2; i >= 0; i--) {
-    if (letters[i] == letters[i + 1]) {
-      letters.erase(letters.begin() + i + 1);
-    }
-  }
-  return letters;
+std::string path_from_word(const string& word) {
+  auto vs = WordDetective::Utils::to_unicode_codes(word);
+  sort(vs.begin(),vs.end());
+  auto last = unique(vs.begin(),vs.end());
+  vs.erase(last,vs.end());
+
+  return WordDetective::Utils::from_unicode_codes(vs);
 }
 
 void get_all_puzzles(std::list<Puzzle::Puzzle>& list_of_puzzles,
@@ -125,7 +129,7 @@ void get_all_puzzles(std::list<Puzzle::Puzzle>& list_of_puzzles,
       std::unordered_set<std::string> word_collection;
       collect_words_from_all_subpaths(word_collection, letters, brick);
 
-      if (word_collection.size() > min_words) {
+      if (word_collection.size() >= min_words) {
         list_of_puzzles.push_back(
             {letters, {word_collection.begin(), word_collection.end()}});
       }
@@ -161,7 +165,7 @@ json random_puzzle(const Datastr::Brick& brick, size_t num_letters,
 }
 
 json puzzle_by_index(const Datastr::Brick& brick, size_t num_letters,
-                     size_t min_words, int index) {
+                     size_t min_words, size_t index) {
   std::list<Puzzle::Puzzle> list_of_puzzles;
   get_all_puzzles(list_of_puzzles, brick, num_letters, min_words);
 
@@ -169,7 +173,7 @@ json puzzle_by_index(const Datastr::Brick& brick, size_t num_letters,
     throw std::runtime_error("The puzzle index does not exist");
 
   auto it = list_of_puzzles.begin();
-  for (int i = 0; i < index; ++i) ++it;
+  for (size_t i = 0; i < index; ++i) ++it;
 
   if (list_of_puzzles.size() > 0) {
     return json(*it);

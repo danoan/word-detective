@@ -5,9 +5,21 @@ src/Brick.cpp
 src/Trie.cpp
 )
 
+add_dependencies(datastr utils)
+
 target_include_directories(datastr
   PUBLIC
     include
+    ${CMAKE_SOURCE_DIR}/modules/utils/include
+)
+
+target_link_directories(datastr
+PUBLIC
+  ${CMAKE_BINARY_DIR}/modules/utils
+)
+
+target_link_libraries(datastr
+  -lutils
 )
 
 install(DIRECTORY include

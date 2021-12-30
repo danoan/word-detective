@@ -7,15 +7,15 @@ Brick::_Brick::~_Brick() {
   }
 }
 
-Brick::_Brick* Brick::_Brick::insert(char new_c, Iterator pos_it) {
-  _Brick* t = new _Brick(new_c);
+Brick::_Brick* Brick::_Brick::insert(int new_key, Iterator pos_it) {
+  _Brick* t = new _Brick(new_key);
   m_children.insert(pos_it, t);
 
   return t;
 }
 
-Brick::_Brick* Brick::_Brick::insert(char new_c) {
-  _Brick* t = new _Brick(new_c);
+Brick::_Brick* Brick::_Brick::insert(int new_key) {
+  _Brick* t = new _Brick(new_key);
   m_children.push_back(t);
 
   return t;
@@ -26,33 +26,27 @@ void Brick::insert_word(const std::string& word) {
 
   BrickInterface* curr = m_root.get();
 
-  string bricks = word;
-  sort(bricks.begin(), bricks.end());
-  {
-    int n = bricks.size();
-    for (int i = n - 1; i > 0; --i) {
-      if (bricks[i - 1] == bricks[i]) {
-        bricks.erase(i, 1);
-      }
-    }
-  }
+  vector<int> unicode_codes = WordDetective::Utils::to_unicode_codes(word);
+  sort(unicode_codes.begin(),unicode_codes.end());
+  auto last = unique(unicode_codes.begin(),unicode_codes.end());
+  unicode_codes.erase(last,unicode_codes.end());
 
-  for (auto c : bricks) {
+  for (auto key : unicode_codes) {
     bool found = false;
     auto pos_it = curr->begin();
     for (; pos_it != curr->end(); pos_it++) {
       // Does not work for utf8 characters
-      if (c == (*pos_it)->key()) {
+      if (key == (*pos_it)->key()) {
         curr = *pos_it;
         found = true;
         break;
-      } else if (c < (*pos_it)->key()) {
+      } else if (key < (*pos_it)->key()) {
         break;
       }
     }
 
     if (!found) {
-      curr = static_cast<_Brick*>(curr)->insert(c, pos_it);
+      curr = static_cast<_Brick*>(curr)->insert(key, pos_it);
     }
   }
 

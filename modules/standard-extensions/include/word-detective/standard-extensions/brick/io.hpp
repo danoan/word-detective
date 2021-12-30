@@ -33,34 +33,33 @@ class WriteFileDescriptor {
 
  private:
   std::ostream& m_out_stream;
-  unsigned char m_delimiter;
+  TAlphabetType m_delimiter;
   size_t m_brick_length;
 
   std::list<OffsetPair> m_offset_pair_list;
+
  public:
   explicit WriteFileDescriptor(std::ostream& out_stream,
-                      unsigned char delimiter = '#')
-      : m_out_stream(out_stream),
-        m_delimiter(delimiter),
-        m_brick_length(0) {}
+                               TAlphabetType delimiter = '#')
+      : m_out_stream(out_stream), m_delimiter(delimiter), m_brick_length(0) {}
 
   ~WriteFileDescriptor() {}
 
-  inline unsigned char delimiter() const { return m_delimiter; }
+  inline TAlphabetType delimiter() const { return m_delimiter; }
 
   void write_alphabet_byte_size() const {
     write_number_binary(m_out_stream,
                         static_cast<unsigned char>(sizeof(TAlphabetType)));
   }
 
-  void write_brick_key(char key) {
-    m_out_stream << key;
-    ++m_brick_length;
+  void write_brick_key(TAlphabetType key) {
+    write_number_binary(m_out_stream, key);
+    m_brick_length += sizeof(TAlphabetType);
   }
 
   void write_backtrack_count(TAlphabetType backtrack_count) {
-    m_out_stream  << m_delimiter;
-    ++m_brick_length;
+    write_number_binary<TAlphabetType>(m_out_stream, m_delimiter);
+    m_brick_length += sizeof(TAlphabetType);
 
     write_number_binary(m_out_stream, backtrack_count);
     m_brick_length += sizeof(TAlphabetType);
@@ -80,7 +79,8 @@ class WriteFileDescriptor {
       write_number_binary(m_out_stream, op.first);
       write_number_binary(m_out_stream, op.second.size());
       for (auto s : op.second) {
-        m_out_stream << s << m_delimiter;
+        m_out_stream << s;
+        write_number_binary<TAlphabetType>(m_out_stream, m_delimiter);
       }
     }
   }
@@ -93,7 +93,7 @@ class ReadFileDescriptor {
   using WordIterator = std::list<std::string>::const_iterator;
 
  private:
-  unsigned char m_delimiter;
+  TAlphabetType m_delimiter;
   size_t m_brick_length;
   size_t m_brick_bytes_read;
 
@@ -104,7 +104,7 @@ class ReadFileDescriptor {
   inline size_t read_brick_length(size_t& brick_length) const {
     auto cur_pos = m_in_stream.tellg();
 
-    m_in_stream.seekg(- (int) sizeof(size_t), std::ios_base::end);
+    m_in_stream.seekg(-(int)sizeof(size_t), std::ios_base::end);
     m_in_stream.read((char*)&brick_length, sizeof(size_t));
 
     m_in_stream.seekg(cur_pos, std::ios_base::beg);
@@ -114,36 +114,33 @@ class ReadFileDescriptor {
 
  public:
   explicit ReadFileDescriptor(std::istream& in_stream,
-                     unsigned char delimiter = '#')
+                              TAlphabetType delimiter = '#')
       : m_delimiter(delimiter),
         m_brick_length(0),
         m_brick_bytes_read(0),
-        m_in_stream(in_stream)
-  {
+        m_in_stream(in_stream) {
     read_brick_length(m_brick_length);
-    m_in_stream.seekg(m_brick_length + 1,
-                       std::ios_base::beg);
+    m_in_stream.seekg(m_brick_length + 1, std::ios_base::beg);
     offset_list_cursor = m_in_stream.tellg();
     m_in_stream.seekg(std::ios_base::beg);
 
     unsigned char alphabet_size;
     read_alphabet_byte_size(alphabet_size);
-    assert(alphabet_size==sizeof(TAlphabetType));
-
+    assert(alphabet_size == sizeof(TAlphabetType));
   }
 
-  inline unsigned char delimiter() const { return m_delimiter; }
+  inline TAlphabetType delimiter() const { return m_delimiter; }
 
   inline void read_alphabet_byte_size(unsigned char& alpha_size) {
     m_in_stream.seekg(0, std::ios_base::beg);
     m_in_stream.read((char*)&alpha_size, 1);
   }
 
-  inline size_t read_key(char& c) {
-    c = m_in_stream.get();
-    m_brick_bytes_read += sizeof(char);
+  inline size_t read_key(TAlphabetType& c) {
+    m_in_stream.read((char*)&c, sizeof(TAlphabetType));
+    m_brick_bytes_read += sizeof(TAlphabetType);
 
-    return sizeof(char);
+    return sizeof(TAlphabetType);
   }
 
   inline size_t read_backtrack_count(TAlphabetType& backtrack_count) {
@@ -157,21 +154,21 @@ class ReadFileDescriptor {
     size_t num_words = 0;
 
     auto cur_pos = m_in_stream.tellg();
-    m_in_stream.seekg(offset_list_cursor,std::ios_base::beg);
+    m_in_stream.seekg(offset_list_cursor, std::ios_base::beg);
 
     m_in_stream.read((char*)&op.first, sizeof(TAlphabetType));
     m_in_stream.read((char*)&num_words, sizeof(size_t));
 
     op.second.clear();
     for (; num_words > 0; num_words--) {
-      char word[32];
-      m_in_stream.get(word, 32, m_delimiter);
-      m_in_stream.get();
+      char word[64];
+      m_in_stream.get(word, 64, m_delimiter);
       op.second.push_back(word);
+      m_in_stream.seekg(sizeof(TAlphabetType),std::ios_base::cur);
     }
 
     offset_list_cursor = m_in_stream.tellg();
-    m_in_stream.seekg(cur_pos,std::ios_base::beg);
+    m_in_stream.seekg(cur_pos, std::ios_base::beg);
   }
 
   bool eof() { return m_brick_bytes_read >= m_brick_length; }
@@ -207,7 +204,8 @@ class Save : public WordDetective::Datastr::BrickExtension {
       }
     };
 
-    WordDetective::StandardExtensions::Brick::Traversal::PreOrder::run(func, brick);
+    WordDetective::StandardExtensions::Brick::Traversal::PreOrder::run(func,
+                                                                       brick);
 
     wfd.write_offset_pair_list();
     wfd.write_brick_length();
@@ -233,7 +231,7 @@ class Load : public WordDetective::Datastr::BrickExtension {
     stack<_Brick*> S;
     S.push(root);
 
-    char c;
+    TAlphabetType c;
     OffsetPair op;
 
     rfd.read_next_offset_pair(op);

@@ -32,6 +32,7 @@ target_link_directories(test-coverage
    ${CMAKE_BINARY_DIR}/modules/utils
    ${CMAKE_BINARY_DIR}/modules/datastr
    ${CMAKE_BINARY_DIR}/modules/standard-extensions
+   ${CMAKE_PREFIX_PATH}/lib
    ${Boost_LIBRARY_DIRS}
 )
 
@@ -46,6 +47,8 @@ target_link_libraries(test-coverage
   -lutils
   -ldatastr
   -lstandard-extensions
+  -licuuc
+  -licudata
   ${GCOV_LIBRARY}
   ${Boost_LIBRARIES}
 )

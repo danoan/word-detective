@@ -20,12 +20,16 @@ PUBLIC
   ${CMAKE_BINARY_DIR}/modules/utils
   ${CMAKE_BINARY_DIR}/modules/datastr
   ${CMAKE_BINARY_DIR}/modules/standard-extensions
+  ${CMAKE_PREFIX_PATH}/lib
 )
 
 target_link_libraries(export-brick
--lutils
 -ldatastr
--lstandard-extensions)
+-lstandard-extensions
+-lutils
+-licuuc
+-licudata
+)
 
 install(TARGETS export-brick
 DESTINATION ${CMAKE_INSTALL_PREFIX}/app)
