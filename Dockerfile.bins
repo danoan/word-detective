@@ -12,8 +12,9 @@ WORKDIR /word-detective-build
 
 COPY . /word-detective-build
 
-RUN ./lab/docker-scripts/install-deps.sh && \
-./lab/docker-scripts/build-install.sh && \
+RUN ./lab/docker-scripts/deps/install-boost.sh
+RUN ./lab/docker-scripts/deps/install-icu.sh
+RUN ./lab/docker-scripts/build-install.sh && \
 ./lab/docker-scripts/run-tests.sh
 
 RUN ./lab/docker-scripts/minify-word-detective-js.sh

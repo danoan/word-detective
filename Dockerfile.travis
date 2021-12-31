@@ -16,3 +16,5 @@ WORKDIR /word-detective
 
 # Copy the docker-context directory content
 COPY . /word-detective
+
+RUN ./lab/docker-scripts/deps/install-icu.sh

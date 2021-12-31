@@ -30,9 +30,9 @@ PUBLIC
 
 target_link_libraries(word-detective
 PUBLIC
- -lutils
  -ldatastr
  -lstandard-extensions
+ -lutils
  -licuuc
  -licudata
  ${Boost_LIBRARIES})
