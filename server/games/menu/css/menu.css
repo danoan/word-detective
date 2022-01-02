@@ -67,6 +67,11 @@
   background-repeat: no-repeat;
 }
 
+.italy{
+  background-image: url("/assets/icons/italy.png");
+}
+
+
 .left{
   float:left;
 }
