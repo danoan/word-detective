@@ -7,7 +7,14 @@ SERVER_ROOT="$(cd "${SCRIPT_DIR}" && cd ../.. && pwd)"
 
 "${SERVER_ROOT}/bin/export-brick" \
 -i "${SERVER_ROOT}/assets/corpora/ef-5000.txt" \
-"${SERVER_ROOT}/assets/corpora/ef-5000.brk"
+"${SERVER_ROOT}/assets/corpora/en.brk"
+
+# Create italian-1000 brick
+
+"${SERVER_ROOT}/bin/export-brick" \
+-l italian \
+-i "${SERVER_ROOT}/assets/corpora/italian-1000.txt" \
+"${SERVER_ROOT}/assets/corpora/it.brk"
 
 # Init games
 

@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
   Datastr::Brick brick;
   if (id.filepath == "stdin") {
     // Create brick from book
-    brick = create_brick(std::cin);
+    brick = create_brick(std::cin,id.language);
   } else {
     // Create brick from, brick file
     auto fd = std::ifstream(id.filepath, std::ios_base::binary);

@@ -1,7 +1,10 @@
 import { cookie_manager, config, main } from "/assets/js/word-detective-min.js";
-import { MissingResource, setDefaultConfiguration, DateGen } from "/assets/js/game-util.js"
+import { MissingResource, setDefaultConfiguration, DateGen,identifyPallete,updatePallete } from "/assets/js/game-util.js"
 
 export async function setupWordDetective(puzzle_id,cookie_unique_id,expiration_date){
+  let language = identifyPallete();
+  updatePallete(language);
+
   setDefaultConfiguration(config);
 
   config.words_found_cookie_id = `${puzzle_id}_words_found_${cookie_unique_id}`;
@@ -13,8 +16,8 @@ export async function setupWordDetective(puzzle_id,cookie_unique_id,expiration_d
       "puzzle": null
     };
 
-    let messages_json_location = "/assets/js/english_messages.json";
-    let puzzle_json_location = "assets/puzzle.json";
+    let messages_json_location = `/assets/messages/${language}/messages.json`;
+    let puzzle_json_location = `assets/puzzle.json`;
 
     try {
       let response = await fetch(messages_json_location);
@@ -28,6 +31,7 @@ export async function setupWordDetective(puzzle_id,cookie_unique_id,expiration_d
       let puzzle_json = await response.json();
       assets.puzzle = puzzle_json.puzzle;
     } catch (err) {
+      return;
       throw new MissingResource("Puzzle could not be loaded.", err);
     }
 
@@ -36,14 +40,14 @@ export async function setupWordDetective(puzzle_id,cookie_unique_id,expiration_d
 
   config.onload = function () {
     if (should_redirect_to_today_puzzle()) {
-      window.location.href = "../index.html";
+      window.location.href = `/games/${language}/week-puzzles`;
     }
   };
 
   try{
     return await main();
   }catch(err){
-    config.fatal_error_handler(error);
+    config.fatal_error_handler(err);
   }
 }
 

@@ -1,0 +1,46 @@
+{
+  "missing_words_prefix": "Parole mancanti:",
+  "word_found_already_message": "Hai già trovato questa parola.",
+  "word_not_in_dictionary_message": "Questa non è una parola mancante.",
+  "word_too_short_message": "Tutte le parole mancanti hanno più di tre lettere.",
+  "valid_word_message": "Grande!",
+  "super_easy_word_message": [
+    "Un gioco da ragazzi!"
+  ],
+  "easy_word_message": [
+    "Eccellente!"
+  ],
+  "average_difficult_word_message": [
+    "Brillante!"
+  ],
+  "quite_difficult_word_message": [
+    "Geniale!"
+  ],
+  "difficult_word_message": [
+    "Questa si chiama ispirazione!",
+    "Pazzesco!"
+  ],
+  "author_prefix_message": [
+    "",
+    "Neppure"
+  ],
+  "author_suffix_message": [
+    "poteva fare meglio!",
+    "ti inviterebbe ad un caffè letterario!",
+    "ti invidierebbe la tua ispirazione!"
+  ],
+  "authors": [
+    "Dante",
+    "Leopardi",
+    "Manzoni",
+    "Pirandello",
+    "Eco",
+    "Fallaci",
+    "Camillere",
+    "Ferrante",
+    "Calvino",
+    "Pasolini",
+    "Maraini",
+    "Murgia"
+  ]
+}

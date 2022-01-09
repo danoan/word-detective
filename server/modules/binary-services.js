@@ -11,13 +11,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export let binServices = function(){
     let BIN_DIR = path.resolve(__dirname,"../bin");
 
-    function exportBrick(inputFilepath, outputFilepath) {
+    function exportBrick(language,inputFilepath, outputFilepath) {
         const exportBrickApp = `${BIN_DIR}/export-brick`;
 
         console.info("[export-brick][inputFilepath]:",inputFilepath);
         console.info("[export-brick][inputFilepath]:",outputFilepath);
 
-        return p_execFile(exportBrickApp, [inputFilepath, outputFilepath])
+        return p_execFile(exportBrickApp, [`-l${language}`,`-i${inputFilepath}`, outputFilepath])
             .then(result => {
                 console.info("[export-brick][stdout]:",result.stdout);
                 console.error("[export-brick][stderr]:",result.stderr);
@@ -28,15 +28,15 @@ export let binServices = function(){
             });
       }
 
-    function generatePuzzle({input_stream=null,brick_filepath='',num_letters=7,min_words=5,mode='random'}) {
+    function generatePuzzle({input_stream=null,brick_filepath='',language='english',num_letters=7,min_words=5,mode='random'}) {
         const wordDetectiveApp = `${BIN_DIR}/word-detective`;
 
         let wd;
         if(input_stream!==null){
-            wd = p_execFile(wordDetectiveApp, [`-l${num_letters}`, `-w${min_words}`, `-m${mode}`]);
+            wd = p_execFile(wordDetectiveApp, [`-L${language}`,`-l${num_letters}`, `-w${min_words}`, `-m${mode}`]);
             input_stream.pipe(wd.child.stdin);
         }else{
-            wd = p_execFile(wordDetectiveApp, [`-l${num_letters}`, `-w${min_words}`, `-m${mode}`,`-b${brick_filepath}`]);
+            wd = p_execFile(wordDetectiveApp, [`-L${language}`,`-l${num_letters}`, `-w${min_words}`, `-m${mode}`,`-b${brick_filepath}`]);
         }
 
         return wd.then(result => new Promise(function(resolve) {

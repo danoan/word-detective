@@ -11,7 +11,9 @@
 #include "word-detective/standard-extensions/brick/traversal.hpp"
 #include "word-detective/utils/text/filter.hpp"
 #include "word-detective/utils/text/segmenter.hpp"
+#include "word-detective/utils/text/segmenter/base/languages.h"
 #include "word-detective/utils/text/segmenter/english.hpp"
+#include "word-detective/utils/text/segmenter/italian.hpp"
 #include "word-detective/utils/unicode.h"
 
 using namespace std;
@@ -32,7 +34,7 @@ ostream& operator<<(ostream& os, const std::list<Puzzle>& list_of_puzzles);
 
 };  // namespace Puzzle
 
-Datastr::Brick create_brick(std::istream& book_stream);
+Datastr::Brick create_brick(std::istream& book_stream, WordDetective::Utils::Text::Languages language);
 
 class SubPath : Datastr::BrickExtension {
   using Brick = Datastr::Brick;

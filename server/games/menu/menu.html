@@ -53,12 +53,11 @@
   <div class="container">
     <div class="title">Word Detective</div>
     <div class="container-flags">
-      <div class="flag brazil" onclick="update_pallete('brazil')"></div>
-      <div class="flag usa" onclick="update_pallete('usa')"></div>
-      <div class="flag italy" onclick="update_pallete('italy')"></div>
+      <div class="flag usa" onclick="document.location.href='/games/en'"></div>
+      <div class="flag italy" onclick="document.location.href='/games/it'"></div>
     </div>
     <div class="container-buttons">
-      <div class="button left" onclick="document.location.href='/games/random-puzzle'">
+      <div class="button left" onclick="control.gotoFromBaseURI('random-puzzle/')">
         <div class="button-label">Random Puzzle</div>
         <div class="button-image-common lens"></div>
         <div class="button-image-common stripes"></div>
@@ -74,14 +73,14 @@
 
       <div class="clear"></div>
 
-      <div class="button left" onclick="document.location.href='/games/week-puzzles'">
+      <div class="button left" onclick="control.gotoFromBaseURI('week-puzzles/')">
         <div class="button-label">Week Puzzle</div>
         <div class="button-image-common lens"></div>
         <div class="button-image-common stripes"></div>
         <div class="button-image-common zoomed-calendar circle-clip"></div>
       </div>
 
-      <div class="button right" onclick="document.location.href='/games/puzzle-of-day'">
+      <div class="button right" onclick="control.gotoFromBaseURI('puzzle-of-day/')">
         <div class="button-label">Dayly Puzzle</div>
         <div class="button-image-common lens"></div>
         <div class="button-image-common stripes"></div>

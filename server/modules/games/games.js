@@ -19,10 +19,30 @@ games.get('/puzzle-of-day', (req, res) => {
   res.sendFile(path.resolve(GAMES_DIR, "puzzle-of-day/index.html"));
 });
 
-games.use("/week-puzzles", express.static(`${GAMES_DIR}/week-puzzles`));
-games.get('/week-puzzles', (req, res) => {
-  res.sendFile(path.resolve(GAMES_DIR, "week-puzzles/index.html"));
+games.get('/:language/week-puzzles', (req, res) => {
+  let language = req.params["language"];
+  check_language_and_go(
+    language,
+    ()=>res.sendFile(path.resolve(GAMES_DIR, "week-puzzles/index.html")),
+    ()=>notAvailableLanguageRedirection(res)
+  );
 });
+games.get('/:language/week-puzzles/:weekDay', (req, res) => {
+  let language = req.params["language"];
+  let weekDay = req.params["weekDay"];
+  check_language_and_go(
+    language,
+    ()=>res.sendFile(path.resolve(GAMES_DIR, `week-puzzles/${language}/${weekDay}/index.html`)),
+    ()=>notAvailableLanguageRedirection(res)
+  );
+});
+games.use("/week-puzzles", express.static(`${GAMES_DIR}/week-puzzles`));
+games.use("/:language/week-puzzles/:weekDay", (req,res,next) => {
+  let language = req.params["language"];
+  let weekDay = req.params["weekDay"];
+  express.static(`${GAMES_DIR}/week-puzzles/${language}/${weekDay}`)(req,res,next);
+});
+
 
 games.use("/puzzle-from-text", express.static(`${GAMES_DIR}/puzzle-from-text`));
 games.get('/puzzle-from-text', (req, res) => {

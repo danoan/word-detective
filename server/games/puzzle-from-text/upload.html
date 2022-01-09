@@ -8,12 +8,29 @@
   <meta name='viewport' content='width=device-width, initial-scale=1'>
   <link rel='stylesheet' type='text/css' media='screen' href='/assets/css/master.css'>
   <link rel='stylesheet' type='text/css' media='screen' href='css/upload.css'>
+
+  <script>
+    let control;
+    let languageCode;
+  </script>
+  <script type="module">
+    import { identifyPallete,updatePallete,gotoFromBaseURI } from "/assets/js/game-util.js";
+    control = {
+      updatePallete,
+      gotoFromBaseURI
+    };
+    languageCode=identifyPallete();
+    updatePallete(languageCode);
+
+    document.getElementById("form-from-string").action = `/games/${languageCode}/puzzle-from-text/from-string`;
+    document.getElementById("form-from-string").action = `/games/${languageCode}/puzzle-from-text/from-file`;
+  </script>
 </head>
 
 <body>
   <div class="container-main">
     <div class="container-form">
-      <form method="post" action="/games/puzzle-from-text/from-string" target="_self">
+      <form id="form-from-string" method="post" action="/games/puzzle-from-text/from-string" target="_self">
         <label class="form-element form-left" for="text">Puzzle from text</label>
         <textarea class="form-element" name="text" id="textarea-text"></textarea>
         <input class="form-element" style="display: none;" type="submit" value="Send text" id="submit-send">
@@ -22,7 +39,7 @@
 
       <div class="form-element form-margin-30">OR</div>
 
-      <form method="post" action="/games/puzzle-from-text/from-file" enctype="multipart/form-data" target="_self">
+      <form method="post" id="form-from-file" action="/games/puzzle-from-text/from-file" enctype="multipart/form-data" target="_self">
         <label class="form-element form-left" for="text">Puzzle from file</label>
         <input class="form-element" type="file" accept="text/txt" name="text_file" id="input-filepath">
         <input class="form-element" style="display: none;" type="submit" value="Upload file" id="submit-upload">

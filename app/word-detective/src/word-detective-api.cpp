@@ -25,15 +25,25 @@ ostream& operator<<(ostream& os, const std::list<Puzzle>& list_of_puzzles) {
 
 };  // namespace Puzzle
 
-Datastr::Brick create_brick(std::istream& book_stream) {
+Datastr::Brick create_brick(std::istream& book_stream,WordDetective::Utils::Text::Languages language) {
   Utils::Text::FilterFunction word_filter = [](const std::string& s) {
     return Utils::Text::more_than_n_characters<3>(s) &&
            !Utils::Text::starts_with_capital_letter(s);
   };
 
   unordered_map<string, int> corpora;
-  Utils::Text::segment_into_map<Utils::Text::Languages::English>(
-      corpora, book_stream, word_filter);
+
+  switch (language) {
+    case WordDetective::Utils::Text::Languages::Italian:
+      Utils::Text::segment_into_map<Utils::Text::Languages::Italian>(
+          corpora, book_stream, word_filter);
+      break;
+    case WordDetective::Utils::Text::Languages::English:
+    default:
+      Utils::Text::segment_into_map<Utils::Text::Languages::English>(
+          corpora, book_stream, word_filter);
+      break;
+  }
 
   Datastr::Brick b;
   for (auto w : corpora) {

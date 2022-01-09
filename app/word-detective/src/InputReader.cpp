@@ -2,6 +2,7 @@
 
 void usage(char* argv[]) {
   std::cerr << "Usage: " << argv[0] << "Input_Brick_Filepath\n"
+            << "[-L] language (default:english. (italian,english))\n"
             << "[-l] number of letters in puzzle (default:5)\n"
             << "[-w] minimum number of words in a puzzle (default:5)\n"
             << "[-m] output mode (all,random,index) (default:all)\n"
@@ -15,8 +16,13 @@ InputData read_input(int argc, char* argv[]) {
   id.filepath = "stdin";
 
   int opt;
-  while ((opt = getopt(argc, argv, "l:w:m:i:o:b:")) != -1) {
+  while ((opt = getopt(argc, argv, "L:l:w:m:i:o:b:")) != -1) {
     switch (opt) {
+      case 'L':
+        if(strcmp("english",optarg)==0) id.language = InputData::Languages::English;
+        else if (strcmp("italian",optarg)==0) id.language = InputData::Languages::Italian;
+        else id.language = InputData::Languages::English;
+        break;
       case 'l':
         id.num_letters = atoi(optarg);
         break;

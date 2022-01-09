@@ -11,22 +11,30 @@ RENDER_PUZZLE="${BIN_PATH}/render-word-detective.py"
 
 OUTPUT_FOLDER="${PROJECT_PATH}/games/week-puzzles"
 
-DAYS="sunday monday tuesday wednesday thursday friday saturday"
-for day in $DAYS
-do
-  CUR_OUT_FOLDER="${OUTPUT_FOLDER}/${day}"
-  rm -rf "${CUR_OUT_FOLDER}"
+function generate_week_games(){
+  LANGUAGE="${1}"
 
-  mkdir -p "${CUR_OUT_FOLDER}/assets"
-  JSON_PUZZLE_PATH="${CUR_OUT_FOLDER}/assets/puzzle.json"
+  DAYS="sunday monday tuesday wednesday thursday friday saturday"
+  for day in $DAYS
+  do
+    CUR_OUT_FOLDER="${OUTPUT_FOLDER}/${LANGUAGE}/${day}"
+    rm -rf "${CUR_OUT_FOLDER}"
 
-  #Generate json puzzle
-  ${PUZZLE_GEN_EXE} -mrandom -l7 -o"${JSON_PUZZLE_PATH}" -b"${ASSETS_PATH}/corpora/ef-5000.brk"
+    mkdir -p "${CUR_OUT_FOLDER}/assets"
+    JSON_PUZZLE_PATH="${CUR_OUT_FOLDER}/assets/puzzle.json"
 
-  #Render puzzle html
-  python3 "${RENDER_PUZZLE}" "${PROJECT_PATH}/games/week-puzzles/templates/index-week-puzzles.html" "${JSON_PUZZLE_PATH}" "${CUR_OUT_FOLDER}" "${day}"
+    #Generate json puzzle
+    ${PUZZLE_GEN_EXE} -mrandom -l7 -o"${JSON_PUZZLE_PATH}" -b"${ASSETS_PATH}/corpora/${LANGUAGE}.brk"
 
-  #Copy js files
-  mkdir -p "${CUR_OUT_FOLDER}/js"
-  cp "${OUTPUT_FOLDER}/js/week-puzzles.js" "${CUR_OUT_FOLDER}/js/week-puzzles.js"
-done
+    #Render puzzle html
+    python3 "${RENDER_PUZZLE}" "${PROJECT_PATH}/games/week-puzzles/templates/index-week-puzzles.html" "${JSON_PUZZLE_PATH}" "${CUR_OUT_FOLDER}" "${day}"
+
+    #Copy js files
+    mkdir -p "${CUR_OUT_FOLDER}/js"
+    cp "${OUTPUT_FOLDER}/js/week-puzzles.js" "${CUR_OUT_FOLDER}/js/week-puzzles.js"
+  done
+}
+
+generate_week_games "en"
+generate_week_games "it"
+

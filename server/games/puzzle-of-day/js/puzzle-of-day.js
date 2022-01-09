@@ -1,7 +1,10 @@
 import { cookie_manager, config, main } from "/assets/js/word-detective-min.js";
-import { MissingResource, setDefaultConfiguration, DateGen } from "/assets/js/game-util.js"
+import { MissingResource, setDefaultConfiguration, DateGen,identifyPallete,updatePallete } from "/assets/js/game-util.js"
 
 export async function setupWordDetective(){
+  let language = identifyPallete();
+  updatePallete(language);
+
   setDefaultConfiguration(config)
 
   let today = DateGen.generate(DateGen.DateFormula.TodayMidnight);
@@ -16,8 +19,9 @@ export async function setupWordDetective(){
       "puzzle": null
     };
 
-    let messages_json_location = "/assets/js/english_messages.json";
-    let puzzle_json_location = "/api/random-puzzle";
+
+    let messages_json_location = `/assets/messages/${language}/messages.json`;
+    let puzzle_json_location = `/api/${language}/random-puzzle`;
 
     try {
       let response = await fetch(messages_json_location);

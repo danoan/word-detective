@@ -125,7 +125,7 @@
       }
 
       function returnUntilWhitespace(text, index) {
-        while (index > 0 && text[index] != ' ') index--;
+        while (index > 0 && text[index] != ' ' && text[index] != '\n') index--;
         return index;
       }
 

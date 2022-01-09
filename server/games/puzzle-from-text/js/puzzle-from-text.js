@@ -1,7 +1,10 @@
 import { cookie_manager, config, main } from "/assets/js/word-detective-min.js";
-import { NoPuzzleGenerated, MissingResource, setDefaultConfiguration, DateGen } from "/assets/js/game-util.js"
+import { NoPuzzleGenerated, MissingResource, setDefaultConfiguration, DateGen, identifyPallete,updatePallete } from "/assets/js/game-util.js"
 
 export async function setupWordDetective(reset_cookie=false,text='',text_checksum=''){
+  let language = identifyPallete();
+  updatePallete(language);
+
   setDefaultConfiguration(config);
 
   config.onload = function () {
@@ -14,7 +17,7 @@ export async function setupWordDetective(reset_cookie=false,text='',text_checksu
   config.words_found_cookie_id = `puzzle_from_text_${text_checksum}_words_found`;
   config.iso_expiration_date = next_year.toISOString();
 
-  config.load_assets = () => load_assets(reset_cookie,text,text_checksum);
+  config.load_assets = () => load_assets(reset_cookie,text,text_checksum,language);
 
   try{
     return await main();
@@ -23,7 +26,7 @@ export async function setupWordDetective(reset_cookie=false,text='',text_checksu
   }
 }
 
-async function load_assets(reset_cookie,text,text_checksum) {
+async function load_assets(reset_cookie,text,text_checksum,language) {
   let cm = cookie_manager(`puzzle_from_text_${text_checksum}_puzzle`, config.iso_expiration_date);
   let cm_words_found = cookie_manager(config.words_found_cookie_id, config.iso_expiration_date);
 
@@ -32,7 +35,7 @@ async function load_assets(reset_cookie,text,text_checksum) {
     "puzzle": null
   };
 
-  let messages_json_location = "/assets/js/english_messages.json";
+  let messages_json_location = `/assets/messages/${language}/messages.json`;
 
   try {
     let response = await fetch(messages_json_location);
@@ -43,7 +46,7 @@ async function load_assets(reset_cookie,text,text_checksum) {
 
   try {
     if (reset_cookie || cm.get() === '') {
-      assets.puzzle = await getPuzzle(text);
+      assets.puzzle = await getPuzzle(text,language);
 
       cm_words_found.set('');
       cm.set(JSON.stringify(assets.puzzle));
@@ -57,11 +60,11 @@ async function load_assets(reset_cookie,text,text_checksum) {
   return assets;
 }
 
-function getPuzzle(text) {
+function getPuzzle(text,language) {
   const formData = new FormData();
   formData.append('text_file', new Blob([text]));
 
-  return fetch('/api/puzzle-from-file', {
+  return fetch(`/api/${language}/puzzle-from-file`, {
     method: 'POST', // *GET, POST, PUT, DELETE, etc.
     mode: 'cors', // no-cors, *cors, same-origin
     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
