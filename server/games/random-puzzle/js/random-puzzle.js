@@ -1,7 +1,10 @@
 import { config, main } from "/assets/js/word-detective-min.js";
-import { MissingResource,setDefaultConfiguration } from "/assets/js/game-util.js";
+import { MissingResource,setDefaultConfiguration,identifyPallete,updatePallete } from "/assets/js/game-util.js";
 
 export async function  setupWordDetective(){
+  let language = identifyPallete();
+  updatePallete(language);
+
   setDefaultConfiguration(config);
 
   config.words_found_cookie_id = '';
@@ -13,8 +16,8 @@ export async function  setupWordDetective(){
       "puzzle": null
     };
 
-    let messages_json_location = "/assets/js/english_messages.json";
-    let puzzle_json_location = "/api/random-puzzle";
+    let messages_json_location = `/assets/messages/${language}/messages.json`;
+    let puzzle_json_location = `/api/${language}/random-puzzle`;
 
     try {
       let response = await fetch(messages_json_location);

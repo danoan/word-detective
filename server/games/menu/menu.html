@@ -7,46 +7,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel='stylesheet' type='text/css' media='screen' href='/assets/css/master.css'>
   <link rel='stylesheet' type='text/css' media='screen' href='css/menu.css'>
-  <title>Word Detective</title>
-
   <script>
-    let root = document.documentElement;
-    function set_pallete_brazil() {
-      root.style.setProperty('--pallete-1', '#00520c');
-      root.style.setProperty('--pallete-2', '#f5c800');
-      root.style.setProperty('--pallete-3', '#ddecdd');
-      root.style.setProperty('--pallete-4', '#1e5fba');
-      root.style.setProperty('--pallete-5', '#ffffff');
-      root.style.setProperty('--pallete-6', '#dadae5');
-      root.style.setProperty('--pallete-7', '#aaaaaa');
-    }
-
-    function set_pallete_usa() {
-      root.style.setProperty('--pallete-1', '#F31616');
-      root.style.setProperty('--pallete-2', '#000552');
-      root.style.setProperty('--pallete-3', '#F3F1F1');
-      root.style.setProperty('--pallete-4', '#A00303');
-      root.style.setProperty('--pallete-5', '#FFFFFF');
-      root.style.setProperty('--pallete-6', '#dadae5');
-      root.style.setProperty('--pallete-7', '#aaaaaa');
-    }
-
-    function set_pallete_italy() {
-      root.style.setProperty('--pallete-1', '#CD212A');
-      root.style.setProperty('--pallete-2', '#008C45');
-      root.style.setProperty('--pallete-3', '#F3F1F1');
-      root.style.setProperty('--pallete-4', '#A71B22');
-      root.style.setProperty('--pallete-5', '#FFFFFF');
-      root.style.setProperty('--pallete-6', '#dadae5');
-      root.style.setProperty('--pallete-7', '#aaaaaa');
-    }
-
-    function update_pallete(pallete_name) {
-      if (pallete_name === 'brazil') set_pallete_brazil();
-      else if (pallete_name === 'usa') set_pallete_usa();
-      else if (pallete_name === 'italy') set_pallete_italy();
-    }
+    let control;
   </script>
+  <script type="module">
+    import { identifyPallete,updatePallete,gotoFromBaseURI } from "/assets/js/game-util.js";
+    control = {
+      updatePallete,
+      gotoFromBaseURI
+    };
+    updatePallete(identifyPallete());
+  </script>
+  <title>Word Detective</title>
 </head>
 
 <body>
@@ -64,7 +36,7 @@
         <div class="button-image-common zoomed-interrogation-mark circle-clip"></div>
       </div>
 
-      <div class="button right" onclick="document.location.href='/games/puzzle-from-text/upload'">
+      <div class="button right" onclick="control.gotoFromBaseURI('puzzle-from-text/upload')">
         <div class="button-label">Book Puzzle</div>
         <div class="button-image-common lens"></div>
         <div class="button-image-common stripes"></div>

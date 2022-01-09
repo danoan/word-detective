@@ -3,14 +3,14 @@ import { routing } from './routing.js'
 
 export let api = express.Router();
 
-api.get('/random-puzzle', (req, res) => {
+api.get('/:language/random-puzzle', (req, res) => {
     routing.randomPuzzle(req, res);
 });
 
-api.post('/puzzle-from-file', (req, res) => {
+api.post('/:language/puzzle-from-file', (req, res) => {
     routing.puzzleFromFile(req, res);
 });
 
-api.post('/puzzle-from-string', (req, res) => {
+api.post('/:language/puzzle-from-string', (req, res) => {
     routing.puzzleFromString(req, res);
 });

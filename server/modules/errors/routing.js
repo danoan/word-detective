@@ -11,8 +11,15 @@ export let routing = function(){
     res.render('errors/no-puzzle-generated.ntl', { vars: { errorMessage: req.query['errorMessage'] } });
   }
 
+  function languageNotAvailable(req,res){
+    res.status(500);
+    let errorMessage = `We are sorry, but this language is not available yet.`;
+    res.render('errors/generic-error.ntl', { vars: { errorMessage } });
+  }
+
   return {
     genericError,
-    noPuzzleGenerated
+    noPuzzleGenerated,
+    languageNotAvailable
   };
 }();

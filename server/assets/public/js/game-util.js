@@ -69,3 +69,55 @@ DateGen.generate = function(date_formula) {
     return new Date(now.getTime() + 1000 * 60 * 10);
   }
 }
+
+let root = document.documentElement;
+function setPalleteBrazil() {
+  root.style.setProperty('--pallete-1', '#00520c');
+  root.style.setProperty('--pallete-2', '#f5c800');
+  root.style.setProperty('--pallete-3', '#ddecdd');
+  root.style.setProperty('--pallete-4', '#1e5fba');
+  root.style.setProperty('--pallete-5', '#ffffff');
+  root.style.setProperty('--pallete-6', '#dadae5');
+  root.style.setProperty('--pallete-7', '#aaaaaa');
+}
+
+function setPalleteUsa() {
+  root.style.setProperty('--pallete-1', '#F31616');
+  root.style.setProperty('--pallete-2', '#000552');
+  root.style.setProperty('--pallete-3', '#F3F1F1');
+  root.style.setProperty('--pallete-4', '#A00303');
+  root.style.setProperty('--pallete-5', '#FFFFFF');
+  root.style.setProperty('--pallete-6', '#dadae5');
+  root.style.setProperty('--pallete-7', '#aaaaaa');
+}
+
+function setPalleteItaly() {
+  root.style.setProperty('--pallete-1', '#CD212A');
+  root.style.setProperty('--pallete-2', '#008C45');
+  root.style.setProperty('--pallete-3', '#F3F1F1');
+  root.style.setProperty('--pallete-4', '#A71B22');
+  root.style.setProperty('--pallete-5', '#FFFFFF');
+  root.style.setProperty('--pallete-6', '#dadae5');
+  root.style.setProperty('--pallete-7', '#aaaaaa');
+}
+
+const LANGUAGES = ["pt","en","it"];
+
+export function updatePallete(language) {
+  if (language === 'pt') setPalleteBrazil();
+  else if (language === 'en') setPalleteUsa();
+  else if (language === 'it') setPalleteItaly();
+}
+
+export function identifyPallete(){
+  for(let language of LANGUAGES){
+    if(document.baseURI.includes(`/${language}`)){
+      return language;
+    }
+  }
+  return "pt";
+}
+
+export function gotoFromBaseURI(path){
+  document.location.href=`${document.baseURI}/${path}`;
+}

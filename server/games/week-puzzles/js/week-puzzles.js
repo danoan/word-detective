@@ -31,7 +31,6 @@ export async function setupWordDetective(puzzle_id,cookie_unique_id,expiration_d
       let puzzle_json = await response.json();
       assets.puzzle = puzzle_json.puzzle;
     } catch (err) {
-      return;
       throw new MissingResource("Puzzle could not be loaded.", err);
     }
 
