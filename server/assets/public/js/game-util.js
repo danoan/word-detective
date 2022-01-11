@@ -83,12 +83,12 @@ function setPalleteBrazil() {
 
 function setPalleteUsa() {
   root.style.setProperty('--pallete-1', '#F31616');
-  root.style.setProperty('--pallete-2', '#000552');
-  root.style.setProperty('--pallete-3', '#F3F1F1');
-  root.style.setProperty('--pallete-4', '#A00303');
-  root.style.setProperty('--pallete-5', '#FFFFFF');
-  root.style.setProperty('--pallete-6', '#dadae5');
-  root.style.setProperty('--pallete-7', '#aaaaaa');
+  root.style.setProperty('--pallete-2', '#A00303');
+  root.style.setProperty('--pallete-3', '#000552');
+  root.style.setProperty('--pallete-4', '#F3F1F1');
+  root.style.setProperty('--pallete-5', '#00087A');
+  root.style.setProperty('--pallete-6', '#DADAE5');
+  root.style.setProperty('--pallete-7', '#AAAAAA');
 }
 
 function setPalleteItaly() {

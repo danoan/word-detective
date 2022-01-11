@@ -161,6 +161,7 @@
   margin: 0px;
   padding: 0px;
   overflow: hidden;
+  color: var(--pallete-4);
 }
 
 .words-found li {
