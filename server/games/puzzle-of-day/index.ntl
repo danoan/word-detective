@@ -11,10 +11,11 @@
 </head>
 
 <body>
-  <div id="container-loading" class="container-loading">Loading...</div>
+  <div id="container-loading" class="container-loading">#interface.loading#</div>
   <div id="container-main" class="container-main">
+
     <div class="top-status">
-      <span id="missing-words">Missing words:</span>
+      <span id="missing-words">#interface.missing_words#:</span>
       <div class="container-words">
         <div class="words-found">
           <ul id="words-list">
@@ -29,9 +30,9 @@
     </div>
 
     <div class="container-buttons">
-      <div class="button button-inline" onclick="control.erase_letter()">Erase</div>
-      <div class="button button-inline" onclick="control.hint()">Hint</div>
-      <div class="button button-inline" onclick="control.check_word()">Check</div>
+      <div class="button button-inline" onclick="control.erase_letter()">#interface.erase#</div>
+      <div class="button button-inline" onclick="control.hint()">#interface.hint#</div>
+      <div class="button button-inline" onclick="control.check_word()">#interface.check#</div>
     </div>
 
     <div class="bottom-status" id="bottom-status">
@@ -40,8 +41,8 @@
 
     <div id="evidence-list" class="evidence-list slide-deck">
       <div class="slide word-selection" id="slide-1">
-        <h1>Puzzle words</h1>
-        <h2>(Select up to 3 words to get their definitions)</h2>
+        <h1>#interface.puzzle_words#</h1>
+        <h2>#interface.puzzle_words_instructions#</h2>
         <ul id="evidence-list-words">
         </ul>
       </div>
@@ -61,18 +62,17 @@
         <h3><a href="https://www.collinsdictionary.com">Source: Collins Dictionary</a></h3>
       </div>
       <div class="slide word-definition" id="slide-5">
-        <div class="final-message">Well done, champs!</div>
+        <div class="final-message">#interface.well_done#</div>
       </div>
       <div id="slide-next-button" class="next"><span>></span></div>
     </div>
   </div>
   <div id="evidence-list-overlay" class="container-overlay"></div>
-
   <script>
     let control;
   </script>
   <script type="module">
-    import {setupWordDetective} from "./js/random-puzzle.js"
+    import { setupWordDetective } from "./js/puzzle-of-day.js";
     import {showUI} from "/assets/js/game-util.js"
 
     setupWordDetective().then( function(_control) {

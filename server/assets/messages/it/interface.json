@@ -1,0 +1,20 @@
+{
+  "interface.erase": "Cancella",
+  "interface.hint": "Dritta",
+  "interface.check": "Valida",
+  "interface.random_puzzle": "Random Puzzle",
+  "interface.week_puzzle": "Week Puzzle",
+  "interface.book_puzzle": "Book Puzzle",
+  "interface.daily_puzzle": "Daily Puzzle",
+  "interface.puzzle_from_text": "Puzzle dal testo",
+  "interface.send_text": "Envia Testo",
+  "interface.puzzle_from_file": "Puzzle da file",
+  "interface.upload_file": "Caricare il File",
+  "interface.missing_words": "Parole mancanti",
+  "interface.loading": "Caricando...",
+  "interface.puzzle_words": "Parole del Puzzle",
+  "interface.puzzle_words_instructions": "(Seleziona fino a 3 parole per ottenere la loro definizione)",
+  "interface.well_done": "Sei bravissimo!",
+  "interface.text_coverage": "Coperture testuale:",
+  "interface.or":"OU"
+}

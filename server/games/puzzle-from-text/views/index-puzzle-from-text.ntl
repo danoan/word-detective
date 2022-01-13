@@ -12,10 +12,10 @@
 </head>
 
 <body>
-  <div id="container-loading" class="container-loading">Loading...</div>
+  <div id="container-loading" class="container-loading">#interface.loading#</div>
   <div id="container-main" class="container-main">
     <div class="top-status">
-      <span id="missing-words">Missing words:</span>
+      <span id="missing-words">#interface.missing_words#</span>
       <div id="refresh-puzzle" class="refresh-puzzle" onclick="refreshPuzzle()"></div>
       <div class="container-words">
         <div class="words-found">
@@ -24,7 +24,7 @@
         </div>
       </div>
       <div class="text-coverage">
-        <span>Text coverage:</span><br>
+        <span>#interface.text_coverage#</span><br>
         <div class="text-coverage-range-container">
           <div class="text-coverage-range-slider-track"></div>
           <input type="range" min="0" max="5" value="0" id="text-coverage-left-range" oninput="updateLeftRange()">
@@ -47,9 +47,9 @@
     </div>
 
     <div class="container-buttons">
-      <div class="button button-inline" onclick="control.erase_letter()">Erase</div>
-      <div class="button button-inline" onclick="set_default_hint_style();control.hint()">Hint</div>
-      <div class="button button-inline" onclick="control.check_word()">Check</div>
+      <div class="button button-inline" onclick="control.erase_letter()">#interface.erase#</div>
+      <div class="button button-inline" onclick="set_default_hint_style();control.hint()">#interface.hint#</div>
+      <div class="button button-inline" onclick="control.check_word()">#interface.check#</div>
     </div>
 
     <div class="bottom-status" id="bottom-status">
@@ -58,8 +58,8 @@
 
     <div id="evidence-list" class="evidence-list slide-deck">
       <div class="slide word-selection" id="slide-1">
-        <h1>Puzzle words</h1>
-        <h2>(Select up to 3 words to get their definitions)</h2>
+        <h1>#interface.puzzle_words#</h1>
+        <h2>#interface.puzzle_words_instructions#</h2>
         <ul id="evidence-list-words">
         </ul>
       </div>
@@ -79,7 +79,7 @@
         <h3><a href="https://www.collinsdictionary.com">Source: Collins Dictionary</a></h3>
       </div>
       <div class="slide word-definition" id="slide-5">
-        <div class="final-message">Well done, champs!</div>
+        <div class="final-message">#interface.well_done#</div>
       </div>
       <div id="slide-next-button" class="next"><span>></span></div>
     </div>

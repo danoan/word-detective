@@ -1,0 +1,20 @@
+{
+  "interface.erase": "Erase",
+  "interface.hint": "Hint",
+  "interface.check": "Check",
+  "interface.random_puzzle": "Random Puzzle",
+  "interface.week_puzzle": "Week Puzzle",
+  "interface.book_puzzle": "Book Puzzle",
+  "interface.daily_puzzle": "Daily Puzzle",
+  "interface.puzzle_from_text": "Puzzle from text",
+  "interface.send_text": "Send Text",
+  "interface.puzzle_from_file": "Puzzle from file",
+  "interface.upload_file": "Upload File",
+  "interface.missing_words": "Missing words:",
+  "interface.loading": "Loading...",
+  "interface.puzzle_words": "Puzzle Words",
+  "interface.puzzle_words_instructions": "(Select up to 3 words to get their definitions",
+  "interface.well_done": "Well done, champs!",
+  "interface.text_coverage": "Text coverage:",
+  "interface.or":"OR"
+}

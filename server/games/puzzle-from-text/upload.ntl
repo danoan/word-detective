@@ -31,19 +31,19 @@
   <div class="container-main">
     <div class="container-form">
       <form id="form-from-string" method="post" action="/games/puzzle-from-text/from-string" target="_self">
-        <label class="form-element form-left" for="text">Puzzle from text</label>
+        <label class="form-element form-left" for="text">#interface.puzzle_from_text#</label>
         <textarea class="form-element" name="text" id="textarea-text"></textarea>
         <input class="form-element" style="display: none;" type="submit" value="Send text" id="submit-send">
-        <div class="form-element form-center form-margin-15 button" onclick="document.getElementById('submit-send').click()">Send Text</div>
+        <div class="form-element form-center form-margin-15 button" onclick="document.getElementById('submit-send').click()">#interface.send_text#</div>
       </form>
 
-      <div class="form-element form-margin-30"><label>OR</label></div>
+      <div class="form-element form-margin-30"><label>#interface.or#</label></div>
 
       <form method="post" id="form-from-file" action="/games/puzzle-from-text/from-file" enctype="multipart/form-data" target="_self">
-        <label class="form-element form-left" for="text">Puzzle from file</label>
+        <label class="form-element form-left" for="text">#interface.puzzle_from_file#</label>
         <input class="form-element filepath" type="file" accept="text/txt" name="text_file" id="input-filepath">
         <input class="form-element" style="display: none;" type="submit" value="Upload file" id="submit-upload">
-        <div class="form-element form-center form-margin-15 button" onclick="document.getElementById('submit-upload').click()">Upload File</div>
+        <div class="form-element form-center form-margin-15 button" onclick="document.getElementById('submit-upload').click()">#interface.upload_file#</div>
       </form>
     </div>
 

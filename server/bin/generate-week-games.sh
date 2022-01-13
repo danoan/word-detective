@@ -27,7 +27,8 @@ function generate_week_games(){
     ${PUZZLE_GEN_EXE} -mrandom -l7 -o"${JSON_PUZZLE_PATH}" -b"${ASSETS_PATH}/corpora/${LANGUAGE}.brk"
 
     #Render puzzle html
-    python3 "${RENDER_PUZZLE}" "${PROJECT_PATH}/games/week-puzzles/templates/index-week-puzzles.html" "${JSON_PUZZLE_PATH}" "${CUR_OUT_FOLDER}" "${day}"
+    python3 "${RENDER_PUZZLE}" "${PROJECT_PATH}/games/week-puzzles/templates/index-week-puzzles.ntl" "${JSON_PUZZLE_PATH}" "${CUR_OUT_FOLDER}" "${day}"
+    mv "${CUR_OUT_FOLDER}/index.html" "${CUR_OUT_FOLDER}/index.ntl"
 
     #Copy js files
     mkdir -p "${CUR_OUT_FOLDER}/js"

@@ -30,14 +30,14 @@
     </div>
     <div class="container-buttons">
       <div class="button left" onclick="control.gotoFromBaseURI('random-puzzle/')">
-        <div class="button-label">Random Puzzle</div>
+        <div class="button-label">#interface.random_puzzle#</div>
         <div class="button-image-common lens"></div>
         <div class="button-image-common stripes"></div>
         <div class="button-image-common zoomed-interrogation-mark circle-clip"></div>
       </div>
 
       <div class="button right" onclick="control.gotoFromBaseURI('puzzle-from-text/upload')">
-        <div class="button-label">Book Puzzle</div>
+        <div class="button-label">#interface.book_puzzle#</div>
         <div class="button-image-common lens"></div>
         <div class="button-image-common stripes"></div>
         <div class="button-image-common zoomed-book circle-clip"></div>
@@ -46,14 +46,14 @@
       <div class="clear"></div>
 
       <div class="button left" onclick="control.gotoFromBaseURI('week-puzzles/')">
-        <div class="button-label">Week Puzzle</div>
+        <div class="button-label">#interface.week_puzzle#</div>
         <div class="button-image-common lens"></div>
         <div class="button-image-common stripes"></div>
         <div class="button-image-common zoomed-calendar circle-clip"></div>
       </div>
 
       <div class="button right" onclick="control.gotoFromBaseURI('puzzle-of-day/')">
-        <div class="button-label">Dayly Puzzle</div>
+        <div class="button-label">#interface.daily_puzzle#</div>
         <div class="button-image-common lens"></div>
         <div class="button-image-common stripes"></div>
         <div class="button-image-common zoomed-newspaper circle-clip"></div>
