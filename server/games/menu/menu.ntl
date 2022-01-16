@@ -23,7 +23,7 @@
 
 <body>
   <div class="container">
-    <div class="title">Word Detective</div>
+    <div class="title"><a href="/games">Word Detective</a></div>
     <div class="container-flags">
       <div class="flag usa" onclick="document.location.href='/games/en'"></div>
       <div class="flag italy" onclick="document.location.href='/games/it'"></div>

@@ -103,13 +103,6 @@
   left: calc(-15%);
 }
 
-.title{
-  font-size: calc(0.25*var(--b-width));
-  color: var(--pallete-1);
-  text-align: center;
-  margin: auto;
-}
-
 .usa{
   background-image: url("/assets/icons/usa.png");
 }

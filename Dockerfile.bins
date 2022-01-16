@@ -31,3 +31,6 @@ COPY app/render-word-detective/*.py /word-detective/install/render-word-detectiv
 
 COPY --from=build /word-detective-build/word-detective-js/dist/word-detective-min.js \
 /word-detective/install/word-detective-js/word-detective-min.js
+
+COPY --from=build /word-detective-build/dictionaries/it/italian_dictionary.py \
+/word-detective/bin/italian_dictionary.py

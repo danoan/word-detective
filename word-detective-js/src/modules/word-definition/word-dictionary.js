@@ -41,3 +41,25 @@ export function collins() {
 
   return { get };
 }
+
+export function corriere() {
+
+  function get(word) {
+    return fetch(`/api/it/definition/${word}`)
+      .then( (response) => response.text())
+      .then( (html_response) => new Promise(function (resolve, reject) {
+        let word_definition = html_response;
+
+        if (word_definition) {
+          resolve({
+            word,
+            "definition": word_definition
+          });
+        } else {
+          reject(new Error("Word not in corriere dictionary"));
+        }
+      }));
+  }
+
+  return { get };
+}

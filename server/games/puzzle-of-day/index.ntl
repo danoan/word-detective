@@ -12,6 +12,7 @@
 
 <body>
   <div id="container-loading" class="container-loading">#interface.loading#</div>
+  <div class="title"><a href="/games">Word Detective</a></div>
   <div id="container-main" class="container-main">
 
     <div class="top-status">
@@ -49,17 +50,17 @@
       <div class="slide word-definition" id="slide-2">
         <h1></h1>
         <h2></h2>
-        <h3><a href="https://www.collinsdictionary.com">Source: Collins Dictionary</a></h3>
+        <h3><a href="#interface.dictionary_source_url">#interface.dictionary_source_label#</a></h3>
       </div>
       <div class="slide word-definition" id="slide-3">
         <h1></h1>
         <h2></h2>
-        <h3><a href="https://www.collinsdictionary.com">Source: Collins Dictionary</a></h3>
+        <h3><a href="#interface.dictionary_source_url">#interface.dictionary_source_label#</a></h3>
       </div>
       <div class="slide word-definition" id="slide-4">
         <h1></h1>
         <h2></h2>
-        <h3><a href="https://www.collinsdictionary.com">Source: Collins Dictionary</a></h3>
+        <h3><a href="#interface.dictionary_source_url">#interface.dictionary_source_label#</a></h3>
       </div>
       <div class="slide word-definition" id="slide-5">
         <div class="final-message">#interface.well_done#</div>

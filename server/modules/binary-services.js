@@ -63,10 +63,26 @@ export let binServices = function(){
             });
     }
 
+    async function italianDictionary(word){
+        let italian_dictonary_path = path.resolve(BIN_DIR,'italian_dictionary.py');
+        let wd = p_execFile('python3', [italian_dictonary_path,word]);
+
+        return wd.then(result => new Promise(function(resolve){
+            console.info("[italian-dictionary][stdout]:",result.stdout);
+            console.error("[italian-dictionary][stderr]:",result.stderr);
+
+            resolve(result.stdout);
+        }))
+        .catch( error => {
+            throw error;
+        });
+    }
+
       return {
           exportBrick,
           generatePuzzle,
-          writeToTextFile
+          writeToTextFile,
+          italianDictionary
       };
 
 }();

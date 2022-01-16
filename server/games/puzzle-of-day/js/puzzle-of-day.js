@@ -10,8 +10,9 @@ export async function setupWordDetective(){
   let today = DateGen.generate(DateGen.DateFormula.TodayMidnight);
   let tomorrow = DateGen.generate(DateGen.DateFormula.TomorrowMidnight);
 
-  config.words_found_cookie_id = `${today.toISOString()}_words_found`;
+  config.words_found_cookie_id = `${today.toISOString()}_${language}_words_found`;
   config.iso_expiration_date = `${tomorrow.toISOString()}`;
+  config.language=language;
 
   config.load_assets = async function () {
     let assets = {
@@ -31,7 +32,7 @@ export async function setupWordDetective(){
     }
 
     try {
-      let cm = cookie_manager(`${today.toISOString()}_puzzle`, config.iso_expiration_date);
+      let cm = cookie_manager(`${today.toISOString()}_${language}_puzzle`, config.iso_expiration_date);
       if (cm.get() !== '') {
         assets.puzzle = JSON.parse(cm.get());
       } else {

@@ -21,6 +21,7 @@ RUN ln /word-detective/install/app/word-detective /word-detective-server/bin/wor
 RUN ln /word-detective/install/app/export-brick /word-detective-server/bin/export-brick
 RUN ln /word-detective/install/render-word-detective/render-word-detective.py /word-detective-server/bin/render-word-detective.py
 RUN ln /word-detective/install/word-detective-js/word-detective-min.js /word-detective-server/assets/public/js/word-detective-min.js
+RUN ln /word-detective/bin/italian_dictionary.py /word-detective-server/bin/italian_dictionary.py
 
 RUN ./conf/scripts/init-server.sh
 

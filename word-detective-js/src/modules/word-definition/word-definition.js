@@ -1,10 +1,17 @@
-import { collins } from "./word-dictionary.js";
+import { corriere,collins } from "./word-dictionary.js";
 import { select_word_handler } from "./display-handlers.js";
 
-export function word_definition(gui) {
+export function word_definition(language,gui) {
   let display_handler = select_word_handler(gui);
   let selected_words = { length: 0 };
-  let dictionary = collins();
+
+  let dictionary;
+  if(language==="it"){
+    dictionary = corriere();
+  }else{
+    dictionary = collins();
+  }
+
 
   function display_word_list(list_words) {
     display_handler.show_word_list(list_words, select_word);

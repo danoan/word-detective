@@ -16,5 +16,7 @@
   "interface.puzzle_words_instructions": "(Select up to 3 words to get their definitions",
   "interface.well_done": "Well done, champs!",
   "interface.text_coverage": "Text coverage:",
-  "interface.or":"OR"
+  "interface.or":"OR",
+  "interface.dictionary_source_url":"https://www.collinsdictionary.com",
+  "interface.dictionary_source_label":"Source: Collins Dictionary"
 }

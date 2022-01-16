@@ -81,10 +81,31 @@ export let routing = function () {
       });
   }
 
+  async function wordDefinition(req,res){
+    let languageCode = req.params["language"];
+    let word = req.params["word"];
+    let definition;
+
+    try{
+      if(languageCode=='en'){
+        definition = await binServices.englishDictionary(word);
+      }else if(languageCode=='it'){
+        definition = await binServices.italianDictionary(word);
+      }else{
+        res.redirect('/error/500');
+      }
+    }catch{
+      res.redirect('/error/500');
+    }
+
+    res.send(definition);
+  }
+
   return {
     puzzleFromFile,
     puzzleFromString,
-    randomPuzzle
+    randomPuzzle,
+    wordDefinition
   };
 
 }();

@@ -9,6 +9,7 @@ export async function  setupWordDetective(){
 
   config.words_found_cookie_id = '';
   config.iso_expiration_date = '';
+  config.language = language;
 
   config.load_assets = async function () {
     let assets = {

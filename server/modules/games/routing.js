@@ -1,10 +1,5 @@
-import * as path from 'path';
-import { fileURLToPath } from 'url';
 import md5 from 'md5'
-import { Transform } from 'stream';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const PROJECT_ROOT = path.resolve(__dirname, "../..");
+import { render } from './utils.js'
 
 export let routing = function () {
 
@@ -13,7 +8,7 @@ export let routing = function () {
     let text = req.files.text_file.data.toString().replace(/`/g,'\\`');
     let checksum = md5(text);
 
-    res.render('games/puzzle-from-text/index.ntl', { vars: { text, checksum } });
+    render(req,res,"games/puzzle-from-text/index.ntl",{text,checksum})
   }
 
   function fromString(req, res) {
@@ -21,7 +16,7 @@ export let routing = function () {
     let text = req.body.text.replace(/`/g,'\\`');
     let checksum = md5(text);
 
-    res.render('games/puzzle-from-text/index.ntl', { vars: { text, checksum } });
+    render(req,res,"games/puzzle-from-text/index.ntl",{text,checksum})
   }
 
   return {

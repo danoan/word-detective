@@ -28,6 +28,7 @@
 </head>
 
 <body>
+  <div class="title"><a href="/games">Word Detective</a></div>
   <div class="container-main">
     <div class="container-form">
       <form id="form-from-string" method="post" action="/games/puzzle-from-text/from-string" target="_self">
@@ -37,7 +38,7 @@
         <div class="form-element form-center form-margin-15 button" onclick="document.getElementById('submit-send').click()">#interface.send_text#</div>
       </form>
 
-      <div class="form-element form-margin-30"><label>#interface.or#</label></div>
+      <div class="form-element form-margin-15"><label>#interface.or#</label></div>
 
       <form method="post" id="form-from-file" action="/games/puzzle-from-text/from-file" enctype="multipart/form-data" target="_self">
         <label class="form-element form-left" for="text">#interface.puzzle_from_file#</label>

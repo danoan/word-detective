@@ -175,14 +175,15 @@ export let config = {
   "onload": null,
   "load_assets": null,
   "default_error_handler": (error) => alert(error),
-  "fatal_error_handler": null
+  "fatal_error_handler": null,
+  "language":"en"
 };
 
 export let cookie_manager = _cookie_manager.cookie_manager;
 
 export function main(is_in_test_mode = false) {
   let puzzle_cookie = set_puzzle_cookie(config.words_found_cookie_id, config.iso_expiration_date);
-  let WD = word_definition(gui_word_definition());
+  let WD = word_definition(config.language,gui_word_definition());
   let SD = configure_slider();
 
   if (config.onload !== null) {

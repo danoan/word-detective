@@ -14,8 +14,9 @@ export async function setupWordDetective(reset_cookie=false,text='',text_checksu
 
   let next_year = DateGen.generate(DateGen.DateFormula.OneYearFromNow);
 
-  config.words_found_cookie_id = `puzzle_from_text_${text_checksum}_words_found`;
+  config.words_found_cookie_id = `puzzle_from_text_${text_checksum}_${language}_words_found`;
   config.iso_expiration_date = next_year.toISOString();
+  config.language = language;
 
   config.load_assets = () => load_assets(reset_cookie,text,text_checksum,language);
 
@@ -27,7 +28,7 @@ export async function setupWordDetective(reset_cookie=false,text='',text_checksu
 }
 
 async function load_assets(reset_cookie,text,text_checksum,language) {
-  let cm = cookie_manager(`puzzle_from_text_${text_checksum}_puzzle`, config.iso_expiration_date);
+  let cm = cookie_manager(`puzzle_from_text_${text_checksum}_${language}_puzzle`, config.iso_expiration_date);
   let cm_words_found = cookie_manager(config.words_found_cookie_id, config.iso_expiration_date);
 
   let assets = {

@@ -7,8 +7,9 @@ export async function setupWordDetective(puzzle_id,cookie_unique_id,expiration_d
 
   setDefaultConfiguration(config);
 
-  config.words_found_cookie_id = `${puzzle_id}_words_found_${cookie_unique_id}`;
+  config.words_found_cookie_id = `${puzzle_id}_${language}_words_found_${cookie_unique_id}`;
   config.iso_expiration_date = expiration_date;
+  config.language = language;
 
   config.load_assets = async function () {
     let assets = {
@@ -38,7 +39,7 @@ export async function setupWordDetective(puzzle_id,cookie_unique_id,expiration_d
   };
 
   config.onload = function () {
-    if (should_redirect_to_today_puzzle()) {
+    if (should_redirect_to_today_puzzle(language)) {
       window.location.href = `/games/${language}/week-puzzles`;
     }
   };
@@ -50,13 +51,13 @@ export async function setupWordDetective(puzzle_id,cookie_unique_id,expiration_d
   }
 }
 
-function should_redirect_to_today_puzzle() {
+function should_redirect_to_today_puzzle(language) {
   let ten_minutes_expire = DateGen.generate(DateGen.DateFormula.TenMinutesFromNow);
 
-  let cm = cookie_manager('recently_accessed', ten_minutes_expire);
+  let cm = cookie_manager(`${language}_recently_accessed`, ten_minutes_expire);
 
   if (cm.get() === '') {
-    cm.set('recently_visited');
+    cm.set(`${language}_recently_visited`);
     return true;
   } else {
     return false;

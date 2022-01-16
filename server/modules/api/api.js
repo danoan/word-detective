@@ -14,3 +14,7 @@ api.post('/:language/puzzle-from-file', (req, res) => {
 api.post('/:language/puzzle-from-string', (req, res) => {
     routing.puzzleFromString(req, res);
 });
+
+api.get('/:language/definition/:word', (req, res) => {
+    routing.wordDefinition(req, res);
+});
