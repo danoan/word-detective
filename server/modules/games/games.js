@@ -10,6 +10,7 @@ const GAMES_DIR = path.resolve(PROJECT_ROOT, "games");
 
 export let games = express.Router();
 
+/****Random puzzle****/
 games.get('/:language/random-puzzle', (req, res) => {
   let language = req.params["language"];
   check_language_and_go(
@@ -20,6 +21,7 @@ games.get('/:language/random-puzzle', (req, res) => {
 });
 games.use("/:language/random-puzzle", express.static(`${GAMES_DIR}/random-puzzle`));
 
+/****Puzzle of the day****/
 games.get('/:language/puzzle-of-day', (req, res) => {
   let language = req.params["language"];
   check_language_and_go(
@@ -30,6 +32,7 @@ games.get('/:language/puzzle-of-day', (req, res) => {
 });
 games.use("/:language/puzzle-of-day", express.static(`${GAMES_DIR}/puzzle-of-day`));
 
+/****Week Puzzles****/
 games.get('/:language/week-puzzles', (req, res) => {
   let language = req.params["language"];
   check_language_and_go(
@@ -47,15 +50,13 @@ games.get('/:language/week-puzzles/:weekDay', (req, res) => {
     ()=>notAvailableLanguageRedirection(res)
   );
 });
-games.use("/week-puzzles", express.static(`${GAMES_DIR}/week-puzzles`));
 games.use("/:language/week-puzzles/:weekDay", (req,res,next) => {
   let language = req.params["language"];
   let weekDay = req.params["weekDay"];
   express.static(`${GAMES_DIR}/week-puzzles/${language}/${weekDay}`)(req,res,next);
 });
-games.use("/:language/week-puzzles", express.static(`${GAMES_DIR}/week-puzzles`));
 
-
+/****Puzzle from text****/
 games.use("/puzzle-from-text", express.static(`${GAMES_DIR}/puzzle-from-text`));
 games.get('/puzzle-from-text', (req, res) => {
   let language = req.params["language"];
@@ -94,6 +95,7 @@ games.post('/:language/puzzle-from-text/from-string', (req, res) => {
   );
 });
 
+/****Menu****/
 games.get('/', (req, res) => {
   res.redirect("/games/en");
 });

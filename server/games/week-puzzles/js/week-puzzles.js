@@ -40,7 +40,7 @@ export async function setupWordDetective(puzzle_id,cookie_unique_id,expiration_d
 
   config.onload = function () {
     if (should_redirect_to_today_puzzle(language)) {
-      window.location.href = `/games/${language}/week-puzzles`;
+      window.location.href = `/games/${language}/week-puzzles/`;
     }
   };
 
