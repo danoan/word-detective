@@ -20,3 +20,10 @@ SERVER_ROOT="$(cd "${SCRIPT_DIR}" && cd ../.. && pwd)"
 
 "${SCRIPT_DIR}/init-week-puzzles.sh"
 "${SCRIPT_DIR}/init-puzzle-from-text.sh"
+
+# Setup cron job to regenerate the puzzles every sunday
+
+echo "00 6 * * 7 ${SCRIPT_DIR}/init-week-puzzles.sh" | crontab -
+crond
+node "${SERVER_ROOT}/init.js"
+

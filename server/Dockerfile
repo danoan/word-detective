@@ -23,6 +23,4 @@ RUN ln /word-detective/install/render-word-detective/render-word-detective.py /w
 RUN ln /word-detective/install/word-detective-js/word-detective-min.js /word-detective-server/assets/public/js/word-detective-min.js
 RUN ln /word-detective/bin/italian_dictionary.py /word-detective-server/bin/italian_dictionary.py
 
-RUN ./conf/scripts/init-server.sh
-
-# ENTRYPOINT [ "node","init.js" ]
+ENTRYPOINT [ "conf/scripts/init-server.sh" ]
