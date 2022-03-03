@@ -62,6 +62,11 @@ app.use('/games', games);
 app.use('/api', api);
 app.use('/error', errors);
 
+//Set the home page
+app.get('/', (req, res) => {
+    res.redirect("/games/en");
+});
+
 // You should setup your private and public keys
 // or use the http server
 const options = {
