@@ -7,6 +7,9 @@ add_executable(test-coverage
   ${CMAKE_SOURCE_DIR}/modules/standard-extensions/test/test_standard_extensions_io.cpp
   ${CMAKE_SOURCE_DIR}/app/word-detective/test/test_app_word_detective.cpp
   ${CMAKE_SOURCE_DIR}/app/word-detective/src/word-detective-api.cpp
+  ${CMAKE_SOURCE_DIR}/app/puzzle-generator/test/test_puzzle_generator.cpp
+  ${CMAKE_SOURCE_DIR}/app/puzzle-generator/src/utils.cpp
+  ${CMAKE_SOURCE_DIR}/app/puzzle-generator/src/puzzle_generator_api.cpp
 )
 
 find_package(Boost 1.67 REQUIRED filesystem system)
@@ -20,10 +23,12 @@ target_include_directories(test-coverage
   PRIVATE
   ${CMAKE_SOURCE_DIR}/ext/catch/include
   ${CMAKE_SOURCE_DIR}/ext/json/include
+  ${CMAKE_SOURCE_DIR}/ext/magLac/modules/core/include
   ${CMAKE_SOURCE_DIR}/modules/utils/include
   ${CMAKE_SOURCE_DIR}/modules/datastr/include
   ${CMAKE_SOURCE_DIR}/modules/standard-extensions/include
   ${CMAKE_SOURCE_DIR}/app/word-detective/include
+  ${CMAKE_SOURCE_DIR}/app/puzzle-generator/include
   ${Boost_INCLUDE_DIRS}
 )
 
@@ -49,6 +54,7 @@ target_link_libraries(test-coverage
   -lstandard-extensions
   -licuuc
   -licudata
+  -lpthread
   ${GCOV_LIBRARY}
   ${Boost_LIBRARIES}
 )
