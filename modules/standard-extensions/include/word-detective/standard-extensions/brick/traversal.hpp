@@ -15,7 +15,10 @@ using Brick = WordDetective::Datastr::Brick;
 using BrickInterface = WordDetective::Datastr::BrickInterface;
 
 class PreOrder : public WordDetective::Datastr::BrickExtension {
+  public:
   using Callback = std::function<void(const BrickInterface&, int)>;
+
+  private:
   static void _run(const Callback& func, const BrickInterface* brick, int level = 0);
 
  public:
@@ -24,8 +27,10 @@ class PreOrder : public WordDetective::Datastr::BrickExtension {
 };
 
 class RandomPath : public WordDetective::Datastr::BrickExtension {
+  public:
   using Callback = std::function<void(const BrickInterface&, const std::string&)>;
 
+  private:
   template<class TForwardIterator>
   static typename TForwardIterator::value_type _at(TForwardIterator begin, TForwardIterator end, size_t index){
     for(size_t i=0;i<index && begin!=end;++i){
