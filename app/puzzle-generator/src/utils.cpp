@@ -118,31 +118,52 @@ std::string random_selection(const std::string& flatten_string) {
 
 bool _find_path(const WordDetective::Datastr::Brick& brick,
                 const std::unique_ptr<FixedParameters>& fp,
-                MutableParameters& mp,
-                ControlParameters& cp) {
+                MutableParameters& mp, ControlParameters& cp) {
   if (cp.split.empty()) return true;
 
   unsigned k = cp.split.front();
 
+  auto vector_of_unicodes_1 =
+      WordDetective::Utils::to_unicode_codes(cp.letters);
   std::vector<std::string> vector_of_matched_strings;
-  for (unsigned i = k; i <= k + cp.letters.length(); ++i) {
+  for (unsigned i = k; i <= k + vector_of_unicodes_1.size(); ++i) {
     std::string flatten_string = FlattenTraversal::flatten_traversal(brick, i);
 
+    // 3.
+    // \$[^\$cinot]*[cinot]{1}\$[^\$cinot]*[cinot]{1}\$[^\$cinot]*[cinot]{1}\$[^\$cinot]*\$
+
     std::stringstream ss;
-    ss << "\\$[^\\$" << cp.letters << "]*[" << cp.letters << "]{" << i - k << "}[^\\$"
-       << cp.letters << "]*\\$";
+    std::string all_the_others = "[^\\$" + cp.letters + "]*";
+    std::string one_letter = "[" + cp.letters + "]";
+    std::string begin_end = "\\$";
 
-    std::smatch matches;
-    std::regex r(ss.str());
+    ss << begin_end << all_the_others;
+    for (unsigned j = 0; j < i - k; ++j) {
+      ss << one_letter << all_the_others;
+    }
+    ss << begin_end;
 
-    std::regex_search(flatten_string, matches, r);
+    UErrorCode status = U_ZERO_ERROR;
+    icu::UnicodeString u_s1(flatten_string.c_str());
+    icu::UnicodeString u_e(ss.str().c_str());
+
+    icu::RegexMatcher* matcher = new icu::RegexMatcher(u_e, 0, status);
+    matcher->reset(u_s1);
 
     // std::cout << "i:" << i << "regex: " << ss.str() << "matches: " <<
     // matches.size() << "::" << matches[0] << std::endl;
 
-    if (matches.empty()) continue;
+    while (matcher->find()) {
+      icu::UnicodeString tt;
 
-    for (auto m : matches) vector_of_matched_strings.emplace_back(m.str());
+      auto start = matcher->start(status);
+      auto end = matcher->end(status);
+      u_s1.extract(start, end - start, tt);
+
+      std::string ts;
+      tt.toUTF8String(ts);
+      vector_of_matched_strings.emplace_back(ts);
+    }
   }
 
   std::shuffle(vector_of_matched_strings.begin(),
@@ -156,9 +177,19 @@ bool _find_path(const WordDetective::Datastr::Brick& brick,
     std::string tmp_letters = cp.letters;
     cp.letters.clear();
 
-    std::set<char> extended_set(tmp_letters.begin(), tmp_letters.end());
-    extended_set.insert(ms.begin(), ms.end());
-    cp.letters.insert(cp.letters.begin(),extended_set.begin(), extended_set.end());
+    auto vector_of_unicodes_2 = WordDetective::Utils::to_unicode_codes(ms);
+
+    std::set<int> set_of_unicodes(vector_of_unicodes_1.begin(),
+                                  vector_of_unicodes_1.end());
+    set_of_unicodes.insert(vector_of_unicodes_2.begin(),
+                           vector_of_unicodes_2.end());
+
+    std::vector<int> unique_vector_of_unicodes(set_of_unicodes.begin(),
+                                               set_of_unicodes.end());
+    std::string s =
+        WordDetective::Utils::from_unicode_codes(unique_vector_of_unicodes);
+
+    cp.letters.insert(cp.letters.begin(), s.begin(), s.end());
 
     if (_find_path(brick, fp, mp, cp)) {
       mp.list_of_paths.emplace_front(ms);
@@ -189,7 +220,8 @@ std::list<std::string> find_path(const WordDetective::Datastr::Brick& brick,
     control_parameters.split.pop_front();
     if (_find_path(brick, fixed_parameters, mutable_parameters,
                    control_parameters)) {
-      mutable_parameters.list_of_paths.emplace_front(control_parameters.letters);
+      mutable_parameters.list_of_paths.emplace_front(
+          control_parameters.letters);
     }
     control_parameters.split.emplace_front();
   }
@@ -198,3 +230,27 @@ std::list<std::string> find_path(const WordDetective::Datastr::Brick& brick,
 }
 
 }  // namespace PuzzleGenerator::FindPath
+
+namespace PuzzleGenerator::GetValidPathSequence {
+std::list<std::string> get_valid_path_sequence(
+    const WordDetective::Datastr::Brick& brick, unsigned number_of_splits,
+    unsigned number_of_letters) {
+  auto vector_of_splits = SplitGenerator::generate_split_combinations(
+      number_of_splits, number_of_letters);
+
+  std::random_device rd;
+  std::mt19937 g(rd());
+  std::shuffle(vector_of_splits.begin(), vector_of_splits.end(), g);
+
+  std::list<std::string> list_of_paths;
+  while (!vector_of_splits.empty()) {
+    auto selected_split = vector_of_splits.back();
+    vector_of_splits.pop_back();
+
+    list_of_paths = FindPath::find_path(brick, selected_split);
+    if (!list_of_paths.empty()) break;
+  }
+
+  return list_of_paths;
+}
+}  // namespace PuzzleGenerator::GetValidPathSequence

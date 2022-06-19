@@ -10,6 +10,8 @@
 #include <string>
 #include <vector>
 
+#include "unicode/regex.h"
+#include "unicode/utypes.h"
 #include "word-detective/datastr/Brick.h"
 #include "word-detective/standard-extensions/brick/traversal.hpp"
 #include "word-detective/utils/unicode.h"
@@ -82,5 +84,11 @@ bool _find_path(const WordDetective::Datastr::Brick& brick,
 std::list<std::string> find_path(const WordDetective::Datastr::Brick& brick,
                                  std::list<unsigned>& split);
 }  // namespace PuzzleGenerator::FindPath
+
+namespace PuzzleGenerator::GetValidPathSequence {
+std::list<std::string> get_valid_path_sequence(
+    const WordDetective::Datastr::Brick& brick, unsigned number_of_splits,
+    unsigned number_of_letters);
+}
 
 #endif

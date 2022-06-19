@@ -54,7 +54,7 @@ target_link_libraries(test-coverage
   -lstandard-extensions
   -licuuc
   -licudata
-  -lpthread
+  -licui18n
   ${GCOV_LIBRARY}
   ${Boost_LIBRARIES}
 )
