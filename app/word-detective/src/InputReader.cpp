@@ -1,7 +1,7 @@
 #include "InputReader.h"
 
 void usage(char* argv[]) {
-  std::cerr << "Usage: " << argv[0] << "Input_Brick_Filepath\n"
+  std::cerr << "Usage: " << argv[0] << "\n"
             << "[-L] language (default:english. (italian,english))\n"
             << "[-l] number of letters in puzzle (default:5)\n"
             << "[-w] minimum number of words in a puzzle (default:5)\n"

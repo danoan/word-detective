@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
       break;
     }
     case InputData::RANDOM_PUZZLE: {
-      output(random_puzzle(brick, id.num_letters, id.min_words),
+      output(random_puzzle(brick, id.num_letters),
              id.outputfilepath);
       break;
     }

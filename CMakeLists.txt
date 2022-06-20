@@ -33,7 +33,6 @@ add_subdirectory(modules/standard-extensions)
 add_subdirectory(modules/utils)
 add_subdirectory(app/word-detective)
 add_subdirectory(app/export-brick)
-add_subdirectory(app/puzzle-generator)
 
 if( ${BUILD_BENCHMARKS} )
   add_subdirectory(lab/benchmark)

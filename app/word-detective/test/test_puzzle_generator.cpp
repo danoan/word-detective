@@ -1,7 +1,6 @@
 #include <iostream>
 
 #include "catch/catch.hpp"
-#include "puzzle_generator_api.h"
 #include "unicode/regex.h"
 #include "unicode/utypes.h"
 #include "utils.h"
@@ -247,6 +246,98 @@ TEST_CASE("Generate English Puzzles",
         unicodes.insert(vu.begin(), vu.end());
       }
       REQUIRE(unicodes.size() == 10);
+    }
+  }
+}
+
+TEST_CASE("Word Collector", "[puzzle-generator][word-collector]") {
+  const std::string BRICK_FILEPATH =
+      "/home/daniel/Projects/Git/word-detective/books/ef-5000.txt.brk";
+
+  WordDetective::Datastr::Brick brick;
+  std::ifstream ifs(BRICK_FILEPATH, std::ios::binary);
+
+  WordDetective::StandardExtensions::Brick::IO::Load::run(brick, ifs);
+
+  auto test_unique_characters = [](const std::string& s) {
+    std::list<std::string> ls({s});
+    return PuzzleGenerator::WordCollector::get_unique_characters(ls.begin(),
+                                                                 ls.end());
+  };
+
+  SECTION("get_unique_characters") {
+    REQUIRE(test_unique_characters("compound") == "cdmnopu");
+    REQUIRE(test_unique_characters("memorial") == "aeilmor");
+  }
+
+  SECTION("collect words from path") {
+    std::list<std::string> words_to_check{"coalition", "location",
+                                          "allocation"};
+    std::unordered_set<std::string> word_collection;
+    PuzzleGenerator::WordCollector::collect_words(word_collection, "acilnot",
+                                                  brick);
+
+    INFO(word_collection.size());
+    REQUIRE(word_collection.size() == words_to_check.size());
+    for (auto word : words_to_check) {
+      INFO(word);
+      REQUIRE(word_collection.find(word) != word_collection.end());
+    }
+  }
+
+  SECTION("collect words from all subpaths in cdmnopu") {
+    std::list<std::string> words_to_check{"coup",   "mood", "compound", "dump",
+                                          "pound",  "pond", "pump",     "upon",
+                                          "common", "noon", "mood"};
+    std::unordered_set<std::string> word_collection;
+    PuzzleGenerator::WordCollector::collect_words_from_all_subpaths(
+        word_collection, "cdmnopu", brick);
+
+    INFO(word_collection.size());
+    REQUIRE(word_collection.size() == words_to_check.size());
+    for (auto word : word_collection) {
+      INFO(word);
+      REQUIRE(word_collection.find(word) != word_collection.end());
+    }
+  }
+
+  SECTION("collect words from all subpaths in aeilmor") {
+    std::list<std::string> words_to_check{
+        "area", "realm", "rear",   "rare", "moral",  "memorial", "rail",
+        "room", "roll",  "mirror", "role", "male",   "loom",     "mill",
+        "meal", "error", "mere",   "more", "memoir", "oral",     "mail",
+        "memo", "mall",  "email",  "real"};
+    std::unordered_set<std::string> word_collection;
+    PuzzleGenerator::WordCollector::collect_words_from_all_subpaths(
+        word_collection, "aeilmor", brick);
+
+    INFO(word_collection.size());
+    REQUIRE(word_collection.size() == words_to_check.size());
+    for (auto word : word_collection) {
+      INFO(word);
+      REQUIRE(word_collection.find(word) != word_collection.end());
+    }
+  }
+
+  SECTION("collect words from all subpaths in acilnot") {
+    std::list<std::string> words_to_check{
+        "attain",  "total",      "intact",   "tail",     "onto",
+        "noon",    "tactic",     "canal",    "cotton",   "clinic",
+        "initial", "national",   "nation",   "action",   "coalition",
+        "call",    "toll",       "location", "colonial", "clinical",
+        "contact", "tactical",   "coat",     "onion",    "into",
+        "notion",  "local",      "coal",     "tool",     "tall",
+        "cool",    "allocation", "icon",     "contain",  "loan"};
+
+    std::unordered_set<std::string> word_collection;
+    PuzzleGenerator::WordCollector::collect_words_from_all_subpaths(
+        word_collection, "acilnot", brick);
+
+    INFO(word_collection.size());
+    REQUIRE(word_collection.size() == words_to_check.size());
+    for (auto word : word_collection) {
+      INFO(word);
+      REQUIRE(word_collection.find(word) != word_collection.end());
     }
   }
 }

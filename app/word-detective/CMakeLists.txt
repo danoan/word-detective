@@ -3,6 +3,7 @@ project(word-detective)
 add_executable(word-detective
 word-detective.cpp
 src/word-detective-api.cpp
+src/utils.cpp
 src/InputReader.cpp
 )
 
@@ -35,6 +36,7 @@ PUBLIC
  -lutils
  -licuuc
  -licudata
+ -licui18n
  ${Boost_LIBRARIES})
 
 install(TARGETS word-detective

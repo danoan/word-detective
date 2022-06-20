@@ -8,95 +8,91 @@
 #include "word-detective/utils/text/segmenter.hpp"
 #include "word-detective/utils/text/segmenter/english.hpp"
 
-TEST_CASE("Word detective API", "[app][word-detective]") {
-  SECTION("path from word") {
-    REQUIRE(path_from_word("compound") == "cdmnopu");
-    REQUIRE(path_from_word("memorial") == "aeilmor");
-  }
+TEST_CASE("English Word Detetctive API", "[app][word-detective][english][word-detective-api]"){
+  const std::string BRICK_FILEPATH =
+      "/home/daniel/Projects/Git/word-detective/books/ef-5000.txt.brk";
 
-  std::string list_of_5k_english_words_filepath = PROJECT_SOURCE_DIR;
-  list_of_5k_english_words_filepath +=
-      "/app/word-detective/test/input/ef-5000.txt";
+  WordDetective::Datastr::Brick brick;
+  std::ifstream ifs(BRICK_FILEPATH, std::ios::binary);
 
-  std::ifstream ifs(list_of_5k_english_words_filepath);
-  std::unordered_map<std::string, int> word_map;
-  Utils::Text::segment_into_map<Utils::Text::Languages::English>(
-      word_map, ifs, [](const std::string& word) {
-        using namespace WordDetective::Utils::Text;
-        return !starts_with_capital_letter(word) &&
-               more_than_n_characters<3>(word);
-      });
+  WordDetective::StandardExtensions::Brick::IO::Load::run(brick, ifs);
 
-  INFO(word_map.size());
-  REQUIRE(word_map.size() == 4241);
+  auto test_puzzle = [](const WordDetective::Datastr::Brick& brick, unsigned num_letters, unsigned trials=100){
+    for(unsigned i=0;i<trials;++i){
+      auto json_result = random_puzzle(brick,num_letters);
+      if(num_letters==0){
+        REQUIRE(json_result.empty());
+      }else{
+        REQUIRE(!json_result.empty());
 
-  Datastr::Brick brick_5k;
-  for (auto p : word_map) brick_5k << p.first;
-
-  SECTION("collect words from path") {
-    std::list<std::string> words_to_check{"coalition", "location",
-                                          "allocation"};
-    std::unordered_set<std::string> word_collection;
-    collect_words(word_collection, "acilnot", brick_5k);
-
-    INFO(word_collection.size());
-    REQUIRE(word_collection.size() == words_to_check.size());
-    for (auto word : words_to_check) {
-      INFO(word);
-      REQUIRE(word_collection.find(word) != word_collection.end());
+        Puzzle::Puzzle puzzle;
+        Puzzle::from_json(json_result,puzzle);
+        REQUIRE(puzzle.letters.size()==num_letters);
+        REQUIRE(PuzzleGenerator::WordCollector::get_unique_characters(puzzle.words.begin(),puzzle.words.end()).size()==num_letters);
+      }
     }
+  };
+
+  SECTION("Random Puzzle of 0 letters"){
+    test_puzzle(brick,0,1);
   }
 
-  SECTION("collect words from all subpaths in cdmnopu") {
-    std::list<std::string> words_to_check{"coup",   "mood", "compound", "dump",
-                                          "pound",  "pond", "pump",     "upon",
-                                          "common", "noon", "mood"};
-    std::unordered_set<std::string> word_collection;
-    collect_words_from_all_subpaths(word_collection, "cdmnopu", brick_5k);
+  SECTION("Random Puzzle of 5 letters"){
+    test_puzzle(brick,5);
+  }
 
-    INFO(word_collection.size());
-    REQUIRE(word_collection.size() == words_to_check.size());
-    for (auto word : word_collection) {
-      INFO(word);
-      REQUIRE(word_collection.find(word) != word_collection.end());
+  SECTION("Random Puzzle of 7 letters"){
+    test_puzzle(brick,7);
+  }
+
+  SECTION("Random Puzzle of 10 letters"){
+    test_puzzle(brick,10);
+  }
+
+}
+
+/********************* ITALIAN ************************/
+
+TEST_CASE("Italian Word Detetctive API", "[app][word-detective][italian][word-detective-api]"){
+  const std::string BRICK_FILEPATH =
+      "/home/daniel/Projects/Git/word-detective/books/italian-15k.txt.brk";
+
+  WordDetective::Datastr::Brick brick;
+  std::ifstream ifs(BRICK_FILEPATH, std::ios::binary);
+
+  WordDetective::StandardExtensions::Brick::IO::Load::run(brick, ifs);
+
+  auto test_puzzle = [](const WordDetective::Datastr::Brick& brick, unsigned num_letters, unsigned trials=100){
+    for(unsigned i=0;i<trials;++i){
+      auto json_result = random_puzzle(brick,num_letters);
+      if(num_letters==0){
+        REQUIRE(json_result.empty());
+      }else{
+        REQUIRE(!json_result.empty());
+
+        Puzzle::Puzzle puzzle;
+        Puzzle::from_json(json_result,puzzle);
+        REQUIRE(WordDetective::Utils::to_unicode_codes(puzzle.letters).size()==num_letters);
+        std::string unique_letters = PuzzleGenerator::WordCollector::get_unique_characters(puzzle.words.begin(),puzzle.words.end());
+        REQUIRE(WordDetective::Utils::to_unicode_codes(unique_letters).size()==num_letters);
+      }
     }
+  };
+
+  SECTION("Random Puzzle of 0 letters"){
+    test_puzzle(brick,0,1);
   }
 
-  SECTION("collect words from all subpaths in aeilmor") {
-    std::list<std::string> words_to_check{
-        "area", "realm", "rear",   "rare", "moral",  "memorial", "rail",
-        "room", "roll",  "mirror", "role", "male",   "loom",     "mill",
-        "meal", "error", "mere",   "more", "memoir", "oral",     "mail",
-        "memo", "mall",  "email",  "real"};
-    std::unordered_set<std::string> word_collection;
-    collect_words_from_all_subpaths(word_collection, "aeilmor", brick_5k);
-
-    INFO(word_collection.size());
-    REQUIRE(word_collection.size() == words_to_check.size());
-    for (auto word : word_collection) {
-      INFO(word);
-      REQUIRE(word_collection.find(word) != word_collection.end());
-    }
+  SECTION("Random Puzzle of 5 letters"){
+    test_puzzle(brick,5);
   }
 
-  SECTION("collect words from all subpaths in acilnot") {
-    std::list<std::string> words_to_check{
-        "attain",  "total",      "intact",   "tail",     "onto",
-        "noon",    "tactic",     "canal",    "cotton",   "clinic",
-        "initial", "national",   "nation",   "action",   "coalition",
-        "call",    "toll",       "location", "colonial", "clinical",
-        "contact", "tactical",   "coat",     "onion",    "into",
-        "notion",  "local",      "coal",     "tool",     "tall",
-        "cool",    "allocation", "icon",     "contain",  "loan"};
-
-    std::unordered_set<std::string> word_collection;
-    collect_words_from_all_subpaths(word_collection, "acilnot", brick_5k);
-
-    INFO(word_collection.size());
-    REQUIRE(word_collection.size() == words_to_check.size());
-    for (auto word : word_collection) {
-      INFO(word);
-      REQUIRE(word_collection.find(word) != word_collection.end());
-    }
+  SECTION("Random Puzzle of 7 letters"){
+    test_puzzle(brick,7);
   }
+
+  SECTION("Random Puzzle of 10 letters"){
+    test_puzzle(brick,10);
+  }
+
 }
