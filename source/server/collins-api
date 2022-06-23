@@ -1,0 +1,124 @@
+Collins API key:
+B1QwiDkvO5KYG5tzPVSR3jvOvscROpfvn9wkeDg9p2RuRCydSr6NwACmJLx0bV3E
+
+General format
+  Base: https://api.collinsdictionary.com
+  GET /api/v1/dictionaries/{dictCode}/entries/{entryId}?format={format} 
+
+HTTPS/1.0  
+  Host: {hostname} 
+  Accept: application/json 
+  accessKey: {accessKey}
+
+get_english_dict_code()
+  GET /api/v1/dictionaries
+
+  Response:
+    [
+      {
+        "dictionaryCode",
+        "dictionaryName",
+        "dictionaryUrl"
+      },
+      ...
+    ]
+
+get_first_entry()
+  GET /api/v1/dictionaries/english/search/first/?q={searchWord}&format={format} 
+  format: {xml,html}
+
+  Response:
+    {
+      "topics": [],
+      "dictionaryCode": "english",
+      "entryLabel": "keyboard",
+      "entryUrl": "http://api.collinsdictionary.com/api/v1/dictionaries/english/entries/keyboard_1",
+      "format": "html",
+      "entryId": "keyboard_1",
+      "entryContent": "
+        <div class=\"entry_container\">
+          <div class=\"entry lang_en-gb\" id=\"keyboard_1\">
+            <span class=\"inline\">
+              <h1 class=\"hwd\">keyboard</h1>
+              <span> (</span>
+              <span class=\"pron\" type=\"\">ˈkiːˌbɔːd<a href=\"#\" class=\"playback\">
+                  <img src=\"https://api.collinsdictionary.com/external/images/redspeaker.gif?version=2016-11-09-0913\"
+                    alt=\"Pronunciation for keyboard\" class=\"sound\" title=\"Pronunciation for keyboard\" style=\"cursor:
+                    pointer\" />
+                </a>
+                <audio type=\"pronunciation\" title=\"keyboard\">
+                  <source type=\"audio/mpeg\"
+                    src=\"https://api.collinsdictionary.com/media/sounds/sounds/3/303/30309/30309.mp3\" />Your browser does not
+                  support HTML5 audio.
+                </audio>
+              </span>
+              <span>)</span>
+            </span>
+            <div class=\"hom\" id=\"keyboard_1.1\">
+              <span class=\"gramGrp\">
+                <span> </span>
+                <span class=\"pos\">noun</span>
+              </span>
+              <div class=\"sense\">
+                <span class=\"sensenum\"> 1 </span>
+                <div class=\"sense\">
+                  <span class=\"sensenum\"> a </span>
+                  <span class=\"def\">a complete set of keys, usually hand-operated, as on a piano, organ, computer, typewriter,
+                    or typesetting machine</span>
+                </div>
+                <!-- End of DIV sense-->
+                <div class=\"sense\">
+                  <span class=\"sensenum\"> b </span>
+                  <span class=\"def\">(<em class=\"hi\">as modifier</em>)</span>
+                  <span class=\"cit\" id=\"keyboard_1.2\">
+                    <span class=\"quote\">
+                      <span> ■ </span>a keyboard instrument</span>
+                  </span>
+                </div>
+                <!-- End of DIV sense-->
+              </div>
+              <!-- End of DIV sense-->
+              <div class=\"sense\" id=\"keyboard_1.3\">
+                <span class=\"sensenum\"> 2 </span>
+                <span class=\"gramGrp\">
+                  <span class=\"subc\">
+                    <span>(</span>often plural<span>)</span>
+                  </span>
+                </span>
+                <span> </span>
+                <span class=\"def\">a musical instrument, esp an electronic one, played by means of a keyboard</span>
+              </div>
+              <!-- End of DIV sense-->
+            </div>
+            <!-- End of DIV hom-->
+            <div class=\"hom\" id=\"keyboard_1.4\">
+              <span> <br />▷ </span>
+              <span class=\"gramGrp\">
+                <span class=\"pos\">verb</span>
+              </span>
+              <div class=\"sense\" id=\"keyboard_1.5\">
+                <span class=\"sensenum\"> 3 </span>
+                <span class=\"def\">to set (a text, etc) in type, onto magnetic tape, or into some other medium, by using a
+                  keyboard machine</span>
+              </div>
+              <!-- End of DIV sense-->
+            </div>
+            <!-- End of DIV hom-->
+            <span class=\"re\" id=\"keyboard_1.6\">
+              <span> &gt; </span>
+              <span class=\"inline\">
+                <span class=\"orth\">ˈkeyˌboarder</span>
+              </span>
+              <div class=\"hom\" id=\"keyboard_1.7\">
+                <span class=\"gramGrp\">
+                  <span> </span>
+                  <span class=\"pos\">noun</span>
+                </span>
+              </div>
+              <!-- End of DIV hom-->
+            </span>
+          </div>
+          <!-- End of DIV entry lang_en-gb-->
+        </div>
+        <!-- End of DIV entry_container-->"
+    }

@@ -1,0 +1,5 @@
+docs/html/*
+docs/latex*
+ext/inja
+ext/node-v14.17.4-linux-x64
+lab/test/coverage/assets

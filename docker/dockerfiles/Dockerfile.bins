@@ -1,0 +1,28 @@
+FROM word-detective-dependencies:v0.1 as build
+
+WORKDIR /word-detective-build
+
+COPY ./docker/scripts/binaries /word-detective-build/docker/scripts/binaries
+COPY ./source/word-detective-backend /word-detective-build/source/word-detective-backend
+COPY ./source/word-detective-js /word-detective-build/source/word-detective-js
+COPY ./CMakeLists.txt /word-detective-build/CMakeLists.txt
+
+RUN ./docker/scripts/binaries/build-install.sh
+RUN ./docker/scripts/binaries/run-tests.sh
+RUN ./docker/scripts/binaries/minify-word-detective-js.sh
+
+# -----------------------------------------#
+
+FROM word-detective-dependencies:v0.1
+
+WORKDIR /word-detective
+
+COPY --from=build /word-detective-build/install /word-detective/install/
+COPY ./source/word-detective-backend/app/render-word-detective/*.sh /word-detective/install/render-word-detective/
+COPY ./source/word-detective-backend/app/render-word-detective/*.py /word-detective/install/render-word-detective/
+
+COPY --from=build /word-detective-build/source/word-detective-js/dist/word-detective-min.js \
+/word-detective/install/word-detective-js/word-detective-min.js
+
+COPY ./source/dictionaries/it/italian_dictionary.py \
+/word-detective/bin/italian_dictionary.py

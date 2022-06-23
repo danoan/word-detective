@@ -1,11 +1,9 @@
 .vscode
-books
 build
-docs
 install
 output
 project-journal
-server
+sandbox
 Dockerfile*
 word-detective-js/node_modules
 word-detective-js/dist
