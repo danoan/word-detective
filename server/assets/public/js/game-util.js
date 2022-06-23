@@ -101,9 +101,21 @@ function setPalleteItaly() {
   root.style.setProperty('--pallete-7', '#aaaaaa');
 }
 
+function setPalleteUnique() {
+  root.style.setProperty('--pallete-1', '#003a4f');
+  root.style.setProperty('--pallete-2', '#d1d1af');
+  root.style.setProperty('--pallete-3', '#ebebe6');
+  root.style.setProperty('--pallete-4', '#003a4f');
+  root.style.setProperty('--pallete-5', '#FFFFFF');
+  root.style.setProperty('--pallete-6', '#dadae5');
+  root.style.setProperty('--pallete-7', '#aaaaaa');
+}
+
 const LANGUAGES = ["pt","en","it"];
 
 export function updatePallete(language) {
+  setPalleteUnique();
+  return;
   if (language === 'pt') setPalleteBrazil();
   else if (language === 'en') setPalleteUsa();
   else if (language === 'it') setPalleteItaly();
