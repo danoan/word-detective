@@ -3,15 +3,37 @@
 SCRIPT_DIR="$( cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WORD_DETECTIVE_ROOT="$(cd "${SCRIPT_DIR}" && cd .. && pwd)"
 
-BUILD_BINARIES="${1}"
+BUILD_TYPE="${1}"
 
-if [ -n "${BUILD_BINARIES}" ]
-then
-  echo "Building binaries..."
+function build_dependencies()
+{
+  docker build "${WORD_DETECTIVE_ROOT}" \
+  -f "${WORD_DETECTIVE_ROOT}/Dockerfile.dependencies" \
+  -t word-detective-dependencies:v0.1
+}
 
+function build_binaries(){
   docker build "${WORD_DETECTIVE_ROOT}" \
   -f "${WORD_DETECTIVE_ROOT}/Dockerfile.bins" \
   -t word-detective-bins:v0.1
+}
+
+if [ "${BUILD_TYPE}" = "binaries" ]
+then
+  echo "Building binaries..."
+  build_binaries
+elif [ "${BUILD_TYPE}" = "dependencies" ]
+then
+  echo "Building dependencies..."
+  build_dependencies
+elif [ "${BUILD_TYPE}" = "all" ]
+then
+  echo "Building all..."
+  build_dependencies
+  build_binaries
+else
+  echo "Build type: '${BUILD_TYPE}' not recognized"
+  exit 1
 fi
 
 docker build "${SCRIPT_DIR}" \

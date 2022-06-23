@@ -1,19 +1,7 @@
-FROM alpine:3.14 as build
-
-RUN apk add --update --no-cache \
-bash \
-g++ \
-make \
-cmake \
-nodejs \
-npm
-
-WORKDIR /word-detective-build
+FROM word-detective-dependencies:v0.1
 
 COPY . /word-detective-build
 
-RUN ./lab/docker-scripts/deps/install-boost.sh
-RUN ./lab/docker-scripts/deps/install-icu.sh
 RUN ./lab/docker-scripts/build-install.sh && \
 ./lab/docker-scripts/run-tests.sh
 
@@ -21,7 +9,7 @@ RUN ./lab/docker-scripts/minify-word-detective-js.sh
 
 #-----------------------------------------#
 
-FROM alpine:3.14
+FROM word-detective-dependencies:v0.1
 
 WORKDIR /word-detective
 
