@@ -8,3 +8,5 @@ output
 project-journal
 sandbox
 workspace.code-workspace
+**/__pycache__
+.*
