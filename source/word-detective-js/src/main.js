@@ -102,7 +102,10 @@ function gui_WORD_DETECTIVE_api() {
   }
 
   function get_display_value() {
-    return gui.display.innerHTML;
+    if (gui.display.childElementCount >0) {
+      return gui.display.children[0].innerHTML;
+    }
+    return "";
   }
 
   function clear_display_value() {

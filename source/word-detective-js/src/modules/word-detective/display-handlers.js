@@ -1,13 +1,12 @@
 export function normal_mode_display_handler(gui) {
-  let display_text = '';
 
   function init(){
-    display_text = '';
-    gui.set_display_value(display_text);
+    gui.set_display_value('');
   }
 
   function erase_letter() {
-    let current_text = display_text;
+    let display_text = '';
+    let current_text = gui.get_display_value();
 
     if (current_text.length >= 1) {
       display_text = current_text.substring(0, current_text.length - 1);
@@ -18,14 +17,15 @@ export function normal_mode_display_handler(gui) {
   }
 
   function click_letter(letter) {
-    if (display_text.length <= 30) {
-      display_text += letter;
+    let current_text = gui.get_display_value();
+    if (current_text.length <= 30) {
+      current_text += letter;
     }
-    gui.set_display_value(display_text);
+    gui.set_display_value(current_text);
   }
 
   function get_user_input_word(){
-    return display_text;
+    return gui.get_display_value();
   }
 
   function reset(){}
@@ -41,7 +41,6 @@ export function normal_mode_display_handler(gui) {
 
 function default_hint_mode(gui) {
   let word_chars_pos = [];
-  let display_text = '';
 
   function replace_a_char(text, pos, new_char) {
     let replaced_text = text.substring(0, pos) + new_char;
@@ -50,7 +49,7 @@ function default_hint_mode(gui) {
   }
 
   function init(word){
-    display_text = '';
+    let display_text = '';
     word_chars_pos = [];
     for (let i = 0; i < word.length; ++i) {
       if (i % 2 === 0) {
@@ -64,6 +63,8 @@ function default_hint_mode(gui) {
   }
 
   function erase_letter() {
+    let display_text = gui.get_display_value();
+
     let char_pos_list = word_chars_pos;
     for (let i = char_pos_list.length - 1; i >= 0; --i) {
       let pos = char_pos_list[i];
@@ -77,6 +78,8 @@ function default_hint_mode(gui) {
   }
 
   function click_letter(letter) {
+    let display_text = gui.get_display_value();
+
     let char_pos_list = word_chars_pos;
     for (let i = 0; i < char_pos_list.length; ++i) {
       let pos = char_pos_list[i];
@@ -90,7 +93,7 @@ function default_hint_mode(gui) {
   }
 
   function get_user_input_word(){
-    return display_text;
+    return gui.get_display_value();
   }
 
   function reset(){}
