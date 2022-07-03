@@ -186,7 +186,7 @@ export let cookie_manager = _cookie_manager.cookie_manager;
 
 export function main(is_in_test_mode = false) {
   let puzzle_cookie = set_puzzle_cookie(config.words_found_cookie_id, config.iso_expiration_date);
-  let WD = word_definition(config.language,gui_word_definition());
+  let WD = configure_word_definition();
   let SD = configure_slider();
 
   if (config.onload !== null) {
@@ -195,8 +195,7 @@ export function main(is_in_test_mode = false) {
 
   return config.load_assets()
     .then((assets) => new Promise(function (resolve) {
-      let config = configure_WORD_DETECTIVE_(assets);
-      let control = create_WORD_DETECTIVE_api(gui_WORD_DETECTIVE_api(), assets.messages, config);
+      let control = configure_WORD_DETECTIVE(assets);
 
       if (is_in_test_mode) {
         control.ephemeral = {
@@ -210,101 +209,110 @@ export function main(is_in_test_mode = false) {
 
     }));
 
-  function configure_slider() {
-    let config = { "callbacks": {} };
+  function configure_word_definition() {
+    return word_definition(config.language,gui_word_definition());
+  }
 
-    config.callbacks.pre_slide_left = function (current_slide_number) {
+  function configure_slider() {
+    let slider_config = { "callbacks": {} };
+
+    slider_config.callbacks.pre_slide_left = function (current_slide_number) {
       if (current_slide_number === 0) {
         let num_slides = 5;
         SD.set_next_slide_number(num_slides - WD.num_selected_words() - 2);
       }
     };
-    config.callbacks.slide_left = create_slide_left_callback();
+    slider_config.callbacks.slide_left = create_slide_left_callback();
 
-    return slider(gui_slider(), config);
-  }
+    return slider(gui_slider(), slider_config);
 
-  function create_slide_left_callback() {
-    let word_index = 0;
-    return function (slide_element, is_final_slide) {
-      if (!is_final_slide) {
-        let list_words = WD.get_selected_words();
-        let word = list_words[word_index++];
+    function create_slide_left_callback() {
+      let word_index = 0;
+      return function (slide_element, is_final_slide) {
+        if (!is_final_slide) {
+          let list_words = WD.get_selected_words();
+          let word = list_words[word_index++];
 
-        WD.get_word_definition(word).then(
-          function (meaning_response) {
-            slide_element.children[0].innerHTML = meaning_response.word;
-            slide_element.children[1].innerHTML = meaning_response.definition;
-          },
-          function (error) { config.default_error_handler(error); }
-        );
+          WD.get_word_definition(word).then(
+            function (meaning_response) {
+              slide_element.children[0].innerHTML = meaning_response.word;
+              slide_element.children[1].innerHTML = meaning_response.definition;
+            },
+            function (error) { config.default_error_handler(error); }
+          );
+        }
       }
     }
   }
 
-  function configure_WORD_DETECTIVE_(assets) {
-    let config = { "callbacks": {} };
-    config.callbacks.check_word = save_found_words_in_cookie;
-    config.callbacks.init = (control_members) => init_puzzle(assets.puzzle, control_members);
-    config.callbacks.end = display_word_list;
+  function configure_WORD_DETECTIVE(assets) {
+    let word_detective_config = { "callbacks": {} };
+    word_detective_config.callbacks.check_word = save_found_words_in_cookie;
+    word_detective_config.callbacks.init = (control_members) => init_puzzle(assets.puzzle, control_members);
+    word_detective_config.callbacks.end = display_word_list;
 
-    return config;
-  }
+    return create_WORD_DETECTIVE_api(gui_WORD_DETECTIVE_api(), assets.messages, word_detective_config);
 
-  function init_puzzle(puzzle, control_members) {
-    render_puzzle_letters(puzzle);
+    function save_found_words_in_cookie(control_members, check_word_status, status) {
+      let words_found_cookie = '';
 
-    for (let word of puzzle.words) {
-      control_members.add_missing_word(word);
+      control_members.get_words_found().forEach((word) => {
+        if (word.length > 0) {
+          words_found_cookie += word + ',';
+        }
+      });
+
+      puzzle_cookie.set(words_found_cookie);
+
+      if( status === check_word_status.UNRECOGNIZED_WORD ){
+        console.log("Do you want to request this word?");
+      }
     }
 
-    load_found_words_from_cookie(control_members);
-  }
+    function init_puzzle(puzzle, control_members) {
+      render_puzzle_letters(puzzle);
 
-  function render_puzzle_letters(puzzle) {
-    //TODO: Think about replacing this by a template strategy instead
-    let i = 1;
-    for (let letter of puzzle.letters) {
-      let div_root = document.createElement("div");
-      let div_kid = document.createElement("div");
+      for (let word of puzzle.words) {
+        control_members.add_missing_word(word);
+      }
 
-      div_root.className = `hexagon hexagon-pos-${i}`;
-      div_root.onclick = () => control.click_letter(letter);
+      load_found_words_from_cookie(control_members);
+    }
 
-      div_kid.className = "letter-hex";
-      div_kid.innerHTML = letter;
+    function display_word_list(control_members) {
+      WD.display_word_list(control_members.get_words_found());
+    }
 
-      div_root.appendChild(div_kid);
+    function render_puzzle_letters(puzzle) {
+      //TODO: Think about replacing this by a template strategy instead
+      let i = 1;
+      for (let letter of puzzle.letters) {
+        let div_root = document.createElement("div");
+        let div_kid = document.createElement("div");
 
-      document.getElementById("container-hexagons").appendChild(div_root);
-      i += 1;
+        div_root.className = `hexagon hexagon-pos-${i}`;
+        div_root.onclick = () => control.click_letter(letter);
+
+        div_kid.className = "letter-hex";
+        div_kid.innerHTML = letter;
+
+        div_root.appendChild(div_kid);
+
+        document.getElementById("container-hexagons").appendChild(div_root);
+        i += 1;
+      }
+    }
+
+    function load_found_words_from_cookie(control_members) {
+      let str_words_found = puzzle_cookie.get();
+
+      let _words_found = str_words_found.split(',');
+      _words_found.forEach((word) => {
+        if (word.length > 0) {
+          control_members.add_found_word(word);
+        }
+      });
     }
   }
 
-  function load_found_words_from_cookie(control_members) {
-    let str_words_found = puzzle_cookie.get();
-
-    let _words_found = str_words_found.split(',');
-    _words_found.forEach((word) => {
-      if (word.length > 0) {
-        control_members.add_found_word(word);
-      }
-    });
-  }
-
-  function save_found_words_in_cookie(control_members) {
-    let words_found_cookie = '';
-
-    control_members.get_words_found().forEach((word) => {
-      if (word.length > 0) {
-        words_found_cookie += word + ',';
-      }
-    });
-
-    puzzle_cookie.set(words_found_cookie);
-  }
-
-  function display_word_list(control_members) {
-    WD.display_word_list(control_members.get_words_found());
-  }
 }
