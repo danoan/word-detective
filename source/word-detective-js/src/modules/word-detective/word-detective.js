@@ -166,9 +166,10 @@ let block_decorator = (function () {
 
 function setup_messages(messages_json) {
   function get_random_item(list) {
-    let max_index = list.length - 1;
+    let max_index = list.length;
     let index = Math.trunc(Math.random() * max_index);
-    return list[index];
+
+    return list[Math.min(index,max_index-1)];
   };
 
   function super_difficult_word_message() {
