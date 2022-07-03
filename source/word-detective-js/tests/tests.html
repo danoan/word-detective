@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- add mocha css, to show results -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/3.2.0/mocha.css">
+  <!-- add mocha framework code -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/3.2.0/mocha.js"></script>
+  <script>
+    mocha.setup('bdd'); // minimal setup
+  </script>
+  <!-- add chai -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/3.5.0/chai.js"></script>
+  <script>
+    // chai has a lot of stuff, let's make assert global
+    let assert = chai.assert;
+    let expect = chai.expect;
+    let is_in_test_mode = true;
+    let control;
+  </script>
+
+  <link rel='stylesheet' type='text/css' media='screen' href='/tests/assets/css/master.css'>
+  <link rel='stylesheet' type='text/css' media='screen' href='/tests/assets/css/game-interface.css'>
+</head>
+
+<body>
+
+  <div id="container-loading" class="container-loading">Loading</div>
+  <div class="title"><a href="/games">Word Detective</a></div>
+  <div id="container-main" class="container-main">
+    <div class="top-status">
+      <span id="missing-words">Missing Word</span>
+      <div class="container-words">
+        <div class="words-found">
+          <ul id="words-list">
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="display-text" id="display-text"></div>
+
+    <div class="container-hexagons" id="container-hexagons">
+    </div>
+
+    <div class="container-buttons">
+      <div class="button button-inline" onclick="control.erase_letter()">Erase</div>
+      <div class="button button-inline" onclick="control.hint()">Hint</div>
+      <div class="button button-inline" onclick="control.check_word()">Check</div>
+    </div>
+
+    <div class="bottom-status" id="bottom-status">
+
+    </div>
+
+    <div id="evidence-list" class="evidence-list slide-deck">
+      <div class="slide word-selection" id="slide-1">
+        <h1>#interface.puzzle_words#</h1>
+        <h2>#interface.puzzle_words_instructions#</h2>
+        <ul id="evidence-list-words">
+        </ul>
+      </div>
+      <div class="slide word-definition" id="slide-2">
+        <h1></h1>
+        <h2></h2>
+        <h3><a href="#interface.dictionary_source_url">#interface.dictionary_source_label#</a></h3>
+      </div>
+      <div class="slide word-definition" id="slide-3">
+        <h1></h1>
+        <h2></h2>
+        <h3><a href="#interface.dictionary_source_url">#interface.dictionary_source_label#</a></h3>
+      </div>
+      <div class="slide word-definition" id="slide-4">
+        <h1></h1>
+        <h2></h2>
+        <h3><a href="#interface.dictionary_source_url">#interface.dictionary_source_label#</a></h3>
+      </div>
+      <div class="slide word-definition" id="slide-5">
+        <div class="final-message">#interface.well_done#</div>
+      </div>
+      <div id="slide-next-button" class="next"><span>></span></div>
+    </div>
+  </div>
+  <div id="evidence-list-overlay" class="container-overlay"></div>
+
+  <!-- the element with id="mocha" will contain test results -->
+  <div id="mocha"></div>
+
+  <!-- setup module -->
+  <script type="module">
+    import { config, main } from "../src/main.js";
+    import { load_spec } from "./spec.js";
+
+    async function  setupWordDetective(){
+      config.words_found_cookie_id = '';
+      config.iso_expiration_date = '';
+      config.language = 'en';
+
+      config.load_assets = async function () {
+        let assets = {
+          "messages": null,
+          "puzzle": null
+        };
+
+        let messages_json_location = `/tests/assets/messages.json`;
+        let puzzle_json_location = `/tests/assets/puzzle.json`;
+
+        try {
+          let response = await fetch(messages_json_location);
+          assets.messages = await response.json();
+        } catch (err) {
+          console.log("Messages file could not be loaded.", err);
+        }
+
+        try {
+          let response = await fetch(puzzle_json_location);
+          let puzzle_json = await response.json();
+          assets.puzzle = puzzle_json.puzzle;
+        } catch (err) {
+          console.log("Puzzle could not be loaded.", err);
+        }
+
+        return assets;
+      };
+
+      try{
+        return await main();
+      }catch(err){
+        console.log(err);
+      }
+
+    }
+
+    await setupWordDetective();
+
+    let messages;
+    main(true).then( (control_handler) => {
+      control = control_handler;
+      fetch("/tests/assets/messages.json")
+      .then( (response) => response.json() )
+      .then( (json) => {
+        messages = json;
+        load_spec(control,messages);
+        mocha.run();
+      });
+    });
+
+    document.getElementById("container-loading").style.display = "none";
+    document.getElementById("container-main").style.display = "block";
+
+    let root = document.documentElement;
+    root.style.setProperty('--pallete-1', '#003a4f');
+    root.style.setProperty('--pallete-2', '#d1d1af');
+    root.style.setProperty('--pallete-3', '#ebebe6');
+    root.style.setProperty('--pallete-4', '#003a4f');
+    root.style.setProperty('--pallete-5', '#FFFFFF');
+    root.style.setProperty('--pallete-6', '#dadae5');
+    root.style.setProperty('--pallete-7', '#aaaaaa');
+
+
+  </script>
+
+  <!-- the script with tests (describe, it...) -->
+  <!-- <script src="js/spec.js"></script> -->
+
+</body>
+
+</html>

@@ -1,0 +1,85 @@
+:root {
+  --pallete-1: #ffffff;
+  --pallete-2: #ffffff;
+  --pallete-3: #ffffff;
+  --pallete-4: #ffffff;
+  --pallete-5: #ffffff;
+  --pallete-6: #ffffff;
+  --pallete-7: #ffffff;
+}
+
+@font-face {
+  font-family: ubuntu;
+  src: url("/tests/assets/fonts/Ubuntu-Regular.ttf");
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: ubuntu;
+  src: url("/tests/assets/fonts/Ubuntu-Light.ttf");
+  font-weight: lighter;
+}
+
+@font-face {
+  font-family: ubuntu;
+  src: url("/tests/assets/fonts/Ubuntu-Bold.ttf");
+  font-weight: bold;
+}
+
+body {
+  text-align: center;
+  margin: 0px;
+  padding: 0px;
+  background-color: var(--pallete-3);
+  font-family: ubuntu, sans-serif;
+}
+
+.container-loading {
+  display: block;
+  color: var(--pallete-4);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -50px;
+  font-size: 24px;
+}
+
+.container-main {
+  width: 290px;
+  height: 470px;
+  text-align: center;
+  padding: 0px;
+  margin: 10px auto 0 auto;
+  display: none;
+}
+
+h1,h2,h3{
+  font-weight: lighter;
+}
+
+h1{
+  font-size: 20px;
+  color: var(--pallete-1);
+}
+
+h2{
+  font-size: 16px;
+  color: var(--pallete-4);
+}
+
+h3{
+  font-size: 13px;
+  color: var(--pallete-4);
+}
+
+.title{
+  font-size: 32px;
+  text-align: center;
+  margin: auto;
+  cursor: pointer;
+}
+
+.title a{
+  color: var(--pallete-1);
+  text-decoration: none;
+}

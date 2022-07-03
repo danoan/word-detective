@@ -1,19 +1,4 @@
-import { main } from "./main.js";
-
-let control;
-let messages;
-main(true).then( (control_handler) => {
-  control = control_handler;
-  fetch("js/modules/word-detective/assets/english_messages.json")
-  .then( (response) => response.json() )
-  .then( (json) => {
-    messages = json;
-    load_spec();
-    mocha.run();
-  });
-});
-
-function load_spec() {
+export function load_spec(control,messages) {
 
   describe('gui_WORD_DETECTIVE_api', function () {
     const ontheroad = "On the road";
@@ -124,6 +109,7 @@ function load_spec() {
 
     it('it displays a too short word message',function(){
       gui.set_display_value('too');
+
       control.check_word();
       expect(gui.get_status_value()).equal(messages.word_too_short_message);
     });
