@@ -1,28 +1,98 @@
-FROM word-detective-dependencies:v0.1 as build
+FROM alpine:3.14 as master-layer
 
-WORKDIR /word-detective-build
+RUN apk add --update --no-cache \
+python3
 
-COPY ./docker/scripts/binaries /word-detective-build/docker/scripts/binaries
-COPY ./source/word-detective-backend /word-detective-build/source/word-detective-backend
-COPY ./source/word-detective-js /word-detective-build/source/word-detective-js
-COPY ./CMakeLists.txt /word-detective-build/CMakeLists.txt
+WORKDIR /
 
-RUN ./docker/scripts/binaries/build-install.sh
-RUN ./docker/scripts/binaries/run-tests.sh
-RUN ./docker/scripts/binaries/minify-word-detective-js.sh
+ENV MAIN_WORKDIR="/word-detective"
+ENV BINARIES_DIR="/${MAIN_WORKDIR}/bin"
 
-# -----------------------------------------#
+ENV VIRTUAL_ENV="/.local/python-venv"
+RUN python3 -m venv "${VIRTUAL_ENV}"
+ENV PATH="${VIRTUAL_ENV}/bin:$PATH"
 
-FROM word-detective-dependencies:v0.1
+RUN python3 -m pip install --upgrade pip
 
-WORKDIR /word-detective
+# --------------------------------------------------------------------
 
-COPY --from=build /word-detective-build/install /word-detective/install/
-COPY ./source/word-detective-backend/app/render-word-detective/*.sh /word-detective/install/render-word-detective/
-COPY ./source/word-detective-backend/app/render-word-detective/*.py /word-detective/install/render-word-detective/
+FROM master-layer as compilation-system-dependencies
 
-COPY --from=build /word-detective-build/source/word-detective-js/dist/word-detective-min.js \
-/word-detective/install/word-detective-js/word-detective-min.js
+RUN apk add --update --no-cache \
+g++ \
+bash \
+python3 \
+py-pip \
+libxslt-dev \
+python3-dev \
+nodejs \
+npm \
+make \
+cmake
 
-COPY ./source/dictionaries/it/italian_dictionary.py \
-/word-detective/bin/italian_dictionary.py
+# --------------------------------------------------------------------
+
+FROM master-layer as runtime-system-dependencies
+
+RUN apk add --update --no-cache \
+bash \
+python3 \
+nodejs
+
+# --------------------------------------------------------------------
+
+FROM compilation-system-dependencies as python-packages
+
+WORKDIR "${MAIN_WORKDIR}"
+
+COPY "./source/dictionary-manager" "${MAIN_WORKDIR}/source/dictionary-manager"
+RUN pip install "${MAIN_WORKDIR}/source/dictionary-manager"
+
+COPY "./source/dictionaries/english-dictionary" "${MAIN_WORKDIR}/source/dictionaries/english-dictionary"
+RUN pip install "${MAIN_WORKDIR}/source/dictionaries/english-dictionary"
+
+
+# --------------------------------------------------------------------
+
+FROM compilation-system-dependencies as build-js
+
+WORKDIR "${MAIN_WORKDIR}"
+
+COPY "./docker/scripts/binaries/minify-word-detective-js.sh" "${MAIN_WORKDIR}/docker/scripts/binaries/minify-word-detective-js.sh"
+
+COPY "./source/word-detective-js" "${MAIN_WORKDIR}/source/word-detective-js"
+RUN "${MAIN_WORKDIR}/docker/scripts/binaries/minify-word-detective-js.sh" "${MAIN_WORKDIR}/source/word-detective-js"
+
+# --------------------------------------------------------------------
+
+FROM compilation-system-dependencies as build-cpp
+
+WORKDIR "${MAIN_WORKDIR}"
+COPY "./docker/scripts/dependencies" "${MAIN_WORKDIR}/docker/scripts/dependencies"
+
+RUN "${MAIN_WORKDIR}/docker/scripts/dependencies/install-boost.sh"
+RUN "${MAIN_WORKDIR}/docker/scripts/dependencies/install-icu.sh"
+
+COPY "./docker/scripts/binaries" "${MAIN_WORKDIR}/docker/scripts/binaries"
+COPY "./source/word-detective-backend" "${MAIN_WORKDIR}/source/word-detective-backend"
+COPY "./CMakeLists.txt" "${MAIN_WORKDIR}/CMakeLists.txt"
+
+RUN "./docker/scripts/binaries/build-install.sh"
+RUN "./docker/scripts/binaries/run-tests.sh"
+
+# ------------------------------------------------------------------#
+
+FROM runtime-system-dependencies as runtime-stage
+
+WORKDIR "${MAIN_WORKDIR}"
+
+COPY --from=python-packages "${VIRTUAL_ENV}" "${VIRTUAL_ENV}"
+
+COPY --from=build-js "${MAIN_WORKDIR}/source/word-detective-js/dist/word-detective-min.js" \
+"${BINARIES_DIR}/word-detective-js/word-detective-min.js"
+
+COPY --from=build-cpp "${MAIN_WORKDIR}/install" "${BINARIES_DIR}"
+
+COPY "./source/word-detective-backend/app/render-word-detective/*.sh" "${BINARIES_DIR}/render-word-detective/"
+COPY "./source/word-detective-backend/app/render-word-detective/*.py" "${BINARIES_DIR}/render-word-detective/"
+COPY "./source/dictionaries/it/italian_dictionary.py" "${BINARIES_DIR}/italian_dictionary.py"
