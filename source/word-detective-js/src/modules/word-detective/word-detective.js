@@ -37,6 +37,11 @@ export function create_WORD_DETECTIVE_api(gui, messages_json, _config) {
     "word": word_control_handler(),
     "data": data_control_handler()
   };
+  let check_word_callback_status = {
+    MISSING_WORD: Symbol("Missing Word"),
+    REJECTED_WORD: Symbol("Rejected Word"),
+    UNRECOGNIZED_WORD: Symbol("Unregcognized Word")
+  };
 
   function add_found_word(word){
     control_handlers.data.add_found_word(word);
@@ -48,13 +53,15 @@ export function create_WORD_DETECTIVE_api(gui, messages_json, _config) {
   }
 
 
-  function pack_callback_params() {
-    return {
+  function pack_callback_params(...extraArgs) {
+    let default_parameters = {
       add_missing_word,
       add_found_word,
       get_words_found: () => [...control_handlers.data.words_found],
-      get_missing_words: () => [...control_handlers.data.missing_words]
+      get_missing_words: () => [...control_handlers.data.missing_words],
     };
+
+    return Object.assign(default_parameters,...extraArgs);
   }
 
   let current_mode_handler = display_handlers.normal_mode;
@@ -101,6 +108,7 @@ export function create_WORD_DETECTIVE_api(gui, messages_json, _config) {
   function check_word() {
     let input_word = current_mode_handler.get_user_input_word();
     let is_missing_word = control_handlers.data.is_it_missing_word(input_word);
+    let status = null;
 
     if (is_missing_word) {
       add_found_word(input_word);
@@ -110,16 +118,20 @@ export function create_WORD_DETECTIVE_api(gui, messages_json, _config) {
       display_handlers.messages.valid_word_message(control_handlers.word.get_difficulty(input_word));
       display_handlers.messages.update_missing_words_count(control_handlers.data.missing_words.length);
 
+      status = check_word_callback_status.MISSING_WORD;
     } else if (input_word.length <= 3) {
       display_handlers.messages.word_too_short_message();
+      status = check_word_callback_status.REJECTED_WORD;
     } else if (control_handlers.data.words_found.find( (element) => element === input_word)) {
       display_handlers.messages.word_found_already_message();
+      status = check_word_callback_status.REJECTED_WORD;
     } else {
       display_handlers.messages.word_not_in_dictionary_message();
+      status = check_word_callback_status.UNRECOGNIZED_WORD;
     }
 
     if (callbacks.check_word !== null) {
-      callbacks.check_word(pack_callback_params(), is_missing_word);
+      callbacks.check_word(pack_callback_params( {"callback_status_values":check_word_callback_status,"callback_status":status, "word":input_word} ));
     }
 
     setTimeout(() => {

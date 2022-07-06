@@ -3,6 +3,62 @@ import { create_WORD_DETECTIVE_api } from "./modules/word-detective/word-detecti
 
 import { word_definition } from "./modules/word-definition/word-definition.js";
 import { slider } from "./modules/slider/slider.js";
+import { word_request } from "./modules/word-request/word-request.js";
+
+function gui_request_word() {
+  const SHOW_NOTIFICATION_BAR_ANIMATION_NAME = 'show-notification-bar';
+  const HIDE_NOTIFICATION_BAR_ANIMATION_NAME = 'hide-notification-bar';
+
+  function html_objects() {
+    const REQUESTED_WORD_ID = 'requested-word';
+    const REQUEST_WORD_CONTAINER_ID = 'container-request-word';
+    const NOTIFICATION_BAR_CONTAINER_ID = 'container-notification-bar';
+    const REQUEST_WORD_SUCCESS_MESSAGE_ID = 'container-request-word-success-message';
+
+    return {
+      requested_word : document.getElementById(REQUESTED_WORD_ID),
+      request_word_container : document.getElementById(REQUEST_WORD_CONTAINER_ID),
+      notification_bar : document.getElementById(NOTIFICATION_BAR_CONTAINER_ID),
+      success_message: document.getElementById(REQUEST_WORD_SUCCESS_MESSAGE_ID)
+    };
+  }
+
+  let gui = html_objects();
+
+  function show_request_word_bar(word) {
+    gui.requested_word.innerHTML = word;
+    gui.notification_bar.style.animationName = SHOW_NOTIFICATION_BAR_ANIMATION_NAME;
+    gui.notification_bar.style.animationDuration = "1s";
+    gui.notification_bar.style.animationFillMode = "forwards";
+  }
+
+  function hide_request_word_bar() {
+    gui.notification_bar.style.animationName = HIDE_NOTIFICATION_BAR_ANIMATION_NAME;
+    gui.notification_bar.style.animationDuration = "1s";
+    gui.notification_bar.style.animationFillMode = "forwards";
+  }
+
+  function success_message_mode() {
+    gui.notification_bar.style.display = "block";
+    gui.success_message.style.display = "block";
+    gui.request_word_container.style.display = "none";
+  }
+
+  function request_word_mode() {
+    gui.notification_bar.style.display = "block";
+    gui.success_message.style.display = "none";
+    gui.request_word_container.style.display = "block";
+  }
+
+  return {
+    show_request_word_bar,
+    hide_request_word_bar,
+    success_message_mode,
+    request_word_mode,
+    'requested_word':gui.requested_word
+  };
+
+}
 
 function gui_slider() {
   function html_objects() {
@@ -188,6 +244,7 @@ export function main(is_in_test_mode = false) {
   let puzzle_cookie = set_puzzle_cookie(config.words_found_cookie_id, config.iso_expiration_date);
   let WD = configure_word_definition();
   let SD = configure_slider();
+  let WR = configure_word_request();
 
   if (config.onload !== null) {
     config.onload();
@@ -245,28 +302,36 @@ export function main(is_in_test_mode = false) {
     }
   }
 
+  function configure_word_request() {
+    return word_request(config.language,gui_request_word());
+  }
+
   function configure_WORD_DETECTIVE(assets) {
     let word_detective_config = { "callbacks": {} };
-    word_detective_config.callbacks.check_word = save_found_words_in_cookie;
-    word_detective_config.callbacks.init = (control_members) => init_puzzle(assets.puzzle, control_members);
+    word_detective_config.callbacks.check_word = check_word_callback;
+    word_detective_config.callbacks.init = (init_callback_parameters) => init_puzzle(assets.puzzle, init_callback_parameters);
     word_detective_config.callbacks.end = display_word_list;
 
     return create_WORD_DETECTIVE_api(gui_WORD_DETECTIVE_api(), assets.messages, word_detective_config);
 
-    function save_found_words_in_cookie(control_members, check_word_status, status) {
+    function check_word_callback(check_word_callback_parameters) {
+      save_found_words_in_cookie(check_word_callback_parameters.get_words_found);
+
+      if(check_word_callback_parameters.callback_status === check_word_callback_parameters.callback_status_values.UNRECOGNIZED_WORD ){
+        WR.request_word(check_word_callback_parameters.word);
+      }
+    }
+
+    function save_found_words_in_cookie(get_words_found_function) {
       let words_found_cookie = '';
 
-      control_members.get_words_found().forEach((word) => {
+      get_words_found_function().forEach((word) => {
         if (word.length > 0) {
           words_found_cookie += word + ',';
         }
       });
 
       puzzle_cookie.set(words_found_cookie);
-
-      if( status === check_word_status.UNRECOGNIZED_WORD ){
-        console.log("Do you want to request this word?");
-      }
     }
 
     function init_puzzle(puzzle, control_members) {
