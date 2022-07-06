@@ -10,7 +10,7 @@
 
 TEST_CASE("English Word Detetctive API", "[app][word-detective][english][word-detective-api]"){
   std::string BRICK_FILEPATH = PROJECT_SOURCE_DIR;
-  BRICK_FILEPATH += "/app/word-detective/test/input/ef-5000.txt.brk";
+  BRICK_FILEPATH += "/app/word-detective/test/input/en-5K.txt.brk";
 
   WordDetective::Datastr::Brick brick;
   std::ifstream ifs(BRICK_FILEPATH, std::ios::binary);
@@ -55,7 +55,7 @@ TEST_CASE("English Word Detetctive API", "[app][word-detective][english][word-de
 
 TEST_CASE("Italian Word Detetctive API", "[app][word-detective][italian][word-detective-api]"){
   std::string BRICK_FILEPATH = PROJECT_SOURCE_DIR;
-  BRICK_FILEPATH += "/app/word-detective/test/input/italian-15k.txt.brk";
+  BRICK_FILEPATH += "/app/word-detective/test/input/it-1K.txt.brk";
 
   WordDetective::Datastr::Brick brick;
   std::ifstream ifs(BRICK_FILEPATH, std::ios::binary);

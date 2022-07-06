@@ -110,7 +110,7 @@ TEST_CASE("Brick IO operations", "[standard-extensions][brick][io]") {
   SECTION("Save and load list of 5K english words") {
     std::string list_of_5k_english_words = PROJECT_SOURCE_DIR;
     list_of_5k_english_words +=
-        "/modules/standard-extensions/test/input/ef-5000.txt";
+        "/modules/standard-extensions/test/input/en-5K.txt";
 
     std::ifstream ifs(list_of_5k_english_words);
     std::unordered_map<std::string, int> word_map;

@@ -72,7 +72,7 @@ TEST_CASE("Split Combinations", "[puzzle-generator][split-combinations]") {
 TEST_CASE("Flatten Traversal",
           "[puzzle-generator][english][flatten-traversal]") {
   std::string BRICK_FILEPATH = PROJECT_SOURCE_DIR;
-  BRICK_FILEPATH += "/app/word-detective/test/input/ef-5000.txt.brk";
+  BRICK_FILEPATH += "/app/word-detective/test/input/en-5K.txt.brk";
 
   WordDetective::Datastr::Brick brick;
   std::ifstream ifs(BRICK_FILEPATH, std::ios::binary);
@@ -125,7 +125,7 @@ TEST_CASE("Flatten Traversal",
 TEST_CASE("Get Valid English Path Sequence",
           "[puzzle-generator][english][valid-path-sequence]") {
   std::string BRICK_FILEPATH = PROJECT_SOURCE_DIR;
-  BRICK_FILEPATH += "/app/word-detective/test/input/ef-5000.txt.brk";
+  BRICK_FILEPATH += "/app/word-detective/test/input/en-5K.txt.brk";
 
   WordDetective::Datastr::Brick brick;
   std::ifstream ifs(BRICK_FILEPATH, std::ios::binary);
@@ -200,7 +200,7 @@ TEST_CASE("Get Valid English Path Sequence",
 TEST_CASE("Generate English Puzzles",
           "[puzzle-generator][english][generate-puzzle]") {
   std::string BRICK_FILEPATH = PROJECT_SOURCE_DIR;
-  BRICK_FILEPATH += "/app/word-detective/test/input/ef-5000.txt.brk";
+  BRICK_FILEPATH += "/app/word-detective/test/input/en-5K.txt.brk";
 
   WordDetective::Datastr::Brick brick;
   std::ifstream ifs(BRICK_FILEPATH, std::ios::binary);
@@ -252,7 +252,7 @@ TEST_CASE("Generate English Puzzles",
 
 TEST_CASE("Word Collector", "[puzzle-generator][word-collector]") {
   std::string BRICK_FILEPATH = PROJECT_SOURCE_DIR;
-  BRICK_FILEPATH += "/app/word-detective/test/input/ef-5000.txt.brk";
+  BRICK_FILEPATH += "/app/word-detective/test/input/en-5K.txt.brk";
 
   WordDetective::Datastr::Brick brick;
   std::ifstream ifs(BRICK_FILEPATH, std::ios::binary);
@@ -347,7 +347,7 @@ TEST_CASE("Word Collector", "[puzzle-generator][word-collector]") {
 TEST_CASE("Italian Flatten Traversal",
           "[puzzle-generator][italian][flatten-traversal]") {
   std::string BRICK_FILEPATH = PROJECT_SOURCE_DIR;
-  BRICK_FILEPATH += "/app/word-detective/test/input/italian-15k.txt.brk";
+  BRICK_FILEPATH += "/app/word-detective/test/input/it-1K.txt.brk";
 
   WordDetective::Datastr::Brick brick;
   std::ifstream ifs(BRICK_FILEPATH, std::ios::binary);
@@ -356,10 +356,7 @@ TEST_CASE("Italian Flatten Traversal",
 
   SECTION("Paths of length 10") {
     std::string FLATTEN_TRAVERSAL_SEGMENT =
-        "$abcdefilnr$abcdeglnrs$abcdeilmnt$abcdeimort$abcefilmnt$abcefinotz$"
-        "abcehilnor$abceilmnot$abceilmnrt$abceilmopt$abceilmors$abceilmtuv$"
-        "abceilnort$abceilnorz$abceilopru$abceimnors$abceimnort$abceimnorz$"
-        "abceioprst$abcelmorsu$abcilmoptà$";
+        "$adeilnrstu$ceinorstuz$";
     std::string flatten_traversal_string =
         PuzzleGenerator::FlattenTraversal::flatten_traversal(brick, 10);
 
@@ -372,7 +369,7 @@ TEST_CASE("Italian Flatten Traversal",
 TEST_CASE("Get Valid Italian Path Sequence",
           "[puzzle-generator][italian][valid-path-sequence]") {
   std::string BRICK_FILEPATH = PROJECT_SOURCE_DIR;
-  BRICK_FILEPATH += "/app/word-detective/test/input/italian-15k.txt.brk";
+  BRICK_FILEPATH += "/app/word-detective/test/input/it-1K.txt.brk";
 
   WordDetective::Datastr::Brick brick;
   std::ifstream ifs(BRICK_FILEPATH, std::ios::binary);
@@ -451,7 +448,7 @@ TEST_CASE("Get Valid Italian Path Sequence",
 TEST_CASE("Generate Italian Puzzles",
           "[puzzle-generator][italian][generate-puzzle]") {
   std::string BRICK_FILEPATH = PROJECT_SOURCE_DIR;
-  BRICK_FILEPATH += "/app/word-detective/test/input/italian-15k.txt.brk";
+  BRICK_FILEPATH += "/app/word-detective/test/input/it-1K.txt.brk";
 
   WordDetective::Datastr::Brick brick;
   std::ifstream ifs(BRICK_FILEPATH, std::ios::binary);
