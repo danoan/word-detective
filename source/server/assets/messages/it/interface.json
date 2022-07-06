@@ -11,6 +11,8 @@
   "interface.puzzle_from_file": "Puzzle da file",
   "interface.upload_file": "Caricare il File",
   "interface.missing_words": "Parole mancanti",
+  "interface.request_word": "Chiedere questa parola",
+  "interface.request_word_success_message": "Grazie per la sua riquiesta!",
   "interface.loading": "Caricando...",
   "interface.puzzle_words": "Parole del Puzzle",
   "interface.puzzle_words_instructions": "(Seleziona fino a 3 parole per ottenere la loro definizione)",

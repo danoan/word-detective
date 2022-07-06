@@ -13,6 +13,19 @@
 
 <body>
   <div id="container-loading" class="container-loading">#interface.loading#</div>
+  <div id="container-notification-bar" class="container-notification-bar">
+    <div id="container-request-word" class="container-request-word">
+      <div id="requested-word" class="requested-word">
+        Coin
+      </div>
+      <div class="request-word-bottom-left">
+        #interface.request_word#
+      </div>
+    </div>
+    <div id="container-request-word-success-message" class="container-request-word-success-message">
+      #interface.request_word_success_message#
+    </div>
+  </div>
   <div class="title"><a href="/games">Word Detective</a></div>
   <div id="container-main" class="container-main">
     <div class="top-status">
