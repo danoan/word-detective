@@ -78,11 +78,25 @@ export let binServices = function(){
         });
     }
 
+    async function requestWord(dictionary_name,word){
+        return p_execFile("dictionary-manager", ["request-word", word, dictionary_name])
+        .then(result => new Promise(function(resolve){
+            console.info("[dictionary-manager][request-word][stdout]:",result.stdout);
+            console.info("[dictionary-manager][request-word][stdout]:",result.stderr);
+
+            resolve(result.stdout);
+        }))
+        .catch( error => {
+            throw error;
+        });
+    }
+
       return {
           exportBrick,
           generatePuzzle,
           writeToTextFile,
-          italianDictionary
+          italianDictionary,
+          requestWord
       };
 
 }();

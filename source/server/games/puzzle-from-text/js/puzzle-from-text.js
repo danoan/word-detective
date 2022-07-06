@@ -11,6 +11,7 @@ export async function setupWordDetective(reset_cookie=false,text='',text_checksu
     let div_hexagons = document.getElementById("container-hexagons");
     while (div_hexagons.childElementCount > 0) div_hexagons.removeChild(div_hexagons.childNodes[0]);
   };
+  config.enable_word_request = false;
 
   let next_year = DateGen.generate(DateGen.DateFormula.OneYearFromNow);
 

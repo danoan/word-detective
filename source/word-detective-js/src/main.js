@@ -235,7 +235,8 @@ export let config = {
   "load_assets": null,
   "default_error_handler": (error) => alert(error),
   "fatal_error_handler": null,
-  "language":"en"
+  "language":"en",
+  "enable_word_request":true
 };
 
 export let cookie_manager = _cookie_manager.cookie_manager;
@@ -244,7 +245,10 @@ export function main(is_in_test_mode = false) {
   let puzzle_cookie = set_puzzle_cookie(config.words_found_cookie_id, config.iso_expiration_date);
   let WD = configure_word_definition();
   let SD = configure_slider();
-  let WR = configure_word_request();
+  let WR = null;
+  if (config.enable_word_request){
+    WR=configure_word_request();
+  }
 
   if (config.onload !== null) {
     config.onload();
@@ -318,7 +322,9 @@ export function main(is_in_test_mode = false) {
       save_found_words_in_cookie(check_word_callback_parameters.get_words_found);
 
       if(check_word_callback_parameters.callback_status === check_word_callback_parameters.callback_status_values.UNRECOGNIZED_WORD ){
-        WR.request_word(check_word_callback_parameters.word);
+        if (WR !== null) {
+          WR.request_word(check_word_callback_parameters.word);
+        }
       }
     }
 

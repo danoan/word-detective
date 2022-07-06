@@ -101,11 +101,31 @@ export let routing = function () {
     res.send(definition);
   }
 
+  async function requestWord(req,res){
+    let languageCode = req.params["language"];
+    let word = req.params["word"];
+
+    let dictionary_name = null;
+    if(languageCode=='en'){
+      dictionary_name = `en-5K`;
+    }else if(languageCode='it'){
+      dictionary_name = `it-1K`;
+    }
+
+    try {
+      let json_text_response = await binServices.requestWord(dictionary_name,word);
+      res.send(json_text_response);
+    }catch (err){
+      res.redirect('/error/500')
+    }
+  }
+
   return {
     puzzleFromFile,
     puzzleFromString,
     randomPuzzle,
-    wordDefinition
+    wordDefinition,
+    requestWord
   };
 
 }();

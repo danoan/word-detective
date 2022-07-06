@@ -18,3 +18,7 @@ api.post('/:language/puzzle-from-string', (req, res) => {
 api.get('/:language/definition/:word', (req, res) => {
     routing.wordDefinition(req, res);
 });
+
+api.get('/:language/request-word/:word', (req, res) => {
+    routing.requestWord(req, res);
+});
