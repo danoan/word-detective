@@ -13,6 +13,7 @@ OUTPUT_FOLDER="${PROJECT_PATH}/games/week-puzzles"
 
 function generate_week_games(){
   LANGUAGE="${1}"
+  BRICK_FILEPATH="${2}"
 
   DAYS="sunday monday tuesday wednesday thursday friday saturday"
   for day in $DAYS
@@ -24,7 +25,7 @@ function generate_week_games(){
     JSON_PUZZLE_PATH="${CUR_OUT_FOLDER}/assets/puzzle.json"
 
     #Generate json puzzle
-    ${PUZZLE_GEN_EXE} -mrandom -l7 -o"${JSON_PUZZLE_PATH}" -b"${ASSETS_PATH}/corpora/${LANGUAGE}.brk"
+    ${PUZZLE_GEN_EXE} -mrandom -l7 -o"${JSON_PUZZLE_PATH}" -b"${BRICK_FILEPATH}"
 
     #Render puzzle html
     python3 "${RENDER_PUZZLE}" "${PROJECT_PATH}/games/week-puzzles/templates/index-week-puzzles.ntl" "${JSON_PUZZLE_PATH}" "${CUR_OUT_FOLDER}" "${day}"
@@ -36,6 +37,6 @@ function generate_week_games(){
   done
 }
 
-generate_week_games "en"
-generate_week_games "it"
+generate_week_games "en" "/word-detective-server/dictionaries-folder/english/en-5K/en-5K.brk"
+generate_week_games "it" "/word-detective-server/dictionaries-folder/italian/it-1K/it-1K.brk"
 

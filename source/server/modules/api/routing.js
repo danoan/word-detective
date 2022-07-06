@@ -25,9 +25,9 @@ export let routing = function () {
 
     let corporaBrickFilePath;
     if(languageCode=='en'){
-      corporaBrickFilePath = `${ASSETS_DIR}/corpora/en.brk`;
+      corporaBrickFilePath = `${PROJECT_ROOT}/dictionaries-folder/english/en-5K/en-5K.brk`;
     }else if(languageCode='it'){
-      corporaBrickFilePath = `${ASSETS_DIR}/corpora/it.brk`;
+      corporaBrickFilePath = `${PROJECT_ROOT}/dictionaries-folder/italian/it-1K/it-1K.brk`;
     }
 
     binServices.generatePuzzle(
