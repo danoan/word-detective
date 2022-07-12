@@ -10,6 +10,18 @@ export async function  setupWordDetective(){
   config.iso_expiration_date = '';
   config.language = language;
 
+  let flagImageName;
+  if(language==="pt") {
+    flagImageName = "brazil";
+  }else if(language==="en") {
+    flagImageName = "usa";
+  }else if(language==="it") {
+    flagImageName = "italy";
+  }else {
+    flagImageName = "usa";
+  }
+  document.getElementById("image-flag").style.backgroundImage = `url(/assets/icons/${flagImageName}.png)`;
+
   config.load_assets = async function () {
     let assets = {
       "messages": null,

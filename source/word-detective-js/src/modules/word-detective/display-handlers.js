@@ -162,8 +162,8 @@ export function hint_mode_display_handler(gui) {
 
 export function messages_display_handler(gui,messages) {
 
-  function update_missing_words_count(new_count) {
-    gui.set_missing_words_value(`${messages.missing_words_prefix} ${new_count}`);
+  function update_missing_words_count(number_words_found,number_missing_words) {
+    gui.set_missing_words_value(`${number_words_found}/${number_words_found+number_missing_words}`);
   }
 
   function valid_word_message(word_difficulty) {

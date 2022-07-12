@@ -68,7 +68,7 @@ export function create_WORD_DETECTIVE_api(gui, messages_json, _config) {
 
   function init() {
     callbacks.init(pack_callback_params());
-    display_handlers.messages.update_missing_words_count(control_handlers.data.missing_words.length);
+    display_handlers.messages.update_missing_words_count(control_handlers.data.words_found.length,control_handlers.data.missing_words.length);
   }
 
   function click_letter(...args) {
@@ -116,7 +116,7 @@ export function create_WORD_DETECTIVE_api(gui, messages_json, _config) {
       current_mode_handler = display_handlers.normal_mode;
 
       display_handlers.messages.valid_word_message(control_handlers.word.get_difficulty(input_word));
-      display_handlers.messages.update_missing_words_count(control_handlers.data.missing_words.length);
+      display_handlers.messages.update_missing_words_count(control_handlers.data.words_found.length,control_handlers.data.missing_words.length);
 
       status = check_word_callback_status.MISSING_WORD;
     } else if (input_word.length <= 3) {
