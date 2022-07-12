@@ -1,6 +1,9 @@
 export function word_request(language,gui) {
 
+  let timeout_event;
+
   function request_word(word) {
+    clearTimeout(timeout_event);
 
     gui.request_word_mode();
     gui.show_request_word_bar(word);
@@ -8,7 +11,7 @@ export function word_request(language,gui) {
 
     let click_event = false;
 
-    setTimeout(() => {
+    timeout_event = setTimeout(() => {
       if(click_event===false) {
         gui.requested_word.onclick = null;
         gui.hide_request_word_bar();
@@ -16,12 +19,14 @@ export function word_request(language,gui) {
     }, 5000);
 
     function request_word_internal() {
+      clearTimeout(timeout_event);
+
       click_event = true;
 
       gui.requested_word.onclick = null;
       gui.success_message_mode();
 
-      setTimeout(() => {
+      timeout_event = setTimeout(() => {
         gui.hide_request_word_bar();
       }, 1500);
 

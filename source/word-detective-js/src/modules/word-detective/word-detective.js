@@ -105,7 +105,10 @@ export function create_WORD_DETECTIVE_api(gui, messages_json, _config) {
     }
   }
 
+  let timeout_event;
   function check_word() {
+    clearTimeout(timeout_event);
+
     let input_word = current_mode_handler.get_user_input_word();
     let is_missing_word = control_handlers.data.is_it_missing_word(input_word);
     let status = null;
@@ -134,15 +137,16 @@ export function create_WORD_DETECTIVE_api(gui, messages_json, _config) {
       callbacks.check_word(pack_callback_params( {"callback_status_values":check_word_callback_status,"callback_status":status, "word":input_word} ));
     }
 
-    setTimeout(() => {
-      current_mode_handler.init(control_handlers.data.missing_words[0]);
+    current_mode_handler.init(control_handlers.data.missing_words[0]);
+    check_word.unblock();
+
+    timeout_event = setTimeout(() => {
       gui.clear_status_value();
-      check_word.unblock();
 
       if (control_handlers.data.missing_words.length === 0) {
         callbacks.end(pack_callback_params());
       }
-    }, 1500);
+    }, 2000);
   }
 
   init();
