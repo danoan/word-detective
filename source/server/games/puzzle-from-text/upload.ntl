@@ -14,13 +14,11 @@
     let languageCode;
   </script>
   <script type="module">
-    import { identifyPallete,updatePallete,gotoFromBaseURI } from "/assets/js/game-util.js";
+    import { identifyLanguage,gotoFromBaseURI } from "/assets/js/game-util.js";
     control = {
-      updatePallete,
       gotoFromBaseURI
     };
-    languageCode=identifyPallete();
-    updatePallete(languageCode);
+    languageCode=identifyLanguage();
 
     document.getElementById("form-from-string").action = `/games/${languageCode}/puzzle-from-text/from-string`;
     document.getElementById("form-from-file").action = `/games/${languageCode}/puzzle-from-text/from-file`;

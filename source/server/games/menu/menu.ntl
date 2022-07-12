@@ -11,12 +11,10 @@
     let control;
   </script>
   <script type="module">
-    import { identifyPallete,updatePallete,gotoFromBaseURI } from "/assets/js/game-util.js";
+    import { identifyLanguage,gotoFromBaseURI } from "/assets/js/game-util.js";
     control = {
-      updatePallete,
       gotoFromBaseURI
     };
-    updatePallete(identifyPallete());
   </script>
   <title>Word Detective</title>
 </head>

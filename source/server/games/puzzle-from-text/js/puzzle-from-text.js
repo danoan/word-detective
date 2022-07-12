@@ -1,9 +1,8 @@
 import { cookie_manager, config, main } from "/assets/js/word-detective-min.js";
-import { NoPuzzleGenerated, MissingResource, setDefaultConfiguration, DateGen, identifyPallete,updatePallete } from "/assets/js/game-util.js"
+import { NoPuzzleGenerated, MissingResource, setDefaultConfiguration, DateGen, identifyLanguage } from "/assets/js/game-util.js"
 
 export async function setupWordDetective(reset_cookie=false,text='',text_checksum=''){
-  let language = identifyPallete();
-  updatePallete(language);
+  let language = identifyLanguage();
 
   setDefaultConfiguration(config);
 
