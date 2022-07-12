@@ -1,6 +1,6 @@
 .bottom-status {
   font-size: 24px;
-  color: var(--pallete-4);
+  color: var(--pallete-1);
   margin-top: 24px;
 }
 
@@ -9,7 +9,7 @@
   cursor: pointer;
   padding: 10px;
   background-color: var(--pallete-2);
-  color: var(--pallete-4);
+  color: var(--pallete-1);
 }
 
 .container-form {
@@ -56,9 +56,9 @@
 }
 
 label{
-  color: var(--pallete-4);
+  color: var(--pallete-1);
 }
 
 .filepath{
-  color: var(--pallete-4);
+  color: var(--pallete-1);
 }

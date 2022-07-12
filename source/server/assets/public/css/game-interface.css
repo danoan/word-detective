@@ -1,6 +1,6 @@
 .bottom-status {
   font-size: 22px;
-  color: var(--pallete-4);
+  color: var(--pallete-1);
 }
 
 .button {
@@ -37,7 +37,7 @@
 
 .container-words {
   width: 273px;
-  border: 1px solid var(--pallete-4);
+  border: 1px solid var(--pallete-1);
   padding: 8px;
   overflow: auto;
   min-height: 32px;
@@ -49,7 +49,7 @@
   font-size: 32px;
   font-weight: lighter;
   background-color: var(--pallete-3);
-  color: var(--pallete-4);
+  color: var(--pallete-1);
 }
 
 .hexagon {
@@ -158,7 +158,7 @@
   margin: 0px;
   padding: 0px;
   overflow: hidden;
-  color: var(--pallete-4);
+  color: var(--pallete-1);
 }
 
 .words-found li {
@@ -196,7 +196,7 @@
   padding: 20px 0px;
   z-index: 100;
   background-color: var(--pallete-3);
-  color: var(--pallete-4);
+  color: var(--pallete-1);
 }
 
 .evidence-list ul {
@@ -233,7 +233,7 @@
   width: 20px;
   top: 0px;
   left: 280px;
-  background-color: var(--pallete-4);
+  background-color: var(--pallete-1);
   color: var(--pallete-5);
   cursor: pointer;
 }
@@ -244,7 +244,7 @@
   width: 10px;
   top: 0px;
   left: 0px;
-  background-color: var(--pallete-4);
+  background-color: var(--pallete-1);
   color: var(--pallete-5);
   cursor: pointer;
 }

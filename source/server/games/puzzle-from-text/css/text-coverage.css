@@ -7,7 +7,7 @@
 .text-coverage ul li{
     float: left;
     margin-right: 15%;
-    color: var(--pallete-4);
+    color: var(--pallete-1);
 }
 
 .text-coverage-range-container{

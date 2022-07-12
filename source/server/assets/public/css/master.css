@@ -36,7 +36,7 @@ body {
 
 .container-loading {
   display: block;
-  color: var(--pallete-4);
+  color: var(--pallete-1);
   position: absolute;
   top: 50%;
   left: 50%;
@@ -64,12 +64,12 @@ h1{
 
 h2{
   font-size: 16px;
-  color: var(--pallete-4);
+  color: var(--pallete-1);
 }
 
 h3{
   font-size: 13px;
-  color: var(--pallete-4);
+  color: var(--pallete-1);
 }
 
 .title{
