@@ -2,3 +2,8 @@ js-guidelines.md
 dist
 node_modules
 package-lock.json
+tests/assets/css
+tests/assets/fonts
+tests/assets/icons
+tests/assets/messages.json
+

@@ -21,11 +21,15 @@ export function load_spec(control,messages) {
     });
 
     it('updates the missing words display', function () {
+      let temp = gui.get_missing_words_value();
+
       gui.set_missing_words_value(ontheroad);
       expect(gui.get_missing_words_value()).equal(ontheroad);
 
       gui.clear_missing_words_value();
       expect(gui.get_status_value()).equal('');
+
+      gui.set_missing_words_value(temp);
     });
 
 

@@ -18,15 +18,14 @@
     let control;
   </script>
 
-  <link rel='stylesheet' type='text/css' media='screen' href='/tests/assets/css/master.css'>
-  <link rel='stylesheet' type='text/css' media='screen' href='/tests/assets/css/game-interface.css'>
+  <link rel='stylesheet' type='text/css' media='screen' href='/assets/css/master.css'>
+  <link rel='stylesheet' type='text/css' media='screen' href='/assets/css/game-interface.css'>
 </head>
 
 <body>
-
-  <div id="container-loading" class="container-loading">Loading</div>
+  <div id="container-loading" class="container-loading">#interface.loading#</div>
   <div id="container-notification-bar" class="container-notification-bar">
-    <div class="container-request-word">
+    <div id="container-request-word" class="container-request-word">
       <div id="requested-word" class="requested-word">
         Coin
       </div>
@@ -114,8 +113,8 @@
           "puzzle": null
         };
 
-        let messages_json_location = `/tests/assets/messages.json`;
-        let puzzle_json_location = `/tests/assets/puzzle.json`;
+        let messages_json_location = `/assets/messages.json`;
+        let puzzle_json_location = `/assets/puzzle.json`;
 
         try {
           let response = await fetch(messages_json_location);
@@ -148,7 +147,7 @@
     let messages;
     main(true).then( (control_handler) => {
       control = control_handler;
-      fetch("/tests/assets/messages.json")
+      fetch("/assets/messages.json")
       .then( (response) => response.json() )
       .then( (json) => {
         messages = json;
