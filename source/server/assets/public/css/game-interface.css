@@ -160,7 +160,18 @@
   margin-right: 3px;
 }
 
+@keyframes new-word {
+  from{
+    transform:translate(-100%);
+    margin-right: -100px;
+  }
 
+  to{
+    transform:translate(0%);
+    margin-right: 8px;
+  }
+
+}
 
 .words-found-overflow {
   overflow: auto;
@@ -196,6 +207,7 @@
   color: var(--pallete-5);;
   padding: 2px 6px;
   margin-right: 8px;
+  position: relative;
 }
 
 /* Evidence List */

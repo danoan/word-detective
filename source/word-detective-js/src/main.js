@@ -196,7 +196,15 @@ function gui_WORD_DETECTIVE_api() {
   function add_to_word_list(word) {
     let li = document.createElement('li');
     li.append(word);
-    gui.word_list.appendChild(li);
+    li.style.animationName="new-word";
+    li.style.animationDuration="0.5s";
+
+    if(gui.word_list.childNodes.length>0){
+      gui.word_list.insertBefore(li,gui.word_list.childNodes[0]);
+    }else{
+      gui.word_list.append(li);
+    }
+
   }
 
   function clear_word_list() {
