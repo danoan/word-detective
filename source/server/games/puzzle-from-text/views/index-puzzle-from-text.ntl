@@ -120,6 +120,8 @@
 
     function _refreshPuzzle(resetCookie) {
       let text = `#text#`;
+      let text_oneline = text.replace(/\n/g," ");
+
       let one_fifth = Math.floor(text.length / 5);
 
       let start = textCoverage.getLeftRangeValue() * one_fifth;
@@ -151,21 +153,86 @@
           control = _control;
 
           control.add_hint_handler(function (gui) {
-            let r_word = '\\b[\\S\\-]+\\b'
-            let r_spaces = '[^\\w\\d]+'
+            let r_word = '[^\\s]*\\s'
+            let r_end_of_sentence_marker = `[\\.;!?]`;
+            let r_not_end_of_sentence_marker = `[^\\.;!?]`;
 
             function get_n_words_before(text, n, word) {
-              let r = new RegExp(`(${r_word}${r_spaces}){2}${word}`)
+              let r = new RegExp(`(${r_word}){${n}}${word}`)
 
               let match = text.match(r)[0];
               return match.substring(0, match.length - word.length);
             }
 
             function get_n_words_after(text, n, word) {
-              let r = new RegExp(`${word}(${r_spaces}${r_word}){2}`)
+              let r = new RegExp(`${word}(${r_word}){${n}}`)
 
               let match = text.match(r)[0];
               return match.substring(word.length + 1, match.length);
+            }
+
+            function get_sentence_context(text,min_words,word,before_word=true){
+              // TODO: This can be improved. I am calling this function twice
+              // in order to separate pre-word sentence and post-word sentences even
+              // that both are captured at the same time by the regex.
+
+              // It was done like this to avoid a bigger refactor in the code, but
+              // this would be necessary sometime.
+              let number_of_markers = 1;
+
+              let context_before_word = () => {
+                return `(${r_end_of_sentence_marker}${r_not_end_of_sentence_marker}*){${number_of_markers}}`;
+              };
+
+              let context_after_word = () => {
+                return `(${r_not_end_of_sentence_marker}*${r_end_of_sentence_marker}){${number_of_markers}}`;
+              };
+
+              let build_context_regex = () =>{
+                return new RegExp(`${context_before_word()}[\\b\\s]${word}[\\b\\s]${context_after_word()}`);
+              }
+
+              let get_matched_string = (match) => {
+                let word_first_char_index = match.indexOf(word);
+                if(before_word){
+                  return match.substring(1, word_first_char_index);
+                }else{
+                  return match.substring(word_first_char_index + word.length + 1, match.length);
+                }
+              };
+
+              let acceptable_match = (match) => {
+                let total_words_match = get_matched_string(match).match(r_word_global);
+                if(total_words_match===null || total_words_match.length < min_words){
+                  return false;
+                }
+
+                return true;
+              }
+
+              let r = build_context_regex();
+
+              let r_word_global = new RegExp(r_word,'g');
+              let matches = text.match(r);
+
+              if (matches===null){
+                if(before_word){
+                  return get_n_words_before(text,min_words,word);
+                }else{
+                  return get_n_words_after(text,min_words,word);
+                }
+              }
+
+              let match = matches[0];
+
+              while(!acceptable_match(match)){
+                number_of_markers+=1;
+                r = build_context_regex();
+                match = text.match(r)[0];
+              }
+
+              return get_matched_string(match);
+
             }
 
             let word_chars_pos = [];
@@ -180,7 +247,7 @@
             }
 
             function update_display() {
-              document.getElementById("display-text").style.fontSize = "20px";
+              document.getElementById("display-text").style.fontSize = "14px";
               gui.set_display_value(display_text_prefix, 'var(--pallete-7)');
               gui.append_display_value(display_text);
               gui.append_display_value(display_text_suffix, 'var(--pallete-7)');
@@ -188,8 +255,8 @@
 
             function init(word) {
               display_text = '';
-              display_text_prefix = get_n_words_before(text, 2, word) + ' ';
-              display_text_suffix = " " + get_n_words_after(text, 2, word);
+              display_text_prefix = get_sentence_context(text_oneline, 7, word,true) + ' ';
+              display_text_suffix = " " + get_sentence_context(text_oneline, 7, word, false);
 
               word_chars_pos = [];
               for (let i = 0; i < word.length; ++i) {

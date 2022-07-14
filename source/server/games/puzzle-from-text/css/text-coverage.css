@@ -6,7 +6,7 @@
 
 .text-coverage ul li{
     float: left;
-    margin-right: 15%;
+    margin-right: 14.75%;
     color: var(--pallete-1);
 }
 
@@ -84,4 +84,10 @@ input[type="range"]::-ms-thumb{
 input[type="range"]:active::-webkit-slider-thumb{
     background-color: #ffffff;
     border: 3px solid var(--pallete-1);
+}
+
+.display-text {
+    height: 96px !important;
+    margin-bottom: 4px;
+    overflow-y: auto !important;
 }

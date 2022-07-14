@@ -51,7 +51,7 @@ class ItalianSegmenter : public SegmenterInterface {
 
       m_last_back_step = -1;
       if (!m_in_stream->eof()) {
-        while (m_buffer[last] != '\n') {
+        while (m_buffer[last] != '\n' && m_buffer[last] != ' ') {
           m_last_back_step++;
           m_buffer[BUFFER_HALF_SIZE + m_last_back_step] = m_buffer[last];
           m_buffer[last--] = '\0';
