@@ -17,14 +17,13 @@ TEST_CASE("ASCII document", "[english][utils][text]") {
     std::stringstream ss(text);
     Text::segment_into_map<Text::Languages::English>(word_frequency_map, ss);
 
-    REQUIRE(word_frequency_map.size() == 13);
+    REQUIRE(word_frequency_map.size() == 12);
     REQUIRE(word_frequency_map["You"] == 1);
     REQUIRE(word_frequency_map["get"] == 1);
     REQUIRE(word_frequency_map["a"] == 2);
     REQUIRE(word_frequency_map["shiver"] == 1);
     REQUIRE(word_frequency_map["in"] == 2);
-    REQUIRE(word_frequency_map["it"] == 1);
-    REQUIRE(word_frequency_map["s"] == 1);
+    REQUIRE(word_frequency_map["it's"] == 1);
   }
 
   SECTION("it filters a ASCII document") {
@@ -43,9 +42,10 @@ TEST_CASE("ASCII document", "[english][utils][text]") {
     std::stringstream ss(text);
     Text::segment_into_map<Text::Languages::English>(word_frequency_map, ss,composed_filter);
 
-    REQUIRE(word_frequency_map.size() == 5);
+    REQUIRE(word_frequency_map.size() == 6);
     REQUIRE(word_frequency_map["shiver"] == 1);
     REQUIRE(word_frequency_map["dark"] == 1);
+    REQUIRE(word_frequency_map["it's"] == 1);
     REQUIRE(word_frequency_map["raining"] == 1);
     REQUIRE(word_frequency_map["park"] == 1);
     REQUIRE(word_frequency_map["meantime"] == 1);

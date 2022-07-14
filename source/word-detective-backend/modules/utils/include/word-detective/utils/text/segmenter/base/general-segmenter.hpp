@@ -8,10 +8,10 @@
 
 #include "languages.h"
 #include "word-iterator.hpp"
+#include "word-detective/utils/text/filter.hpp"
 
 namespace WordDetective::Utils::Text {
 using FilterFunction = std::function<bool(const std::string)>;
-bool always_true_filter(const std::string& s);
 
 class SegmenterInterface {
  public:

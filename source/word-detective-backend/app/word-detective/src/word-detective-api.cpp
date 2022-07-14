@@ -29,7 +29,8 @@ Datastr::Brick create_brick(std::istream& book_stream,
                             WordDetective::Utils::Text::Languages language) {
   Utils::Text::FilterFunction word_filter = [](const std::string& s) {
     return Utils::Text::more_than_n_characters<3>(s) &&
-           !Utils::Text::starts_with_capital_letter(s);
+           !Utils::Text::starts_with_capital_letter(s) &&
+           !Utils::Text::has_apostrophe(s);
   };
 
   unordered_map<string, int> corpora;
