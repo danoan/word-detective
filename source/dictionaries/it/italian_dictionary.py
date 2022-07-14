@@ -4,6 +4,7 @@ import sys
 import html
 import requests
 import re
+import time
 
 def get_html():
   with open('page-examples/istituto.html') as f:
@@ -36,9 +37,35 @@ def get_word_definition(word):
 
   return ''
 
+def ordinary(word):
+  return get_word_definition(word)
+
+def disambiguation(word):
+  return get_word_definition(f"{word}_1")
+
+def singular_form(word,last_char_replace):
+  word = word[:-1] + last_char_replace
+  return get_word_definition(f"{word}")
+
 
 def main():
-  definition = get_word_definition(sys.argv[1])
+  list_of_variations = [
+    ordinary,
+    disambiguation,
+    lambda w: singular_form(w,'a'),
+    lambda w: singular_form(w,'o'),
+    lambda w: singular_form(w,'u'),
+    lambda w: singular_form(w,'e')
+  ]
+
+  word = sys.argv[1]
+  definition = ""
+  for index,variation in enumerate(list_of_variations):
+    definition = variation(word)
+    if len(definition)!=0:
+      break
+    time.sleep(0.5)
+
   print(html.unescape(definition))
 
 
