@@ -118,8 +118,11 @@ std::string random_selection(const std::string& flatten_string) {
 
 bool _find_path(const WordDetective::Datastr::Brick& brick,
                 const std::unique_ptr<FixedParameters>& fp,
-                MutableParameters& mp, ControlParameters& cp) {
-  if (cp.split.empty()) return true;
+                MutableParameters& mp, ControlParameters& cp, bool all_paths) {
+  if (cp.split.empty()) {
+    mp.list_of_paths.emplace_front(cp.letters);
+    return true;
+  }
 
   unsigned k = cp.split.front();
 
@@ -129,19 +132,21 @@ bool _find_path(const WordDetective::Datastr::Brick& brick,
   for (unsigned i = k; i <= k + vector_of_unicodes_1.size(); ++i) {
     std::string flatten_string = FlattenTraversal::flatten_traversal(brick, i);
 
-    // 3.
-    // \$[^\$cinot]*[cinot]{1}\$[^\$cinot]*[cinot]{1}\$[^\$cinot]*[cinot]{1}\$[^\$cinot]*\$
+    // (?<=\\$)[^\$cinot]*[cinot]{1}\$[^\$cinot]*[cinot]{1}\$[^\$cinot]*(?=\\$)
 
     std::stringstream ss;
     std::string all_the_others = "[^\\$" + cp.letters + "]*";
     std::string one_letter = "[" + cp.letters + "]";
-    std::string begin_end = "\\$";
+    std::string r_begin = "(?<=\\$)";
+    std::string r_end = "(?=\\$)";
 
-    ss << begin_end << all_the_others;
-    for (unsigned j = 0; j < i - k; ++j) {
-      ss << one_letter << all_the_others;
+    ss << r_begin << all_the_others;
+    if (cp.letters.length()>0){
+      for (unsigned j = 0; j < i - k; ++j) {
+        ss << one_letter << all_the_others;
+      }
     }
-    ss << begin_end;
+    ss << r_end;
 
     UErrorCode status = U_ZERO_ERROR;
     icu::UnicodeString u_s1(flatten_string.c_str());
@@ -149,9 +154,6 @@ bool _find_path(const WordDetective::Datastr::Brick& brick,
 
     icu::RegexMatcher* matcher = new icu::RegexMatcher(u_e, 0, status);
     matcher->reset(u_s1);
-
-    // std::cout << "i:" << i << "regex: " << ss.str() << "matches: " <<
-    // matches.size() << "::" << matches[0] << std::endl;
 
     while (matcher->find()) {
       icu::UnicodeString tt;
@@ -162,6 +164,9 @@ bool _find_path(const WordDetective::Datastr::Brick& brick,
 
       std::string ts;
       tt.toUTF8String(ts);
+
+      // This is an empty match. Do not consider
+      if (ts=="") continue;
       vector_of_matched_strings.emplace_back(ts);
     }
   }
@@ -169,12 +174,9 @@ bool _find_path(const WordDetective::Datastr::Brick& brick,
   std::shuffle(vector_of_matched_strings.begin(),
                vector_of_matched_strings.end(), fp->g);
 
+  bool found = false;
   cp.split.pop_front();
   for (auto ms : vector_of_matched_strings) {
-    ms.pop_back();
-    ms.erase(ms.begin());
-
-    std::string tmp_letters = cp.letters;
     cp.letters.clear();
 
     auto vector_of_unicodes_2 = WordDetective::Utils::to_unicode_codes(ms);
@@ -191,19 +193,20 @@ bool _find_path(const WordDetective::Datastr::Brick& brick,
 
     cp.letters.insert(cp.letters.begin(), s.begin(), s.end());
 
-    if (_find_path(brick, fp, mp, cp)) {
-      mp.list_of_paths.emplace_front(ms);
-      return true;
+    if (_find_path(brick, fp, mp, cp, all_paths)) {
+      found = true;
+      if(!all_paths){
+        break;
+      }
     }
 
-    cp.letters = tmp_letters;
   }
   cp.split.emplace_front(k);
-  return false;
+  return found;
 }
 
 std::list<std::string> find_path(const WordDetective::Datastr::Brick& brick,
-                                 std::list<unsigned>& split) {
+                                 std::list<unsigned>& split, bool all_paths) {
   std::random_device rd;
   std::mt19937 g(rd());
 
@@ -212,20 +215,7 @@ std::list<std::string> find_path(const WordDetective::Datastr::Brick& brick,
   ControlParameters control_parameters;
   control_parameters.split = split;
 
-  unsigned k = split.front();
-  auto first_flatten_string = FlattenTraversal::flatten_traversal(brick, k);
-  if (first_flatten_string != "$$") {
-    control_parameters.letters = random_selection(first_flatten_string);
-
-    control_parameters.split.pop_front();
-    if (_find_path(brick, fixed_parameters, mutable_parameters,
-                   control_parameters)) {
-      mutable_parameters.list_of_paths.emplace_front(
-          control_parameters.letters);
-    }
-    control_parameters.split.emplace_front();
-  }
-
+  _find_path(brick,fixed_parameters,mutable_parameters,control_parameters,all_paths);
   return mutable_parameters.list_of_paths;
 }
 
@@ -237,6 +227,8 @@ std::list<std::string> get_valid_path_sequence(
     unsigned number_of_letters) {
   auto vector_of_splits = SplitGenerator::generate_split_combinations(
       number_of_splits, number_of_letters);
+
+      // std::cout << "letters: " << number_of_letters << std::endl;
 
   std::random_device rd;
   std::mt19937 g(rd());
@@ -333,7 +325,8 @@ std::unordered_set<std::string> generate_puzzle(
       brick, gpm.number_of_splits, gpm.number_of_letters);
 
   std::unordered_set<std::string> word_collection;
-  for (auto p : list_of_paths) {
+  if(!list_of_paths.empty()){
+    std::string p = list_of_paths.front();
     PuzzleGenerator::WordCollector::collect_words_from_all_subpaths(word_collection, p, brick);
   }
 

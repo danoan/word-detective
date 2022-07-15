@@ -122,6 +122,51 @@ TEST_CASE("Flatten Traversal",
   }
 }
 
+TEST_CASE("Find Path",
+          "[puzzle-generator][english][find-path]") {
+  /*
+    prior,     proper,     error,     driver,     deed,     video,     over,     period,     pipe,     divide,     drive,     deep,     derive,     river,     poor,     order,     pride,     dive,     drop,     deer,     deprive,     provider,     ever,     provide,     door,     pepper,     prove,     peer,     ride,     revive,     rope,
+
+    2-flat $de$
+    3-flat $dep$der$dor$eip$eor$epr$erv$opr$
+    4-flat $deir$deiv$deor$dopr$eirv$eopr$eorv$iopr$
+    5-flat $deiov$deipr$deirv$eoprv$
+    6-flat $deiopr$deiprv$
+    7-flat $deioprv$
+
+    Possible paths:
+
+      deiopr (de + iopr)
+      deoprv (de + eoprv)
+      deiopr deiprv
+
+  */
+  std::string BRICK_FILEPATH = PROJECT_SOURCE_DIR;
+  BRICK_FILEPATH += "/app/word-detective/test/input/small-english-corpora.txt.brk";
+
+  WordDetective::Datastr::Brick brick;
+  std::ifstream ifs(BRICK_FILEPATH, std::ios::binary);
+
+  WordDetective::StandardExtensions::Brick::IO::Load::run(brick, ifs);
+
+  std::list<unsigned int> split( {2,4} );
+  auto list_of_paths = PuzzleGenerator::FindPath::find_path(brick, split,true);
+  list_of_paths.sort();
+
+  std::list<std::string> list_of_valid_paths( {"deiopr","deoprv","deiopr","deiprv"} );
+  list_of_valid_paths.sort();
+
+  REQUIRE(list_of_paths.size()==list_of_valid_paths.size());
+
+  auto it = list_of_valid_paths.begin();
+
+  for(auto path : list_of_paths){
+    REQUIRE(path==*it);
+    ++it;
+  }
+
+}
+
 TEST_CASE("Get Valid English Path Sequence",
           "[puzzle-generator][english][valid-path-sequence]") {
   std::string BRICK_FILEPATH = PROJECT_SOURCE_DIR;
@@ -246,6 +291,44 @@ TEST_CASE("Generate English Puzzles",
         unicodes.insert(vu.begin(), vu.end());
       }
       REQUIRE(unicodes.size() == 10);
+    }
+  }
+}
+
+TEST_CASE("Find All Puzzles",
+          "[puzzle-generator][english][find-all-puzzles]") {
+  std::string BRICK_FILEPATH = PROJECT_SOURCE_DIR;
+  BRICK_FILEPATH += "/app/word-detective/test/input/en-5K.txt.brk";
+
+  WordDetective::Datastr::Brick brick;
+  std::ifstream ifs(BRICK_FILEPATH, std::ios::binary);
+
+  WordDetective::StandardExtensions::Brick::IO::Load::run(brick, ifs);
+
+  SECTION("7 letter puzzle") {
+    const unsigned number_unique_paths = 17948;
+    const unsigned number_of_paths_found = 105184;
+
+    std::set<std::string> set_of_paths;
+    unsigned paths_found = 0;
+    for( auto split : PuzzleGenerator::SplitGenerator::generate_split_combinations(3, 7)){
+      auto temp = PuzzleGenerator::FindPath::find_path(brick,split,true);
+      paths_found += temp.size();
+
+      set_of_paths.insert(temp.begin(),temp.end());
+    };
+
+    REQUIRE(paths_found==number_of_paths_found);
+    REQUIRE(set_of_paths.size()==number_unique_paths);
+
+
+    for(auto path : set_of_paths){
+      std::set<int> unicodes;
+
+      auto vu = WordDetective::Utils::to_unicode_codes(path);
+      unicodes.insert(vu.begin(), vu.end());
+
+      REQUIRE(unicodes.size()==7);
     }
   }
 }

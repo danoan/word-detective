@@ -71,15 +71,16 @@ json random_puzzle(const Datastr::Brick& brick, size_t num_letters) {
       PuzzleGenerator::GetValidPathSequence::get_valid_path_sequence(
           brick, number_of_splits, num_letters);
 
-  std::unordered_set<std::string> word_collection;
-  for (auto p : list_of_paths) {
-    PuzzleGenerator::WordCollector::collect_words_from_all_subpaths(
-        word_collection, p, brick);
-  }
+  PuzzleGenerator::GeneratePuzzleParameters gpm;
+  gpm.number_of_letters = num_letters;
+  gpm.number_of_splits = number_of_splits;
 
-  std::string letters = PuzzleGenerator::WordCollector::get_unique_characters(
-      word_collection.begin(), word_collection.end());
+  std::unordered_set<std::string> word_collection = PuzzleGenerator::generate_puzzle(gpm,brick);
+
   if (!word_collection.empty()) {
+    std::string letters = PuzzleGenerator::WordCollector::get_unique_characters(
+        word_collection.begin(), word_collection.end());
+
     Puzzle::Puzzle puzzle{letters,
                           {word_collection.begin(), word_collection.end()}};
     return json(puzzle);

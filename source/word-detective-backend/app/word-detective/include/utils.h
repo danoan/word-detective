@@ -80,10 +80,11 @@ std::string random_selection(const std::string& flatten_string);
 bool _find_path(const WordDetective::Datastr::Brick& brick,
                 const std::unique_ptr<FixedParameters>& fixed_parameters,
                 MutableParameters& mutable_parameters,
-                ControlParameters& control_parameters);
+                ControlParameters& control_parameters,
+                bool all_paths);
 
 std::list<std::string> find_path(const WordDetective::Datastr::Brick& brick,
-                                 std::list<unsigned>& split);
+                                 std::list<unsigned>& split, bool all_paths=false);
 }  // namespace PuzzleGenerator::FindPath
 
 namespace PuzzleGenerator::GetValidPathSequence {
