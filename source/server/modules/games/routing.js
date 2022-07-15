@@ -6,6 +6,7 @@ export let routing = function () {
   function fromFile(req, res) {
     //replaceAll is not implemented in this version of nodejs
     let text = req.files.text_file.data.toString().replace(/`/g,'\\`');
+    text = text.replace(/[\n\r]/g,' ');
     let checksum = md5(text);
 
     render(req,res,"games/puzzle-from-text/index.ntl",{text,checksum})
@@ -14,6 +15,7 @@ export let routing = function () {
   function fromString(req, res) {
     //replaceAll is not implemented in this version of nodejs
     let text = req.body.text.replace(/`/g,'\\`');
+    text = text.replace(/[\n\r]/g,' ');
     let checksum = md5(text);
 
     render(req,res,"games/puzzle-from-text/index.ntl",{text,checksum})

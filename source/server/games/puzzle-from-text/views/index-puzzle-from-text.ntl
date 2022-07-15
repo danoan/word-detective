@@ -120,7 +120,6 @@
 
     function _refreshPuzzle(resetCookie) {
       let text = `#text#`;
-      let text_oneline = text.replace(/\n/g," ");
 
       let one_fifth = Math.floor(text.length / 5);
 
@@ -255,8 +254,8 @@
 
             function init(word) {
               display_text = '';
-              display_text_prefix = get_sentence_context(text_oneline, 7, word,true) + ' ';
-              display_text_suffix = " " + get_sentence_context(text_oneline, 7, word, false);
+              display_text_prefix = get_sentence_context(text, 7, word,true) + ' ';
+              display_text_suffix = " " + get_sentence_context(text, 7, word, false);
 
               word_chars_pos = [];
               for (let i = 0; i < word.length; ++i) {
