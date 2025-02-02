@@ -7,7 +7,7 @@
 Word detective is a puzzle game in which the player should
 find all the missing words that can be created using only seven letters.
 
-![Given a list of words, builds ](docs/gameplay.png)
+Play it [here](http://word-detective.barriguinhas.fr/games/en).
 
 ## Features
 
