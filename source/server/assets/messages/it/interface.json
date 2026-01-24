@@ -19,6 +19,6 @@
   "interface.well_done": "Sei bravissimo!",
   "interface.text_coverage": "Coperture testuale:",
   "interface.or":"OU",
-  "interface.dictionary_source_url":"https://dizionari.corriere.it",
-  "interface.dictionary_source_label":"Source: Dizionario Corriere"
+  "interface.word_source_url":"https://dizionari.corriere.it",
+  "interface.word_source_label":"Source: Dizionario Corriere"
 }

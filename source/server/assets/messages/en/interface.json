@@ -19,6 +19,6 @@
   "interface.well_done": "Well done, champs!",
   "interface.text_coverage": "Text coverage:",
   "interface.or":"OR",
-  "interface.dictionary_source_url":"https://www.collinsdictionary.com",
-  "interface.dictionary_source_label":"Source: Collins Dictionary"
+  "interface.word_source_url":"https://www.collinsdictionary.com",
+  "interface.word_source_label":"Source: Collins Dictionary"
 }

@@ -3,19 +3,19 @@
 SCRIPT_DIR="$( cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SERVER_ROOT="$(cd "${SCRIPT_DIR}" && cd ../.. && pwd)"
 
-# Initialize dictionary-manager
+# Initialize word-source-manager
 
-if [[ ! -f "/.config/dictionary_manager/config.toml" ]]
+if [[ ! -f "/.config/word_source_manager/config.toml" ]]
 then
-  printf "/word-detective-server/dictionaries-folder\n/word-detective-server/bin/export-brick\n" | dictionary-manager list
+  printf "/word-detective-server/word-sources-folder\n/word-detective-server/bin/export-brick\n" | word-source-manager list
 
   # Create en-5K brick
 
-  dictionary-manager "add" "en-5K" "english" "english-dictionary" "/word-detective-server/assets/corpora/en-5K.txt"
+  word-source-manager "add" "en-5K" "english" "english-dictionary" "/word-detective-server/assets/corpora/en-5K.txt"
 
   # Create it-1K brick
 
-  dictionary-manager "add" "it-1K" "italian" "italian-dictionary" "/word-detective-server/assets/corpora/it-1K.txt"
+  word-source-manager "add" "it-1K" "italian" "italian-dictionary" "/word-detective-server/assets/corpora/it-1K.txt"
 
 fi
 

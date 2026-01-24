@@ -129,7 +129,7 @@ export function create_WORD_DETECTIVE_api(gui, messages_json, _config) {
       display_handlers.messages.word_found_already_message();
       status = check_word_callback_status.REJECTED_WORD;
     } else {
-      display_handlers.messages.word_not_in_dictionary_message();
+      display_handlers.messages.word_not_in_word_source_message();
       status = check_word_callback_status.UNRECOGNIZED_WORD;
     }
 

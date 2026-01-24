@@ -45,8 +45,8 @@ FROM compilation-system-dependencies as python-packages
 
 WORKDIR "${MAIN_WORKDIR}"
 
-COPY "./source/dictionary-manager" "${MAIN_WORKDIR}/source/dictionary-manager"
-RUN pip install "${MAIN_WORKDIR}/source/dictionary-manager"
+COPY "./source/word-source-manager" "${MAIN_WORKDIR}/source/word-source-manager"
+RUN pip install "${MAIN_WORKDIR}/source/word-source-manager"
 
 COPY "./source/dictionaries/english-dictionary" "${MAIN_WORKDIR}/source/dictionaries/english-dictionary"
 RUN pip install "${MAIN_WORKDIR}/source/dictionaries/english-dictionary"
