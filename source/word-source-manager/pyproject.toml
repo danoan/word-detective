@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "dictionary-manager"
+name = "word-source-manager"
 description = ''
 readme = "README.md"
 requires-python = ">=3.7"
@@ -29,12 +29,12 @@ dependencies = [
 dynamic = ["version"]
 
 [project.urls]
-Documentation = "https://github.com/unknown/dictionary-manager#readme"
-Issues = "https://github.com/unknown/dictionary-manager/issues"
-Source = "https://github.com/unknown/dictionary-manager"
+Documentation = "https://github.com/unknown/word-source-manager#readme"
+Issues = "https://github.com/unknown/word-source-manager/issues"
+Source = "https://github.com/unknown/word-source-manager"
 
 [tool.hatch.version]
-path = "dictionary_manager/__about__.py"
+path = "word_source_manager/__about__.py"
 
 [tool.hatch.build.targets.sdist]
 [tool.hatch.build.targets.wheel]
@@ -45,7 +45,7 @@ dependencies = [
   "pytest-cov",
 ]
 [tool.hatch.envs.default.scripts]
-cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=dictionary_manager --cov=tests"
+cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=word_source_manager --cov=tests"
 no-cov = "cov --no-cov"
 
 [[tool.hatch.envs.test.matrix]]
@@ -55,7 +55,7 @@ python = ["37", "38", "39", "310"]
 branch = true
 parallel = true
 omit = [
-  "dictionary_manager/__about__.py",
+  "word_source_manager/__about__.py",
 ]
 
 [tool.coverage.report]
@@ -66,5 +66,22 @@ exclude_lines = [
 ]
 
 [project.scripts]
-dictionary-manager = "dictionary_manager.dictionary_manager:main"
+word-source-manager = "word_source_manager.word_source_manager:main"
 
+[tool.ruff]
+target-version = "py39"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "C4"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]

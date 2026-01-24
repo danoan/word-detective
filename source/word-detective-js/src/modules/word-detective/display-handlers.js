@@ -199,8 +199,8 @@ export function messages_display_handler(gui,messages) {
     gui.set_status_value(`${messages.word_too_short_message}`);
   }
 
-  function word_not_in_dictionary_message() {
-    gui.set_status_value(`${messages.word_not_in_dictionary_message}`);
+  function word_not_in_word_source_message() {
+    gui.set_status_value(`${messages.word_not_in_word_source_message}`);
   }
 
   return{
@@ -208,7 +208,7 @@ export function messages_display_handler(gui,messages) {
     valid_word_message,
     word_found_already_message,
     word_too_short_message,
-    word_not_in_dictionary_message
+    word_not_in_word_source_message
   };
 
 }

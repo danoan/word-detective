@@ -1,7 +1,7 @@
 {
   "missing_words_prefix": "Missing words:",
   "word_found_already_message": "You've found this word already.",
-  "word_not_in_dictionary_message": "This is not a missing word.",
+  "word_not_in_word_source_message": "This is not a missing word.",
   "word_too_short_message": "All missing word have more than 3 letters.",
   "valid_word_message": "You got it!",
   "super_easy_word_message": [

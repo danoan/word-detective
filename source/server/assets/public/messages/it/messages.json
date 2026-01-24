@@ -1,7 +1,7 @@
 {
   "missing_words_prefix": "Parole mancanti:",
   "word_found_already_message": "Hai già trovato questa parola.",
-  "word_not_in_dictionary_message": "Questa non è una parola mancante.",
+  "word_not_in_word_source_message": "Questa non è una parola mancante.",
   "word_too_short_message": "Tutte le parole mancanti hanno più di tre lettere.",
   "valid_word_message": "Grande!",
   "super_easy_word_message": [

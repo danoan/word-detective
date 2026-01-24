@@ -25,9 +25,9 @@ export let routing = function () {
 
     let corporaBrickFilePath;
     if(languageCode=='en'){
-      corporaBrickFilePath = `${PROJECT_ROOT}/dictionaries-folder/english/en-5K/en-5K.brk`;
+      corporaBrickFilePath = `${PROJECT_ROOT}/word-sources-folder/english/en-5K/en-5K.brk`;
     }else if(languageCode='it'){
-      corporaBrickFilePath = `${PROJECT_ROOT}/dictionaries-folder/italian/it-1K/it-1K.brk`;
+      corporaBrickFilePath = `${PROJECT_ROOT}/word-sources-folder/italian/it-1K/it-1K.brk`;
     }
 
     binServices.generatePuzzle(
@@ -105,15 +105,15 @@ export let routing = function () {
     let languageCode = req.params["language"];
     let word = req.params["word"];
 
-    let dictionary_name = null;
+    let word_source_name = null;
     if(languageCode=='en'){
-      dictionary_name = `en-5K`;
+      word_source_name = `en-5K`;
     }else if(languageCode='it'){
-      dictionary_name = `it-1K`;
+      word_source_name = `it-1K`;
     }
 
     try {
-      let json_text_response = await binServices.requestWord(dictionary_name,word);
+      let json_text_response = await binServices.requestWord(word_source_name,word);
       res.send(json_text_response);
     }catch (err){
       res.redirect('/error/500')
