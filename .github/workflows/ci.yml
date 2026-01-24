@@ -1,0 +1,98 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  cpp-backend:
+    name: C++ Backend
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            cmake \
+            g++ \
+            libboost-filesystem-dev \
+            libboost-system-dev \
+            libicu-dev \
+            lcov
+
+      - name: Cache ICU build
+        id: cache-icu
+        uses: actions/cache@v4
+        with:
+          path: /usr/local/lib/libicu*
+          key: icu-70-1-${{ runner.os }}
+
+      - name: Build ICU from source (if not cached)
+        if: steps.cache-icu.outputs.cache-hit != 'true'
+        run: |
+          wget https://github.com/unicode-org/icu/releases/download/release-70-1/icu4c-70_1-src.tgz -O icu4c-70_1.tgz
+          tar -xf icu4c-70_1.tgz
+          cd icu/source
+          chmod +x runConfigureICU configure install-sh
+          ./runConfigureICU Linux/gcc
+          ./configure --enable-static=yes --with-data-packaging=static
+          make -j$(nproc)
+          sudo make install
+
+      - name: Configure CMake
+        run: |
+          mkdir -p build
+          cd build
+          cmake -DCMAKE_BUILD_TYPE=Release \
+                -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/install \
+                -DBUILD_STATIC=ON \
+                -DBUILD_BENCHMARKS=OFF \
+                -DBUILD_TESTS=ON \
+                ..
+
+      - name: Build
+        run: |
+          cd build
+          make -j$(nproc) install
+
+      - name: Run tests
+        run: |
+          cd build
+          ctest --output-on-failure
+
+  python-word-source-manager:
+    name: Python word-source-manager
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: source/word-source-manager
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+
+      - name: Install tox
+        run: pip install tox
+
+      - name: Run format check
+        run: tox -e format
+
+      - name: Run linter
+        run: tox -e lint
+
+      - name: Run type checker
+        run: tox -e typecheck
+
+      - name: Run tests
+        run: tox -e test

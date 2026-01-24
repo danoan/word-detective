@@ -10,3 +10,4 @@ sandbox
 workspace.code-workspace
 **/__pycache__
 .*
+!.github
