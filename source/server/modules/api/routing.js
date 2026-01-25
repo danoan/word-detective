@@ -28,8 +28,10 @@ export let routing = function () {
     let corporaBrickFilePath;
     if(languageCode=='en'){
       corporaBrickFilePath = `${PROJECT_ROOT}/word-sources-folder/english/en-5K/en-5K.brk`;
-    }else if(languageCode='it'){
+    }else if(languageCode=='it'){
       corporaBrickFilePath = `${PROJECT_ROOT}/word-sources-folder/italian/it-1K/it-1K.brk`;
+    }else if(languageCode=='fr'){
+      corporaBrickFilePath = `${PROJECT_ROOT}/word-sources-folder/french/fr-5K/fr-5K.brk`;
     }
 
     binServices.generatePuzzle(
@@ -112,8 +114,10 @@ export let routing = function () {
     let word_source_name = null;
     if(languageCode=='en'){
       word_source_name = `en-5K`;
-    }else if(languageCode='it'){
+    }else if(languageCode=='it'){
       word_source_name = `it-1K`;
+    }else if(languageCode=='fr'){
+      word_source_name = `fr-5K`;
     }
 
     try {
