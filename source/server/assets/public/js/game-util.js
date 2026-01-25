@@ -70,7 +70,7 @@ DateGen.generate = function(date_formula) {
   }
 }
 
-const LANGUAGES = ["pt","en","it"];
+const LANGUAGES = ["pt","en","it","fr"];
 
 export function identifyLanguage(){
   for(let language of LANGUAGES){

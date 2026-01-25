@@ -5,7 +5,7 @@ import fs from 'fs'
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(__dirname, "../../");
 const ASSETS_DIR = path.resolve(PROJECT_ROOT, "assets");
-const LANGUAGES=["en","it","pt"];
+const LANGUAGES=["en","it","pt","fr"];
 
 export function notAvailableLanguageRedirection(res){
   res.redirect("/error/language-not-available");
