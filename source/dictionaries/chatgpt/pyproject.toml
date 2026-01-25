@@ -11,6 +11,9 @@ dependencies = [
     "word-def-plugin-multilanguage-chatgpt>=0.2.0",
 ]
 
+[project.scripts]
+chatgpt-dictionary = "chatgpt_dictionary:main"
+
 [project.optional-dependencies]
 test = [
     "pytest>=7.0.0",

@@ -17,6 +17,10 @@ then
 
   word-source-manager "add" "it-1K" "italian" "italian-dictionary" "/word-detective-server/assets/corpora/it-1K.txt"
 
+  # Create fr-5K brick
+
+  word-source-manager "add" "fr-5K" "french" "chatgpt-dictionary" "/word-detective-server/assets/corpora/fr-5K.txt"
+
 fi
 
 # Init games
