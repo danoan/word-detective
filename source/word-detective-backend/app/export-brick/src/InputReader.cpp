@@ -28,6 +28,7 @@ InputData read_input(int argc, char* argv[]) {
         if(strcmp("english",optarg)==0) id.language = InputData::Languages::English;
         else if (strcmp("italian",optarg)==0) id.language = InputData::Languages::Italian;
         else if (strcmp("french",optarg)==0) id.language = InputData::Languages::French;
+        else if (strcmp("portuguese",optarg)==0) id.language = InputData::Languages::Portuguese;
         else id.language = InputData::Languages::English;
         break;
       }

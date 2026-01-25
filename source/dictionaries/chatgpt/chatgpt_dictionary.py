@@ -13,7 +13,7 @@ import os
 import json
 from danoan.word_def.plugins.modules.multilanguage_chatgpt import Adapter, Configuration
 
-LANGUAGE_MAP = {"en": "eng", "it": "ita", "fr": "fra"}
+LANGUAGE_MAP = {"en": "eng", "it": "ita", "fr": "fra", "pt": "por"}
 
 
 def get_definition(word: str, language_code: str) -> dict:

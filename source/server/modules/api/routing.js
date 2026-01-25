@@ -14,6 +14,8 @@ function languageFromLanguageCode(languageCode){
     return "italian";
   }else if(languageCode==="fr"){
     return "french";
+  }else if(languageCode==="pt"){
+    return "portuguese";
   }else{
     return "english";
   }
@@ -32,6 +34,8 @@ export let routing = function () {
       corporaBrickFilePath = `${PROJECT_ROOT}/word-sources-folder/italian/it-1K/it-1K.brk`;
     }else if(languageCode=='fr'){
       corporaBrickFilePath = `${PROJECT_ROOT}/word-sources-folder/french/fr-5K/fr-5K.brk`;
+    }else if(languageCode=='pt'){
+      corporaBrickFilePath = `${PROJECT_ROOT}/word-sources-folder/portuguese/pt-5K/pt-5K.brk`;
     }
 
     binServices.generatePuzzle(
@@ -97,6 +101,8 @@ export let routing = function () {
         definition = await binServices.italianDictionary(word);
       }else if(languageCode=='fr'){
         definition = await binServices.chatgptDictionary(word, languageCode);
+      }else if(languageCode=='pt'){
+        definition = await binServices.chatgptDictionary(word, languageCode);
       }else{
         res.redirect('/error/500');
       }
@@ -118,6 +124,8 @@ export let routing = function () {
       word_source_name = `it-1K`;
     }else if(languageCode=='fr'){
       word_source_name = `fr-5K`;
+    }else if(languageCode=='pt'){
+      word_source_name = `pt-5K`;
     }
 
     try {
