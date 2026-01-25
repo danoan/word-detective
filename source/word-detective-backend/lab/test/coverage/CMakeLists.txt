@@ -66,3 +66,5 @@ target_compile_options(test-coverage PRIVATE
 
 install(TARGETS test-coverage
 DESTINATION ${CMAKE_INSTALL_PREFIX}/lab)
+
+add_test(NAME catch2-tests COMMAND test-coverage)
