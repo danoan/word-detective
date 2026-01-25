@@ -51,6 +51,9 @@ RUN pip install "${MAIN_WORKDIR}/source/word-source-manager"
 COPY "./source/dictionaries/english-dictionary" "${MAIN_WORKDIR}/source/dictionaries/english-dictionary"
 RUN pip install "${MAIN_WORKDIR}/source/dictionaries/english-dictionary"
 
+COPY "./source/dictionaries/chatgpt/requirements.txt" "${MAIN_WORKDIR}/source/dictionaries/chatgpt/requirements.txt"
+RUN pip install -r "${MAIN_WORKDIR}/source/dictionaries/chatgpt/requirements.txt"
+
 
 # --------------------------------------------------------------------
 
@@ -96,3 +99,4 @@ COPY --from=build-cpp "${MAIN_WORKDIR}/install" "${BINARIES_DIR}"
 COPY "./source/word-detective-backend/app/render-word-detective/*.sh" "${BINARIES_DIR}/render-word-detective/"
 COPY "./source/word-detective-backend/app/render-word-detective/*.py" "${BINARIES_DIR}/render-word-detective/"
 COPY "./source/dictionaries/it/italian_dictionary.py" "${BINARIES_DIR}/italian_dictionary.py"
+COPY "./source/dictionaries/chatgpt/chatgpt_dictionary.py" "${BINARIES_DIR}/chatgpt_dictionary.py"

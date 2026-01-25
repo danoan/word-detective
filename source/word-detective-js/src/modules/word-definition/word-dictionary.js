@@ -1,4 +1,23 @@
+export function chatgpt(languageCode) {
+  function get(word) {
+    return fetch(`/api/${languageCode}/definition-chatgpt/${word}`)
+      .then(response => response.json())
+      .then(jsonResponse => new Promise((resolve, reject) => {
+        if (jsonResponse.definition) {
+          resolve({
+            word: jsonResponse.word,
+            definition: jsonResponse.definition
+          });
+        } else {
+          reject(new Error("ChatGPT dictionary failed"));
+        }
+      }));
+  }
+  return { get };
+}
+
 export function collins() {
+  const fallback = chatgpt("en");
 
   function extract(collins_html) {
     //Removing new line characters
@@ -22,43 +41,43 @@ export function collins() {
   }
 
   function get(word) {
-
     return fetch(`https://www.collinsdictionary.com/dictionary/english/${word}`)
-      .then( (response) => response.text())
-      .then( (html_response) => new Promise(function (resolve, reject) {
+      .then((response) => response.text())
+      .then((html_response) => {
         let word_definition = extract(html_response);
 
         if (word_definition) {
-          resolve({
+          return {
             word,
             "definition": word_definition
-          });
-        } else {
-          reject(new Error("Word not in collins dictionary"));
+          };
         }
-      }));
+        // Fallback to ChatGPT
+        return fallback.get(word);
+      })
+      .catch(() => fallback.get(word));
   }
 
   return { get };
 }
 
 export function corriere() {
+  const fallback = chatgpt("it");
 
   function get(word) {
     return fetch(`/api/it/definition/${word}`)
-      .then( (response) => response.text())
-      .then( (html_response) => new Promise(function (resolve, reject) {
-        let word_definition = html_response;
-
-        if (word_definition) {
-          resolve({
+      .then((response) => response.text())
+      .then((text_response) => {
+        if (text_response && text_response.trim()) {
+          return {
             word,
-            "definition": word_definition
-          });
-        } else {
-          reject(new Error("Word not in corriere dictionary"));
+            "definition": text_response
+          };
         }
-      }));
+        // Fallback to ChatGPT
+        return fallback.get(word);
+      })
+      .catch(() => fallback.get(word));
   }
 
   return { get };

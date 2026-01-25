@@ -120,12 +120,25 @@ export let routing = function () {
     }
   }
 
+  async function chatgptWordDefinition(req, res) {
+    let languageCode = req.params["language"];
+    let word = req.params["word"];
+
+    try {
+      let definition = await binServices.chatgptDictionary(word, languageCode);
+      res.send(definition);
+    } catch {
+      res.status(500).json({ error: "ChatGPT dictionary failed" });
+    }
+  }
+
   return {
     puzzleFromFile,
     puzzleFromString,
     randomPuzzle,
     wordDefinition,
-    requestWord
+    requestWord,
+    chatgptWordDefinition
   };
 
 }();

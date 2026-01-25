@@ -1,0 +1,1 @@
+word-def-plugin-multilanguage-chatgpt>=0.3.1
