@@ -2,7 +2,7 @@
 
 void usage(char* argv[]) {
   std::cerr << "Usage: " << argv[0] << "\n"
-            << "[-L] language (default:english. (english,italian,french))\n"
+            << "[-L] language (default:english. (english,italian,french,portuguese))\n"
             << "[-l] number of letters in puzzle (default:5)\n"
             << "[-w] minimum number of words in a puzzle (default:5)\n"
             << "[-m] output mode (all,random,index) (default:all)\n"
@@ -22,6 +22,7 @@ InputData read_input(int argc, char* argv[]) {
         if(strcmp("english",optarg)==0) id.language = InputData::Languages::English;
         else if (strcmp("italian",optarg)==0) id.language = InputData::Languages::Italian;
         else if (strcmp("french",optarg)==0) id.language = InputData::Languages::French;
+        else if (strcmp("portuguese",optarg)==0) id.language = InputData::Languages::Portuguese;
         else id.language = InputData::Languages::English;
         break;
       case 'l':

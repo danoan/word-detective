@@ -10,6 +10,8 @@ export function word_definition(language,gui) {
     dictionary = corriere();
   }else if(language==="fr"){
     dictionary = chatgpt("fr");
+  }else if(language==="pt"){
+    dictionary = chatgpt("pt");
   }else{
     dictionary = collins();
   }

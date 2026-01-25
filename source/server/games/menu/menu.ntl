@@ -26,6 +26,7 @@
       <div class="flag usa" onclick="document.location.href='/games/en'"></div>
       <div class="flag italy" onclick="document.location.href='/games/it'"></div>
       <div class="flag france" onclick="document.location.href='/games/fr'"></div>
+      <div class="flag brazil" onclick="document.location.href='/games/pt'"></div>
     </div>
     <div class="container-buttons">
       <div class="button left" onclick="control.gotoFromBaseURI('random-puzzle/')">

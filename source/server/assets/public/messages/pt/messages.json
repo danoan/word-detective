@@ -1,0 +1,46 @@
+{
+  "missing_words_prefix": "Palavras faltando:",
+  "word_found_already_message": "Voce ja encontrou essa palavra.",
+  "word_not_in_word_source_message": "Essa nao e uma palavra faltando.",
+  "word_too_short_message": "Todas as palavras faltando tem mais de 3 letras.",
+  "valid_word_message": "Muito bem!",
+  "super_easy_word_message": [
+    "Moleza!"
+  ],
+  "easy_word_message": [
+    "Excelente!"
+  ],
+  "average_difficult_word_message": [
+    "Brilhante!"
+  ],
+  "quite_difficult_word_message": [
+    "Magnifico!"
+  ],
+  "difficult_word_message": [
+    "Voce esta pegando fogo!",
+    "Que inspiracao!"
+  ],
+  "author_prefix_message": [
+    "",
+    "Ate"
+  ],
+  "author_suffix_message": [
+    "nao faria melhor!",
+    "teria inveja de voce!",
+    "pediria seus conselhos!"
+  ],
+  "authors": [
+    "Machado de Assis",
+    "Clarice Lispector",
+    "Jorge Amado",
+    "Guimaraes Rosa",
+    "Carlos Drummond",
+    "Cecilia Meireles",
+    "Fernando Pessoa",
+    "Jose Saramago",
+    "Eca de Queiros",
+    "Camoes",
+    "Vinicius de Moraes",
+    "Manuel Bandeira"
+  ]
+}

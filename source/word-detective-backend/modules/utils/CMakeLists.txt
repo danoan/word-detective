@@ -3,6 +3,7 @@ src/text/filter.cpp
 src/text/english.cpp
 src/text/italian.cpp
 src/text/french.cpp
+src/text/portuguese.cpp
 src/timer.cpp
 src/unicode.cpp
 )
