@@ -1,5 +1,5 @@
 #include "boost/filesystem.hpp"
-#include "catch/catch.hpp"
+#include "catch/catch_amalgamated.hpp"
 #include "word-detective/datastr/Brick.h"
 #include "word-detective/standard-extensions/brick/io.hpp"
 #include "word-detective/standard-extensions/brick/traversal.hpp"

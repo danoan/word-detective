@@ -1,4 +1,4 @@
-#include "catch/catch.hpp"
+#include "catch/catch_amalgamated.hpp"
 #include "word-detective/datastr/Trie.h"
 
 using namespace WordDetective::Datastr;
