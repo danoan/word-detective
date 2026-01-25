@@ -10,6 +10,7 @@
 #include "word-detective/utils/text/filter.hpp"
 #include "word-detective/utils/text/segmenter.hpp"
 #include "word-detective/utils/text/segmenter/english.hpp"
+#include "word-detective/utils/text/segmenter/french.hpp"
 #include "word-detective/utils/text/segmenter/italian.hpp"
 
 using namespace std;
@@ -30,6 +31,10 @@ int main(int argc, char* argv[]) {
   switch (id.language) {
     case InputData::Languages::Italian:
       Utils::Text::segment_into_map<Utils::Text::Languages::Italian>(
+          corpora, *is, ExportBrick::word_filter);
+      break;
+    case InputData::Languages::French:
+      Utils::Text::segment_into_map<Utils::Text::Languages::French>(
           corpora, *is, ExportBrick::word_filter);
       break;
     case InputData::Languages::English:
