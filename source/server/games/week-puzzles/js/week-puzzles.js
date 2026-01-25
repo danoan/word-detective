@@ -17,6 +17,8 @@ export async function setupWordDetective(puzzle_id,cookie_unique_id,expiration_d
     flagImageName = "usa";
   }else if(language==="it") {
     flagImageName = "italy";
+  }else if(language==="fr") {
+    flagImageName = "france";
   }else {
     flagImageName = "usa";
   }

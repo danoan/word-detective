@@ -1,0 +1,46 @@
+{
+  "missing_words_prefix": "Mots manquants:",
+  "word_found_already_message": "Vous avez deja trouve ce mot.",
+  "word_not_in_word_source_message": "Ce n'est pas un mot manquant.",
+  "word_too_short_message": "Tous les mots manquants ont plus de 3 lettres.",
+  "valid_word_message": "Bravo!",
+  "super_easy_word_message": [
+    "Un jeu d'enfant!"
+  ],
+  "easy_word_message": [
+    "Excellent!"
+  ],
+  "average_difficult_word_message": [
+    "Brillant!"
+  ],
+  "quite_difficult_word_message": [
+    "Magnifique!"
+  ],
+  "difficult_word_message": [
+    "Vous etes en feu!",
+    "Quelle inspiration!"
+  ],
+  "author_prefix_message": [
+    "",
+    "Meme"
+  ],
+  "author_suffix_message": [
+    "n'aurait pas fait mieux!",
+    "serait jaloux de vous!",
+    "vous demanderait des conseils!"
+  ],
+  "authors": [
+    "Hugo",
+    "Moliere",
+    "Voltaire",
+    "Camus",
+    "Sartre",
+    "Balzac",
+    "Flaubert",
+    "Proust",
+    "Dumas",
+    "Zola",
+    "Baudelaire",
+    "Rimbaud"
+  ]
+}

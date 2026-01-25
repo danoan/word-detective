@@ -71,6 +71,10 @@
   background-image: url("/assets/icons/italy.png");
 }
 
+.france{
+  background-image: url("/assets/icons/france.png");
+}
+
 
 .left{
   float:left;
