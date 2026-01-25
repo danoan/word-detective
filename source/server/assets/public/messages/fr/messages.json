@@ -1,6 +1,6 @@
 {
   "missing_words_prefix": "Mots manquants:",
-  "word_found_already_message": "Vous avez deja trouve ce mot.",
+  "word_found_already_message": "Vous avez déjà trouvé ce mot.",
   "word_not_in_word_source_message": "Ce n'est pas un mot manquant.",
   "word_too_short_message": "Tous les mots manquants ont plus de 3 lettres.",
   "valid_word_message": "Bravo!",
@@ -17,12 +17,12 @@
     "Magnifique!"
   ],
   "difficult_word_message": [
-    "Vous etes en feu!",
+    "Vous êtes en feu!",
     "Quelle inspiration!"
   ],
   "author_prefix_message": [
     "",
-    "Meme"
+    "Même"
   ],
   "author_suffix_message": [
     "n'aurait pas fait mieux!",
@@ -31,7 +31,7 @@
   ],
   "authors": [
     "Hugo",
-    "Moliere",
+    "Molière",
     "Voltaire",
     "Camus",
     "Sartre",

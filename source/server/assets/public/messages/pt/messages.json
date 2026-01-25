@@ -1,7 +1,7 @@
 {
   "missing_words_prefix": "Palavras faltando:",
-  "word_found_already_message": "Voce ja encontrou essa palavra.",
-  "word_not_in_word_source_message": "Essa nao e uma palavra faltando.",
+  "word_found_already_message": "Você já encontrou essa palavra.",
+  "word_not_in_word_source_message": "Essa não é uma palavra faltando.",
   "word_too_short_message": "Todas as palavras faltando tem mais de 3 letras.",
   "valid_word_message": "Muito bem!",
   "super_easy_word_message": [
@@ -14,33 +14,33 @@
     "Brilhante!"
   ],
   "quite_difficult_word_message": [
-    "Magnifico!"
+    "Magnífico!"
   ],
   "difficult_word_message": [
-    "Voce esta pegando fogo!",
-    "Que inspiracao!"
+    "Você está pegando fogo!",
+    "Que inspiração!"
   ],
   "author_prefix_message": [
     "",
-    "Ate"
+    "Até"
   ],
   "author_suffix_message": [
-    "nao faria melhor!",
-    "teria inveja de voce!",
+    "não faria melhor!",
+    "teria inveja de você!",
     "pediria seus conselhos!"
   ],
   "authors": [
     "Machado de Assis",
     "Clarice Lispector",
     "Jorge Amado",
-    "Guimaraes Rosa",
+    "Guimarães Rosa",
     "Carlos Drummond",
-    "Cecilia Meireles",
+    "Cecília Meireles",
     "Fernando Pessoa",
-    "Jose Saramago",
-    "Eca de Queiros",
-    "Camoes",
-    "Vinicius de Moraes",
+    "José Saramago",
+    "Eça de Queirós",
+    "Camões",
+    "Vinícius de Moraes",
     "Manuel Bandeira"
   ]
 }
