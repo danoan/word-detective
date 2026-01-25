@@ -51,8 +51,8 @@ RUN pip install "${MAIN_WORKDIR}/source/word-source-manager"
 COPY "./source/dictionaries/english-dictionary" "${MAIN_WORKDIR}/source/dictionaries/english-dictionary"
 RUN pip install "${MAIN_WORKDIR}/source/dictionaries/english-dictionary"
 
-COPY "./source/dictionaries/chatgpt/requirements.txt" "${MAIN_WORKDIR}/source/dictionaries/chatgpt/requirements.txt"
-RUN pip install -r "${MAIN_WORKDIR}/source/dictionaries/chatgpt/requirements.txt"
+COPY "./source/dictionaries/chatgpt" "${MAIN_WORKDIR}/source/dictionaries/chatgpt"
+RUN pip install "${MAIN_WORKDIR}/source/dictionaries/chatgpt"
 
 
 # --------------------------------------------------------------------

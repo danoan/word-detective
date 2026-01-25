@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chatgpt-dictionary"
+version = "0.1.0"
+description = "ChatGPT-based dictionary wrapper for word-detective"
+requires-python = ">=3.8"
+dependencies = [
+    "word-def-plugin-multilanguage-chatgpt>=0.2.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0.0",
+    "tox>=4.0.0",
+]
+
+[tool.pytest.ini_options]
+markers = [
+    "integration: marks tests as integration tests (require API key)",
+]
+testpaths = ["tests"]
