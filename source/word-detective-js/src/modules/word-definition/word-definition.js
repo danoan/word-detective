@@ -1,4 +1,4 @@
-import { corriere,collins } from "./word-dictionary.js";
+import { corriere,collins,chatgpt } from "./word-dictionary.js";
 import { select_word_handler } from "./display-handlers.js";
 
 export function word_definition(language,gui) {
@@ -8,6 +8,8 @@ export function word_definition(language,gui) {
   let dictionary;
   if(language==="it"){
     dictionary = corriere();
+  }else if(language==="fr"){
+    dictionary = chatgpt("fr");
   }else{
     dictionary = collins();
   }

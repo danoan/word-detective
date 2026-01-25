@@ -9,7 +9,7 @@ import os
 import json
 from danoan.word_def.plugins.modules.multilanguage_chatgpt import Adapter, Configuration
 
-LANGUAGE_MAP = {"en": "eng", "it": "ita"}
+LANGUAGE_MAP = {"en": "eng", "it": "ita", "fr": "fra"}
 
 def get_definition(word: str, language_code: str) -> dict:
     openai_key = os.environ.get("OPENAI_API_KEY")

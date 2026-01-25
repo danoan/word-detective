@@ -2,6 +2,7 @@ add_library(utils
 src/text/filter.cpp
 src/text/english.cpp
 src/text/italian.cpp
+src/text/french.cpp
 src/timer.cpp
 src/unicode.cpp
 )

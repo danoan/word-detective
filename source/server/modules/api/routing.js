@@ -12,6 +12,8 @@ function languageFromLanguageCode(languageCode){
     return "english";
   }else if(languageCode==="it"){
     return "italian";
+  }else if(languageCode==="fr"){
+    return "french";
   }else{
     return "english";
   }
@@ -91,6 +93,8 @@ export let routing = function () {
         definition = await binServices.englishDictionary(word);
       }else if(languageCode=='it'){
         definition = await binServices.italianDictionary(word);
+      }else if(languageCode=='fr'){
+        definition = await binServices.chatgptDictionary(word, languageCode);
       }else{
         res.redirect('/error/500');
       }
