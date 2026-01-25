@@ -1,1 +1,2 @@
-word-def-plugin-multilanguage-chatgpt>=0.3.1
+word-def-plugin-multilanguage-chatgpt>=0.2.0
+pytest>=7.0.0
