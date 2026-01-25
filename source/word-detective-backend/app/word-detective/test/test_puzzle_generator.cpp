@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "catch/catch.hpp"
+#include "catch/catch_amalgamated.hpp"
 #include "unicode/regex.h"
 #include "unicode/utypes.h"
 #include "utils.h"

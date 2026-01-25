@@ -5,7 +5,7 @@
 #include <word-detective/utils/text/segmenter.hpp>
 #include <word-detective/utils/text/segmenter/english.hpp>
 
-#include "catch/catch.hpp"
+#include "catch/catch_amalgamated.hpp"
 
 using namespace WordDetective::Utils;
 

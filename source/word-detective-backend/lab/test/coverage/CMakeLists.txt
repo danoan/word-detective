@@ -1,6 +1,6 @@
 add_executable(test-coverage
   test-coverage.cpp
-  ${CMAKE_SOURCE_DIR}/source/word-detective-backend/ext/catch/src/catch.cpp
+  ${CMAKE_SOURCE_DIR}/source/word-detective-backend/ext/catch/src/catch_amalgamated.cpp
   ${CMAKE_SOURCE_DIR}/source/word-detective-backend/modules/utils/test/test_utils_text.cpp
   ${CMAKE_SOURCE_DIR}/source/word-detective-backend/modules/datastr/test/test_datastr_brick.cpp
   ${CMAKE_SOURCE_DIR}/source/word-detective-backend/modules/datastr/test/test_datastr_trie.cpp
