@@ -10,17 +10,17 @@ using namespace WordDetective::StandardExtensions;
 using namespace WordDetective;
 
 class Traverse : public Datastr::BrickExtension {
-  using Callback = std::function<void(const Datastr::BrickInterface&)>;
+  using Callback = std::function<void(const Datastr::BrickInterface &)>;
 
-  static void _run(Callback callback, const Datastr::BrickInterface* brick) {
+  static void _run(Callback callback, const Datastr::BrickInterface *brick) {
     callback(*brick);
     for (auto element : *brick) {
       _run(callback, element);
     }
   }
 
- public:
-  static void run(Callback callback, const Datastr::Brick& brick) {
+public:
+  static void run(Callback callback, const Datastr::Brick &brick) {
     for (auto element : brick) {
       _run(callback, element);
     }
@@ -32,7 +32,8 @@ TEST_CASE("Brick IO operations", "[standard-extensions][brick][io]") {
   std::list<std::string> words{{"bargains", "struck", "dinosaurs", "know",
                                 "happened", "quick", "latest", "trick"}};
 
-  for (auto w : words) brick << w;
+  for (auto w : words)
+    brick << w;
 
   std::string output_folder = PROJECT_SOURCE_DIR;
   output_folder += "/lab/test/coverage/assets";
@@ -42,11 +43,11 @@ TEST_CASE("Brick IO operations", "[standard-extensions][brick][io]") {
       output_folder + "/simple_brick_one_byte.brk";
   SECTION("Save a one byte simple Brick") {
     try {
-      auto fd = std::ofstream(simple_brick_filepath_one_byte,std::ios_base::binary);
-      Brick::IO::Save<unsigned char>::run(fd,
-                                          brick);
+      auto fd =
+          std::ofstream(simple_brick_filepath_one_byte, std::ios_base::binary);
+      Brick::IO::Save<unsigned char>::run(fd, brick);
       REQUIRE(true);
-    } catch (std::exception& ex) {
+    } catch (std::exception &ex) {
       REQUIRE(false);
     }
   }
@@ -55,20 +56,21 @@ TEST_CASE("Brick IO operations", "[standard-extensions][brick][io]") {
     using WordIterator = std::list<std::string>::const_iterator;
 
     try {
-      auto fd = std::ifstream(simple_brick_filepath_one_byte,std::ios_base::binary);
+      auto fd =
+          std::ifstream(simple_brick_filepath_one_byte, std::ios_base::binary);
       Datastr::Brick loaded_brick;
       Brick::IO::Load::run(loaded_brick, fd);
 
       std::set<std::string> word_collection;
       Traverse::run(
-          [&word_collection](const Datastr::BrickInterface& brick) {
+          [&word_collection](const Datastr::BrickInterface &brick) {
             word_collection.insert(brick.beginWords(), brick.endWords());
           },
           loaded_brick);
 
       for (auto w : words)
         REQUIRE(word_collection.find(w) != word_collection.end());
-    } catch (std::exception& ex) {
+    } catch (std::exception &ex) {
       REQUIRE(false);
     }
   }
@@ -77,10 +79,11 @@ TEST_CASE("Brick IO operations", "[standard-extensions][brick][io]") {
       output_folder + "/simple_brick_four_bytes.brk";
   SECTION("Save a four bytes simple Brick") {
     try {
-      auto fd = std::ofstream(simple_brick_filepath_four_bytes,std::ios_base::binary);
+      auto fd = std::ofstream(simple_brick_filepath_four_bytes,
+                              std::ios_base::binary);
       Brick::IO::Save<int>::run(fd, brick);
       REQUIRE(true);
-    } catch (std::exception& ex) {
+    } catch (std::exception &ex) {
       REQUIRE(false);
     }
   }
@@ -89,20 +92,21 @@ TEST_CASE("Brick IO operations", "[standard-extensions][brick][io]") {
     using WordIterator = std::list<std::string>::const_iterator;
 
     try {
-      auto fd = std::ifstream(simple_brick_filepath_four_bytes,std::ios_base::binary);
+      auto fd = std::ifstream(simple_brick_filepath_four_bytes,
+                              std::ios_base::binary);
       Datastr::Brick loaded_brick;
       Brick::IO::Load::run(loaded_brick, fd);
 
       std::set<std::string> word_collection;
       Traverse::run(
-          [&word_collection](const Datastr::BrickInterface& brick) {
+          [&word_collection](const Datastr::BrickInterface &brick) {
             word_collection.insert(brick.beginWords(), brick.endWords());
           },
           loaded_brick);
 
       for (auto w : words)
         REQUIRE(word_collection.find(w) != word_collection.end());
-    } catch (std::exception& ex) {
+    } catch (std::exception &ex) {
       REQUIRE(false);
     }
   }
@@ -121,30 +125,31 @@ TEST_CASE("Brick IO operations", "[standard-extensions][brick][io]") {
     REQUIRE(word_map.size() == 4522);
 
     Datastr::Brick brick_5k;
-    for (auto p : word_map) brick_5k << p.first;
+    for (auto p : word_map)
+      brick_5k << p.first;
 
     std::string brick_5k_filepath = output_folder + "/list_5k_words.brk";
     try {
-      auto fd = std::ofstream(brick_5k_filepath,std::ios_base::binary);
+      auto fd = std::ofstream(brick_5k_filepath, std::ios_base::binary);
       Brick::IO::Save<unsigned char>::run(fd, brick_5k);
       REQUIRE(true);
-    } catch (std::exception& ex) {
+    } catch (std::exception &ex) {
       REQUIRE(false);
     }
 
     Datastr::Brick loaded_brick;
     try {
-      auto fd = std::ifstream(brick_5k_filepath,std::ios_base::binary);
+      auto fd = std::ifstream(brick_5k_filepath, std::ios_base::binary);
       Brick::IO::Load::run(loaded_brick, fd);
       REQUIRE(true);
-    } catch (std::exception& ex) {
+    } catch (std::exception &ex) {
       REQUIRE(false);
     }
 
     using WordIterator = std::list<std::string>::const_iterator;
     std::set<std::string> word_collection;
     Traverse::run(
-        [&word_collection](const Datastr::BrickInterface& brick) {
+        [&word_collection](const Datastr::BrickInterface &brick) {
           word_collection.insert(brick.beginWords(), brick.endWords());
         },
         loaded_brick);
@@ -157,7 +162,7 @@ TEST_CASE("Brick IO operations", "[standard-extensions][brick][io]") {
 }
 
 TEST_CASE("Brick traversal operations",
-          "[standard-extensions][brick][traversal") {
+          "[standard-extensions][brick][traversal]") {
   /*
    *dress -> ders
    *porch -> chopr
@@ -179,12 +184,13 @@ TEST_CASE("Brick traversal operations",
   Datastr::Brick brick;
   std::list<std::string> words{{"dress", "porch", "scared", "faith", "night",
                                 "crosses", "lovers", "streets", "well"}};
-  for (auto w : words) brick << w;
+  for (auto w : words)
+    brick << w;
 
   SECTION("Pre order") {
     std::string pre_order_expected = "acdersfhitceorshoprderselorsvwrstghint";
     std::string path = "";
-    auto callback = [&path](const Datastr::BrickInterface& brick, int level) {
+    auto callback = [&path](const Datastr::BrickInterface &brick, int level) {
       path += brick.key();
     };
 
@@ -197,13 +203,13 @@ TEST_CASE("Brick traversal operations",
     std::set<std::string> path_5_words = {
         {"crosses", "porch", "faith", "night"}};
 
-    auto callback = [&collected_words](const Datastr::BrickInterface& brick,
-                                       const std::string& path) {
+    auto callback = [&collected_words](const Datastr::BrickInterface &brick,
+                                       const std::string &path) {
       collected_words.insert(brick.beginWords(), brick.endWords());
     };
 
-    int tries=10;
-    while( tries >0 ){
+    int tries = 10;
+    while (tries > 0) {
       Brick::Traversal::RandomPath::run(callback, brick, 5);
       tries--;
     }
