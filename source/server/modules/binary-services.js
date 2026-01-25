@@ -91,12 +91,27 @@ export let binServices = function(){
         });
     }
 
+    async function chatgptDictionary(word, languageCode) {
+        let chatgpt_dictionary_path = path.resolve(BIN_DIR, 'chatgpt_dictionary.py');
+        let wd = p_execFile('python3', [chatgpt_dictionary_path, word, languageCode]);
+
+        return wd.then(result => new Promise(function(resolve) {
+            console.info("[chatgpt-dictionary][stdout]:", result.stdout);
+            console.error("[chatgpt-dictionary][stderr]:", result.stderr);
+            resolve(result.stdout);
+        }))
+        .catch(error => {
+            throw error;
+        });
+    }
+
       return {
           exportBrick,
           generatePuzzle,
           writeToTextFile,
           italianDictionary,
-          requestWord
+          requestWord,
+          chatgptDictionary
       };
 
 }();

@@ -22,3 +22,7 @@ api.get('/:language/definition/:word', (req, res) => {
 api.get('/:language/request-word/:word', (req, res) => {
     routing.requestWord(req, res);
 });
+
+api.get('/:language/definition-chatgpt/:word', (req, res) => {
+    routing.chatgptWordDefinition(req, res);
+});
