@@ -93,7 +93,7 @@ export let binServices = function(){
 
     async function chatgptDictionary(word, languageCode) {
         let chatgpt_dictionary_path = path.resolve(BIN_DIR, 'chatgpt_dictionary.py');
-        let wd = p_execFile('python3', [chatgpt_dictionary_path, word, languageCode]);
+        let wd = p_execFile('python3', [chatgpt_dictionary_path, "definition", "--lang", languageCode, word]);
 
         return wd.then(result => new Promise(function(resolve) {
             console.info("[chatgpt-dictionary][stdout]:", result.stdout);
