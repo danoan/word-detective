@@ -88,6 +88,27 @@ export let binServices = function(){
         }
     }
 
+    async function wordSourceManagerList() {
+        const result = await p_execFile('word-source-manager', ['list']);
+        console.info("[word-source-manager][list][stdout]:", result.stdout);
+        console.error("[word-source-manager][list][stderr]:", result.stderr);
+        return JSON.parse(result.stdout);
+    }
+
+    async function wordSourceManagerAdd(name, language, wordCheckApp, corpusPath) {
+        const result = await p_execFile('word-source-manager', ['add', name, language, wordCheckApp, corpusPath]);
+        console.info("[word-source-manager][add][stdout]:", result.stdout);
+        console.error("[word-source-manager][add][stderr]:", result.stderr);
+        return JSON.parse(result.stdout);
+    }
+
+    async function wordSourceManagerRemove(name) {
+        const result = await p_execFile('word-source-manager', ['remove', name]);
+        console.info("[word-source-manager][remove][stdout]:", result.stdout);
+        console.error("[word-source-manager][remove][stderr]:", result.stderr);
+        return JSON.parse(result.stdout);
+    }
+
     async function requestWord(word_source_name,word){
         return p_execFile("word-source-manager", ["request-word", word, word_source_name])
         .then(result => new Promise(function(resolve){
@@ -165,7 +186,10 @@ export let binServices = function(){
           italianDictionary,
           requestWord,
           chatgptDictionary,
-          englishDictionary
+          englishDictionary,
+          wordSourceManagerList,
+          wordSourceManagerAdd,
+          wordSourceManagerRemove
       };
 
 }();

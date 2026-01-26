@@ -11,6 +11,7 @@ import { middlewares } from './modules/middlewares.js';
 import { api } from './modules/api/api.js'
 import { games } from './modules/games/games.js'
 import { errors } from './modules/errors/errors.js'
+import { admin } from './modules/admin/admin.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(__dirname);
@@ -61,6 +62,7 @@ app.use("/assets", express.static(`${PROJECT_ROOT}/assets/public`));
 app.use('/games', games);
 app.use('/api', api);
 app.use('/error', errors);
+app.use('/admin', admin);
 
 //Set the home page
 app.get('/', (req, res) => {

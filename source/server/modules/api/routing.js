@@ -2,10 +2,46 @@ import * as path from 'path';
 
 import { Stream } from 'stream';
 import { fileURLToPath } from 'url';
+import { readFile } from 'fs/promises';
 import { binServices } from '../binary-services.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(__dirname, "../..");
+const CONFIG_PATH = path.resolve(PROJECT_ROOT, "assets/config/active-corpora.json");
+
+async function loadActiveConfig() {
+  try {
+    const data = await readFile(CONFIG_PATH, 'utf-8');
+    return JSON.parse(data);
+  } catch {
+    return {
+      en: { wordSource: "en-5K" },
+      it: { wordSource: "it-7K" },
+      fr: { wordSource: "fr-5K" },
+      pt: { wordSource: "pt-5K" }
+    };
+  }
+}
+
+function parseWordSourceList(listResult) {
+  if (!listResult.Success || !listResult.Message) {
+    return [];
+  }
+  const entries = listResult.Message.split('\n\n').filter(entry => entry.trim());
+  return entries.map(entry => {
+    const lines = entry.split('\n');
+    const source = {};
+    for (const line of lines) {
+      const colonIdx = line.indexOf(':');
+      if (colonIdx > 0) {
+        const key = line.substring(0, colonIdx).trim();
+        const value = line.substring(colonIdx + 1).trim();
+        source[key] = value;
+      }
+    }
+    return source;
+  }).filter(source => source.name);
+}
 
 function languageFromLanguageCode(languageCode){
   if(languageCode==="en"){
@@ -24,32 +60,42 @@ function languageFromLanguageCode(languageCode){
 export let routing = function () {
   const ASSETS_DIR = path.resolve(PROJECT_ROOT, "assets");
 
-  function randomPuzzle(req, res) {
+  async function randomPuzzle(req, res) {
     let languageCode = req.params["language"];
 
-    let corporaBrickFilePath;
-    if(languageCode=='en'){
-      corporaBrickFilePath = `${PROJECT_ROOT}/word-sources-folder/english/en-5K/en-5K.brk`;
-    }else if(languageCode=='it'){
-      corporaBrickFilePath = `${PROJECT_ROOT}/word-sources-folder/italian/it-7K/it-7K.brk`;
-    }else if(languageCode=='fr'){
-      corporaBrickFilePath = `${PROJECT_ROOT}/word-sources-folder/french/fr-5K/fr-5K.brk`;
-    }else if(languageCode=='pt'){
-      corporaBrickFilePath = `${PROJECT_ROOT}/word-sources-folder/portuguese/pt-5K/pt-5K.brk`;
-    }
+    try {
+      const config = await loadActiveConfig();
+      const listResult = await binServices.wordSourceManagerList();
+      const wordSources = parseWordSourceList(listResult);
 
-    binServices.generatePuzzle(
-      {
+      const activeSourceName = config[languageCode]?.wordSource;
+      const source = wordSources.find(s => s.name === activeSourceName && s.language === languageCode);
+
+      let corporaBrickFilePath;
+      if (source && source['brick-filepath']) {
+        corporaBrickFilePath = source['brick-filepath'];
+      } else {
+        // Fallback to hardcoded paths if config not found
+        if(languageCode=='en'){
+          corporaBrickFilePath = `${PROJECT_ROOT}/word-sources-folder/english/en-5K/en-5K.brk`;
+        }else if(languageCode=='it'){
+          corporaBrickFilePath = `${PROJECT_ROOT}/word-sources-folder/italian/it-7K/it-7K.brk`;
+        }else if(languageCode=='fr'){
+          corporaBrickFilePath = `${PROJECT_ROOT}/word-sources-folder/french/fr-5K/fr-5K.brk`;
+        }else if(languageCode=='pt'){
+          corporaBrickFilePath = `${PROJECT_ROOT}/word-sources-folder/portuguese/pt-5K/pt-5K.brk`;
+        }
+      }
+
+      const jsonPuzzle = await binServices.generatePuzzle({
         "brick_filepath": corporaBrickFilePath,
         "language": languageFromLanguageCode(languageCode)
-      })
-      .then(jsonPuzzle => {
-        res.send(jsonPuzzle);
-      })
-      .catch( error => {
-        console.info(error);
-        res.redirect("/error/500");
       });
+      res.send(jsonPuzzle);
+    } catch(error) {
+      console.info(error);
+      res.redirect("/error/500");
+    }
   }
 
   function puzzleFromFile(req, res) {
@@ -117,18 +163,23 @@ export let routing = function () {
     let languageCode = req.params["language"];
     let word = req.params["word"];
 
-    let word_source_name = null;
-    if(languageCode=='en'){
-      word_source_name = `en-5K`;
-    }else if(languageCode=='it'){
-      word_source_name = `it-7K`;
-    }else if(languageCode=='fr'){
-      word_source_name = `fr-5K`;
-    }else if(languageCode=='pt'){
-      word_source_name = `pt-5K`;
-    }
-
     try {
+      const config = await loadActiveConfig();
+      let word_source_name = config[languageCode]?.wordSource;
+
+      // Fallback to defaults if config not found
+      if (!word_source_name) {
+        if(languageCode=='en'){
+          word_source_name = `en-5K`;
+        }else if(languageCode=='it'){
+          word_source_name = `it-7K`;
+        }else if(languageCode=='fr'){
+          word_source_name = `fr-5K`;
+        }else if(languageCode=='pt'){
+          word_source_name = `pt-5K`;
+        }
+      }
+
       let json_text_response = await binServices.requestWord(word_source_name,word);
       res.send(json_text_response);
     }catch (err){
