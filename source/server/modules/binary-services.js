@@ -105,13 +105,53 @@ export let binServices = function(){
         });
     }
 
+    async function englishDictionary(word) {
+        function extractDefinition(collinsHtml) {
+            // Remove newline characters
+            let res = collinsHtml.replaceAll(/\n/g, '');
+            // Include newline characters after every div element
+            res = res.replaceAll(/<\/div>/g, '</div>\n');
+            // Look for the div definition
+            let reg = /<div class="def">.*?<\/div>/;
+            let match = reg.exec(res);
+
+            if (!match || match.length === 0) {
+                return null;
+            }
+            // Remove html elements
+            let definition = match[0].replaceAll(/<.*?>/g, '');
+            return definition;
+        }
+
+        try {
+            console.info("[english-dictionary] Fetching from Collins for word:", word);
+            const response = await fetch(`https://www.collinsdictionary.com/dictionary/english/${word}`);
+            const html = await response.text();
+            const definition = extractDefinition(html);
+
+            if (definition) {
+                console.info("[english-dictionary] Found definition from Collins");
+                return JSON.stringify({ word, definition });
+            }
+
+            // Fallback to ChatGPT
+            console.info("[english-dictionary] Collins extraction failed, falling back to ChatGPT");
+            return await chatgptDictionary(word, 'en');
+        } catch (error) {
+            console.error("[english-dictionary] Error fetching from Collins:", error.message);
+            // Fallback to ChatGPT
+            return await chatgptDictionary(word, 'en');
+        }
+    }
+
       return {
           exportBrick,
           generatePuzzle,
           writeToTextFile,
           italianDictionary,
           requestWord,
-          chatgptDictionary
+          chatgptDictionary,
+          englishDictionary
       };
 
 }();
