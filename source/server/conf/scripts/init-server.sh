@@ -13,9 +13,9 @@ then
 
   word-source-manager "add" "en-5K" "english" "english-dictionary" "/word-detective-server/assets/corpora/en-5K.txt"
 
-  # Create it-1K brick
+  # Create it-7K brick
 
-  word-source-manager "add" "it-1K" "italian" "italian-dictionary" "/word-detective-server/assets/corpora/it-1K.txt"
+  word-source-manager "add" "it-7K" "italian" "italian-dictionary" "/word-detective-server/assets/corpora/it-7K.txt"
 
   # Create fr-5K brick
 
