@@ -48,7 +48,7 @@ The project consists of three main components:
 
 The core puzzle generation engine written in C++17:
 
-- **Data Structures**: Specialized `Brick` tree structure for efficient word storage and lookup by unique character paths, plus `Trie` for prefix matching
+- **Data Structures**: The [Brick](docs/brick-data-structure.md) is a tree structure inspired by the Trie, where each path represents a set of characters and stores all words that can be spelled using exactly those characters. This makes puzzle generation a simple tree traversal: pick a path of 7 characters, and you instantly have all valid words for that puzzle.
 - **Text Processing**: Unicode-aware text segmentation with ICU library support for multiple languages
 - **Applications**:
   - `word-detective`: Generates puzzle JSON from pre-built word data
