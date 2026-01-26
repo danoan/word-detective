@@ -31,7 +31,7 @@ export let routing = function () {
     if(languageCode=='en'){
       corporaBrickFilePath = `${PROJECT_ROOT}/word-sources-folder/english/en-5K/en-5K.brk`;
     }else if(languageCode=='it'){
-      corporaBrickFilePath = `${PROJECT_ROOT}/word-sources-folder/italian/it-1K/it-1K.brk`;
+      corporaBrickFilePath = `${PROJECT_ROOT}/word-sources-folder/italian/it-7K/it-7K.brk`;
     }else if(languageCode=='fr'){
       corporaBrickFilePath = `${PROJECT_ROOT}/word-sources-folder/french/fr-5K/fr-5K.brk`;
     }else if(languageCode=='pt'){
@@ -121,7 +121,7 @@ export let routing = function () {
     if(languageCode=='en'){
       word_source_name = `en-5K`;
     }else if(languageCode=='it'){
-      word_source_name = `it-1K`;
+      word_source_name = `it-7K`;
     }else if(languageCode=='fr'){
       word_source_name = `fr-5K`;
     }else if(languageCode=='pt'){

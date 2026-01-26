@@ -27,7 +27,7 @@ class TestFindWordSourceByName:
     def test_finds_existing_word_source(self):
         word_sources = [
             {"name": "en-5K", "language": "english"},
-            {"name": "it-1K", "language": "italian"},
+            {"name": "it-7K", "language": "italian"},
         ]
         result = find_word_source_by_name(word_sources, "en-5K")
         assert result == {"name": "en-5K", "language": "english"}

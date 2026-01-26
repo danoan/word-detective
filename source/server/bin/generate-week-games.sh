@@ -38,5 +38,5 @@ function generate_week_games(){
 }
 
 generate_week_games "en" "/word-detective-server/word-sources-folder/english/en-5K/en-5K.brk"
-generate_week_games "it" "/word-detective-server/word-sources-folder/italian/it-1K/it-1K.brk"
+generate_week_games "it" "/word-detective-server/word-sources-folder/italian/it-7K/it-7K.brk"
 
