@@ -17,45 +17,18 @@ export function chatgpt(languageCode) {
 }
 
 export function collins() {
-  const fallback = chatgpt("en");
-
-  function extract(collins_html) {
-    //Removing new line characters
-    let res = collins_html.replaceAll(/\n/g, '');
-
-    //Include new line characters after every div element
-    res = res.replaceAll(/<\/div>/g, '</div>/\n');
-
-    //Look for the div definition
-    let reg = /<div class="def">.*<\/div>/;
-    let x = reg.exec(res);
-
-    if (x.length === 0) {
-      // console.log("Error while processing div definition");
-      return '';
-    } else {
-      //Remove html elements
-      let definition = x[0].replaceAll(/<.*?>/g, '');
-      return definition;
-    }
-  }
-
   function get(word) {
-    return fetch(`https://www.collinsdictionary.com/dictionary/english/${word}`)
-      .then((response) => response.text())
-      .then((html_response) => {
-        let word_definition = extract(html_response);
-
-        if (word_definition) {
+    return fetch(`/api/en/definition/${word}`)
+      .then(response => response.json())
+      .then(jsonResponse => {
+        if (jsonResponse.definition) {
           return {
-            word,
-            "definition": word_definition
+            word: jsonResponse.word,
+            definition: jsonResponse.definition
           };
         }
-        // Fallback to ChatGPT
-        return fallback.get(word);
-      })
-      .catch(() => fallback.get(word));
+        throw new Error("No definition found");
+      });
   }
 
   return { get };
