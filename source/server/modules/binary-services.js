@@ -65,17 +65,27 @@ export let binServices = function(){
 
     async function italianDictionary(word){
         let italian_dictonary_path = path.resolve(BIN_DIR,'italian_dictionary.py');
-        let wd = p_execFile('python3', [italian_dictonary_path,word]);
 
-        return wd.then(result => new Promise(function(resolve){
-            console.info("[italian-dictionary][stdout]:",result.stdout);
-            console.error("[italian-dictionary][stderr]:",result.stderr);
+        try {
+            console.info("[italian-dictionary] Fetching from Corriere for word:", word);
+            const result = await p_execFile('python3', [italian_dictonary_path, word]);
+            console.info("[italian-dictionary][stdout]:", result.stdout);
+            console.error("[italian-dictionary][stderr]:", result.stderr);
 
-            resolve(result.stdout);
-        }))
-        .catch( error => {
-            throw error;
-        });
+            const definition = result.stdout.trim();
+            if (definition) {
+                console.info("[italian-dictionary] Found definition from Corriere");
+                return JSON.stringify({ word, definition });
+            }
+
+            // Fallback to ChatGPT
+            console.info("[italian-dictionary] Corriere extraction failed, falling back to ChatGPT");
+            return await chatgptDictionary(word, 'it');
+        } catch (error) {
+            console.error("[italian-dictionary] Error fetching from Corriere:", error.message);
+            // Fallback to ChatGPT
+            return await chatgptDictionary(word, 'it');
+        }
     }
 
     async function requestWord(word_source_name,word){
@@ -98,7 +108,11 @@ export let binServices = function(){
         return wd.then(result => new Promise(function(resolve) {
             console.info("[chatgpt-dictionary][stdout]:", result.stdout);
             console.error("[chatgpt-dictionary][stderr]:", result.stderr);
-            resolve(result.stdout);
+
+            // Normalize from { Status, Definitions: [...] } to { word, definition }
+            const parsed = JSON.parse(result.stdout);
+            const definition = parsed.Definitions?.[0] || '';
+            resolve(JSON.stringify({ word, definition }));
         }))
         .catch(error => {
             throw error;

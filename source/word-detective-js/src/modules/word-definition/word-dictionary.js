@@ -35,22 +35,18 @@ export function collins() {
 }
 
 export function corriere() {
-  const fallback = chatgpt("it");
-
   function get(word) {
     return fetch(`/api/it/definition/${word}`)
-      .then((response) => response.text())
-      .then((text_response) => {
-        if (text_response && text_response.trim()) {
+      .then(response => response.json())
+      .then(jsonResponse => {
+        if (jsonResponse.definition) {
           return {
-            word,
-            "definition": text_response
+            word: jsonResponse.word,
+            definition: jsonResponse.definition
           };
         }
-        // Fallback to ChatGPT
-        return fallback.get(word);
-      })
-      .catch(() => fallback.get(word));
+        throw new Error("No definition found");
+      });
   }
 
   return { get };
