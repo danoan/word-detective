@@ -4,9 +4,30 @@ import { readFile, writeFile, mkdir, rm, copyFile, rename, unlink } from 'fs/pro
 import { createReadStream } from 'fs';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
+import https from 'https';
+import http from 'http';
 import { binServices } from '../binary-services.js';
 
 const p_execFile = promisify(execFile);
+
+function fetchUrl(url) {
+    return new Promise((resolve, reject) => {
+        const client = url.startsWith('https') ? https : http;
+        client.get(url, (res) => {
+            if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+                // Follow redirect
+                return fetchUrl(res.headers.location).then(resolve).catch(reject);
+            }
+            if (res.statusCode !== 200) {
+                return reject(new Error(`HTTP ${res.statusCode}`));
+            }
+            let data = '';
+            res.on('data', chunk => data += chunk);
+            res.on('end', () => resolve(data));
+            res.on('error', reject);
+        }).on('error', reject);
+    });
+}
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(__dirname, "../..");
@@ -246,6 +267,83 @@ export let routing = function () {
         }
     }
 
+    function extractTextFromHtml(html) {
+        return html
+            // Remove script and style content
+            .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, ' ')
+            .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, ' ')
+            // Remove HTML tags
+            .replace(/<[^>]+>/g, ' ')
+            // Decode common HTML entities
+            .replace(/&nbsp;/g, ' ')
+            .replace(/&amp;/g, '&')
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&quot;/g, '"')
+            .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(n))
+            // Normalize whitespace
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+
+    function extractUniqueWords(text) {
+        return text
+            .toLowerCase()
+            .replace(/[^a-zA-ZàâäéèêëïîôùûüÿœæçÀÂÄÉÈÊËÏÎÔÙÛÜŸŒÆÇáéíóúñüÁÉÍÓÚÑÜãõÃÕ\s]/g, ' ')
+            .split(/\s+/)
+            .map(w => w.trim())
+            .filter(w => w.length > 0)
+            .filter((w, i, arr) => arr.indexOf(w) === i)
+            .sort();
+    }
+
+    async function createFromUrl(req, res) {
+        try {
+            const { name, language, url } = req.body;
+
+            if (!name || !language || !url) {
+                return res.status(400).send("Name, language, and URL are required");
+            }
+
+            const fullLanguage = LANGUAGE_MAP[language];
+            if (!fullLanguage) {
+                return res.status(400).send("Invalid language code");
+            }
+
+            // Fetch the URL
+            console.info("[admin][createFromUrl] Fetching:", url);
+            const html = await fetchUrl(url);
+            const text = extractTextFromHtml(html);
+            const words = extractUniqueWords(text);
+
+            if (words.length === 0) {
+                return res.status(400).send("No valid words found in page");
+            }
+
+            console.info("[admin][createFromUrl] Extracted", words.length, "unique words");
+
+            // Write words to temp file
+            const tempPath = path.resolve(PROJECT_ROOT, `temp-${name}.txt`);
+            await writeFile(tempPath, words.join('\n') + '\n');
+
+            const wordCheckApp = path.resolve(PROJECT_ROOT, `bin/word-check-${fullLanguage}`);
+
+            try {
+                const result = await binServices.wordSourceManagerAdd(name, fullLanguage, wordCheckApp, tempPath);
+                console.info("[admin][createFromUrl] Result:", result);
+            } finally {
+                try {
+                    await unlink(tempPath);
+                } catch { }
+            }
+
+            res.redirect('/admin');
+        } catch (error) {
+            console.error("[admin][createFromUrl] Error:", error);
+            res.status(500).send("Error creating corpus: " + error.message);
+        }
+    }
+
     async function createFromText(req, res) {
         try {
             const { name, language, text } = req.body;
@@ -260,14 +358,7 @@ export let routing = function () {
             }
 
             // Extract unique words, sorted alphabetically
-            const words = text
-                .toLowerCase()
-                .replace(/[^a-zA-ZàâäéèêëïîôùûüÿœæçÀÂÄÉÈÊËÏÎÔÙÛÜŸŒÆÇáéíóúñüÁÉÍÓÚÑÜãõÃÕ\s]/g, ' ')
-                .split(/\s+/)
-                .map(w => w.trim())
-                .filter(w => w.length > 0)
-                .filter((w, i, arr) => arr.indexOf(w) === i)
-                .sort();
+            const words = extractUniqueWords(text);
 
             if (words.length === 0) {
                 return res.status(400).send("No valid words found in text");
@@ -416,6 +507,7 @@ export let routing = function () {
         activate,
         viewWords,
         createFromText,
+        createFromUrl,
         createFromSelection,
         regenerateWeekPuzzles,
         loadActiveConfig,
