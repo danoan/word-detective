@@ -69,13 +69,13 @@ app.get('/', (req, res) => {
 
 // You should setup your private and public keys
 // or use the http server
-const options = {
-    key: fs.readFileSync('certificates/word-detective.key'),
-    cert: fs.readFileSync('certificates/word-detective.crt')
-};
+// const options = {
+//     key: fs.readFileSync('certificates/word-detective.key'),
+//     cert: fs.readFileSync('certificates/word-detective.crt')
+// };
 
-let httpServer = http.createServer(options,app);
-let httpsServer = https.createServer(options,app);
+let httpServer = http.createServer({},app);
+// let httpsServer = https.createServer(options,app);
 
-httpsServer.listen(4958);
-// httpServer.listen(4958);
+// httpsServer.listen(4958);
+httpServer.listen(4958);
