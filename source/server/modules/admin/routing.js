@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { fileURLToPath } from 'url';
-import { readFile, writeFile, mkdir, rm, copyFile, rename } from 'fs/promises';
+import { readFile, writeFile, mkdir, rm, copyFile, rename, unlink } from 'fs/promises';
 import { createReadStream } from 'fs';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
@@ -246,6 +246,55 @@ export let routing = function () {
         }
     }
 
+    async function createFromText(req, res) {
+        try {
+            const { name, language, text } = req.body;
+
+            if (!name || !language || !text) {
+                return res.status(400).send("Name, language, and text are required");
+            }
+
+            const fullLanguage = LANGUAGE_MAP[language];
+            if (!fullLanguage) {
+                return res.status(400).send("Invalid language code");
+            }
+
+            // Extract unique words, sorted alphabetically
+            const words = text
+                .toLowerCase()
+                .replace(/[^a-zA-ZàâäéèêëïîôùûüÿœæçÀÂÄÉÈÊËÏÎÔÙÛÜŸŒÆÇáéíóúñüÁÉÍÓÚÑÜãõÃÕ\s]/g, ' ')
+                .split(/\s+/)
+                .map(w => w.trim())
+                .filter(w => w.length > 0)
+                .filter((w, i, arr) => arr.indexOf(w) === i)
+                .sort();
+
+            if (words.length === 0) {
+                return res.status(400).send("No valid words found in text");
+            }
+
+            // Write words to temp file
+            const tempPath = path.resolve(PROJECT_ROOT, `temp-${name}.txt`);
+            await writeFile(tempPath, words.join('\n') + '\n');
+
+            const wordCheckApp = path.resolve(PROJECT_ROOT, `bin/word-check-${fullLanguage}`);
+
+            try {
+                const result = await binServices.wordSourceManagerAdd(name, fullLanguage, wordCheckApp, tempPath);
+                console.info("[admin][createFromText] Result:", result);
+            } finally {
+                try {
+                    await unlink(tempPath);
+                } catch { }
+            }
+
+            res.redirect('/admin');
+        } catch (error) {
+            console.error("[admin][createFromText] Error:", error);
+            res.status(500).send("Error creating corpus: " + error.message);
+        }
+    }
+
     async function createFromSelection(req, res) {
         try {
             const { name, language, words } = req.body;
@@ -366,6 +415,7 @@ export let routing = function () {
         remove,
         activate,
         viewWords,
+        createFromText,
         createFromSelection,
         regenerateWeekPuzzles,
         loadActiveConfig,

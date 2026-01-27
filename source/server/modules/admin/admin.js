@@ -23,6 +23,11 @@ admin.post('/upload', (req, res) => {
     routing.upload(req, res);
 });
 
+// Create corpus from text
+admin.post('/create-from-text', (req, res) => {
+    routing.createFromText(req, res);
+});
+
 // Download corpus file
 admin.get('/download/:name', (req, res) => {
     routing.download(req, res);

@@ -181,18 +181,30 @@
 
 .form-group input[type="text"],
 .form-group select,
-.form-group input[type="file"] {
+.form-group input[type="file"],
+.form-group textarea {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 1em;
 }
 
+.form-group textarea {
+    width: 100%;
+    resize: vertical;
+    font-family: inherit;
+}
+
 .form-group input[type="text"]:focus,
-.form-group select:focus {
+.form-group select:focus,
+.form-group textarea:focus {
     outline: none;
     border-color: #2196F3;
     box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+}
+
+.text-section {
+    background: #fff8e1;
 }
 
 .no-corpora {

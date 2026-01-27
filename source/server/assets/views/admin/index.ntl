@@ -47,6 +47,30 @@
                 <button type="submit" class="btn btn-primary">Upload Corpus</button>
             </form>
         </div>
+
+        <div class="upload-section text-section">
+            <h2>Create Corpus from Text</h2>
+            <form action="/admin/create-from-text" method="POST" class="upload-form">
+                <div class="form-group">
+                    <label for="text-name">Corpus Name:</label>
+                    <input type="text" id="text-name" name="name" placeholder="e.g., en-custom" required>
+                </div>
+                <div class="form-group">
+                    <label for="text-language">Language:</label>
+                    <select id="text-language" name="language" required>
+                        <option value="en">English</option>
+                        <option value="it">Italian</option>
+                        <option value="fr">French</option>
+                        <option value="pt">Portuguese</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="text-content">Text (words will be extracted, deduplicated, and sorted):</label>
+                    <textarea id="text-content" name="text" rows="8" placeholder="Paste your text here. All unique words will be extracted..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Corpus</button>
+            </form>
+        </div>
     </div>
 
     <script>
