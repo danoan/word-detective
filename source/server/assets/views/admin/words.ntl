@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel='stylesheet' type='text/css' media='screen' href='/assets/css/master.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='/admin/css/admin.css'>
+    <title>Word Detective - #corpusName# Words</title>
+    <style>
+        .words-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .words-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        .controls-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .search-box, .length-input, .random-input {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+        .search-box {
+            width: 200px;
+        }
+        .length-input, .random-input {
+            width: 60px;
+        }
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .control-label {
+            font-size: 0.9em;
+            color: #555;
+        }
+        .selected-random-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff3e0;
+            border-radius: 8px;
+            border: 1px solid #ffcc80;
+        }
+        .selected-random-section h3 {
+            margin: 0 0 15px 0;
+            color: #e65100;
+        }
+        .random-words-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .random-word-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: white;
+            border: 1px solid #ffcc80;
+            border-radius: 20px;
+            font-size: 0.95em;
+        }
+        .random-word-chip .word-text {
+            font-weight: 500;
+        }
+        .chip-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 50%;
+            font-size: 1em;
+            line-height: 1;
+        }
+        .chip-btn.replace {
+            color: #2196F3;
+        }
+        .chip-btn.replace:hover {
+            background: #e3f2fd;
+        }
+        .chip-btn.remove {
+            color: #f44336;
+        }
+        .chip-btn.remove:hover {
+            background: #ffebee;
+        }
+        .hidden-section {
+            display: none;
+        }
+        .words-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 8px;
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        .word-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .word-item:hover {
+            background: #f0f7ff;
+        }
+        .word-item.selected {
+            background: #e3f2fd;
+            border-color: #2196F3;
+        }
+        .word-item.hidden {
+            display: none;
+        }
+        .word-item input[type="checkbox"] {
+            cursor: pointer;
+        }
+        .selection-count {
+            font-weight: 500;
+            color: #666;
+        }
+        .create-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0f7ff;
+            border-radius: 8px;
+        }
+        .create-form {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+        .create-form .form-group {
+            margin: 0;
+        }
+        .back-link {
+            color: #2196F3;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <header class="admin-header">
+            <a href="/admin" class="back-link">&larr; Back to Admin</a>
+            <h1>#corpusName#</h1>
+            <p>Select words to create a new corpus</p>
+        </header>
+
+        <div class="words-controls">
+            <div class="controls-row">
+                <input type="text" id="search" class="search-box" placeholder="Search words...">
+                <div class="control-group">
+                    <span class="control-label">Length:</span>
+                    <input type="number" id="min-length" class="length-input" placeholder="Min" min="1">
+                    <span>-</span>
+                    <input type="number" id="max-length" class="length-input" placeholder="Max" min="1">
+                </div>
+                <button class="btn btn-small" onclick="applyFilters()">Apply</button>
+                <button class="btn btn-small" onclick="clearFilters()">Clear</button>
+            </div>
+            <div class="controls-row">
+                <button class="btn btn-small" onclick="selectAll()">Select All</button>
+                <button class="btn btn-small" onclick="selectNone()">Select None</button>
+                <button class="btn btn-small" onclick="invertSelection()">Invert</button>
+                <span class="selection-count"><span id="count">0</span> / <span id="total">0</span> selected</span>
+                <span style="margin-left: 20px;">|</span>
+                <div class="control-group">
+                    <span class="control-label">Random:</span>
+                    <input type="number" id="random-count" class="random-input" placeholder="n" min="1" value="100">
+                    <button class="btn btn-small btn-activate" onclick="selectRandom()">Select Random</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="random-selection-section" class="selected-random-section hidden-section">
+            <h3>Random Selection (<span id="random-count-display">0</span> words)</h3>
+            <div id="random-words-container" class="random-words-grid"></div>
+        </div>
+
+        <div class="words-grid" id="words-container"></div>
+
+        <div class="create-section">
+            <h3>Create New Corpus from Selection</h3>
+            <div class="create-form">
+                <div class="form-group">
+                    <label for="new-name">New Corpus Name:</label>
+                    <input type="text" id="new-name" placeholder="e.g., en-custom-1K">
+                </div>
+                <button class="btn btn-primary" onclick="createCorpus()">Create Corpus</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const words = #words#;
+        const language = '#language#';
+        let selectedWords = new Set();
+        let randomSelection = [];
+
+        function renderWords() {
+            const container = document.getElementById('words-container');
+            container.innerHTML = words.map((word, idx) => `
+                <label class="word-item" data-word="${word}" data-length="${word.length}">
+                    <input type="checkbox" id="word-${idx}" onchange="toggleWord('${word}', this.checked)">
+                    <span>${word}</span>
+                </label>
+            `).join('');
+            document.getElementById('total').textContent = words.length;
+            updateCount();
+        }
+
+        function toggleWord(word, checked) {
+            if (checked) {
+                selectedWords.add(word);
+            } else {
+                selectedWords.delete(word);
+            }
+            updateCount();
+            updateRandomDisplay();
+        }
+
+        function updateCount() {
+            document.getElementById('count').textContent = selectedWords.size;
+        }
+
+        function applyFilters() {
+            const search = document.getElementById('search').value.toLowerCase();
+            const minLen = parseInt(document.getElementById('min-length').value) || 0;
+            const maxLen = parseInt(document.getElementById('max-length').value) || Infinity;
+
+            document.querySelectorAll('.word-item').forEach(item => {
+                const word = item.dataset.word.toLowerCase();
+                const len = parseInt(item.dataset.length);
+                const matchesSearch = word.includes(search);
+                const matchesLength = len >= minLen && len <= maxLen;
+
+                if (matchesSearch && matchesLength) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        }
+
+        function clearFilters() {
+            document.getElementById('search').value = '';
+            document.getElementById('min-length').value = '';
+            document.getElementById('max-length').value = '';
+            document.querySelectorAll('.word-item').forEach(item => {
+                item.classList.remove('hidden');
+            });
+        }
+
+        function selectAll() {
+            const visible = document.querySelectorAll('.word-item:not(.hidden) input[type="checkbox"]');
+            visible.forEach(cb => {
+                cb.checked = true;
+                const word = cb.closest('.word-item').dataset.word;
+                selectedWords.add(word);
+            });
+            updateCount();
+        }
+
+        function selectNone() {
+            document.querySelectorAll('.word-item input[type="checkbox"]').forEach(cb => {
+                cb.checked = false;
+            });
+            selectedWords.clear();
+            randomSelection = [];
+            updateCount();
+            updateRandomDisplay();
+        }
+
+        function invertSelection() {
+            const visible = document.querySelectorAll('.word-item:not(.hidden)');
+            visible.forEach(item => {
+                const cb = item.querySelector('input[type="checkbox"]');
+                const word = item.dataset.word;
+                cb.checked = !cb.checked;
+                if (cb.checked) {
+                    selectedWords.add(word);
+                } else {
+                    selectedWords.delete(word);
+                }
+            });
+            updateCount();
+        }
+
+        document.getElementById('search').addEventListener('input', applyFilters);
+        document.getElementById('min-length').addEventListener('input', applyFilters);
+        document.getElementById('max-length').addEventListener('input', applyFilters);
+
+        function getVisibleWords() {
+            const visible = document.querySelectorAll('.word-item:not(.hidden)');
+            return Array.from(visible).map(item => item.dataset.word);
+        }
+
+        function selectRandom() {
+            const count = parseInt(document.getElementById('random-count').value) || 10;
+            const visibleWords = getVisibleWords();
+
+            if (visibleWords.length === 0) {
+                alert('No words available with current filters');
+                return;
+            }
+
+            // Clear previous selection
+            selectNone();
+
+            // Shuffle and pick n words
+            const shuffled = [...visibleWords].sort(() => Math.random() - 0.5);
+            randomSelection = shuffled.slice(0, Math.min(count, shuffled.length));
+
+            // Add to selection and check boxes
+            randomSelection.forEach(word => {
+                selectedWords.add(word);
+                const item = document.querySelector(`.word-item[data-word="${word}"] input`);
+                if (item) item.checked = true;
+            });
+
+            updateCount();
+            updateRandomDisplay();
+        }
+
+        function updateRandomDisplay() {
+            const section = document.getElementById('random-selection-section');
+            const container = document.getElementById('random-words-container');
+            const countDisplay = document.getElementById('random-count-display');
+
+            // Filter randomSelection to only include words still in selectedWords
+            randomSelection = randomSelection.filter(w => selectedWords.has(w));
+
+            if (randomSelection.length === 0) {
+                section.classList.add('hidden-section');
+                return;
+            }
+
+            section.classList.remove('hidden-section');
+            countDisplay.textContent = randomSelection.length;
+
+            container.innerHTML = randomSelection.map(word => `
+                <div class="random-word-chip" data-word="${word}">
+                    <span class="word-text">${word}</span>
+                    <button class="chip-btn replace" onclick="replaceRandomWord('${word}')" title="Replace with another random word">&#8635;</button>
+                    <button class="chip-btn remove" onclick="removeRandomWord('${word}')" title="Remove from selection">&times;</button>
+                </div>
+            `).join('');
+        }
+
+        function removeRandomWord(word) {
+            // Remove from selection
+            selectedWords.delete(word);
+            randomSelection = randomSelection.filter(w => w !== word);
+
+            // Uncheck the checkbox
+            const item = document.querySelector(`.word-item[data-word="${word}"] input`);
+            if (item) item.checked = false;
+
+            updateCount();
+            updateRandomDisplay();
+        }
+
+        function replaceRandomWord(oldWord) {
+            const visibleWords = getVisibleWords();
+            const available = visibleWords.filter(w => !selectedWords.has(w));
+
+            if (available.length === 0) {
+                alert('No more words available to replace with');
+                return;
+            }
+
+            // Pick a random replacement
+            const newWord = available[Math.floor(Math.random() * available.length)];
+
+            // Remove old word
+            selectedWords.delete(oldWord);
+            const oldItem = document.querySelector(`.word-item[data-word="${oldWord}"] input`);
+            if (oldItem) oldItem.checked = false;
+
+            // Add new word
+            selectedWords.add(newWord);
+            const newItem = document.querySelector(`.word-item[data-word="${newWord}"] input`);
+            if (newItem) newItem.checked = true;
+
+            // Update randomSelection array
+            const idx = randomSelection.indexOf(oldWord);
+            if (idx !== -1) {
+                randomSelection[idx] = newWord;
+            }
+
+            updateCount();
+            updateRandomDisplay();
+        }
+
+        async function createCorpus() {
+            const name = document.getElementById('new-name').value.trim();
+            if (!name) {
+                alert('Please enter a name for the new corpus');
+                return;
+            }
+            if (selectedWords.size === 0) {
+                alert('Please select at least one word');
+                return;
+            }
+
+            try {
+                const response = await fetch('/admin/corpus/create-from-selection', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: name,
+                        language: language,
+                        words: Array.from(selectedWords)
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert(result.message);
+                    window.location.href = '/admin';
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('Error creating corpus: ' + error.message);
+            }
+        }
+
+        renderWords();
+    </script>
+</body>
+</html>
