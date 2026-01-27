@@ -64,18 +64,30 @@ export let routing = function () {
     let languageCode = req.params["language"];
 
     try {
-      const config = await loadActiveConfig();
-      const listResult = await binServices.wordSourceManagerList();
-      const wordSources = parseWordSourceList(listResult);
-
-      const activeSourceName = config[languageCode]?.wordSource;
-      const source = wordSources.find(s => s.name === activeSourceName && s.language === languageCode);
-
       let corporaBrickFilePath;
-      if (source && source['brick-filepath']) {
-        corporaBrickFilePath = source['brick-filepath'];
-      } else {
-        // Fallback to hardcoded paths if config not found
+      let usingFallback = false;
+
+      try {
+        const config = await loadActiveConfig();
+        const listResult = await binServices.wordSourceManagerList();
+        const wordSources = parseWordSourceList(listResult);
+
+        const activeSourceName = config[languageCode]?.wordSource;
+        const fullLang = languageFromLanguageCode(languageCode);
+        const source = wordSources.find(s => s.name === activeSourceName && s.language === fullLang);
+
+        if (source && source['brick-filepath']) {
+          corporaBrickFilePath = source['brick-filepath'];
+          console.info(`[randomPuzzle] Using config brick path: ${corporaBrickFilePath}`);
+        }
+      } catch (configError) {
+        console.error("[randomPuzzle] Error loading config, using fallback:", configError.message);
+        usingFallback = true;
+      }
+
+      // Fallback to hardcoded paths if config not found or failed
+      if (!corporaBrickFilePath) {
+        usingFallback = true;
         if(languageCode=='en'){
           corporaBrickFilePath = `${PROJECT_ROOT}/word-sources-folder/english/en-5K/en-5K.brk`;
         }else if(languageCode=='it'){
@@ -85,6 +97,12 @@ export let routing = function () {
         }else if(languageCode=='pt'){
           corporaBrickFilePath = `${PROJECT_ROOT}/word-sources-folder/portuguese/pt-5K/pt-5K.brk`;
         }
+        console.info(`[randomPuzzle] Using fallback brick path: ${corporaBrickFilePath}`);
+      }
+
+      if (!corporaBrickFilePath) {
+        console.error("[randomPuzzle] No brick path found for language:", languageCode);
+        return res.status(500).json({ error: "No corpus available for this language" });
       }
 
       const jsonPuzzle = await binServices.generatePuzzle({
@@ -93,8 +111,8 @@ export let routing = function () {
       });
       res.send(jsonPuzzle);
     } catch(error) {
-      console.info(error);
-      res.redirect("/error/500");
+      console.error("[randomPuzzle] Error:", error);
+      res.status(500).json({ error: "Failed to generate puzzle" });
     }
   }
 

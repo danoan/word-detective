@@ -122,6 +122,15 @@
     background: #388E3C;
 }
 
+.btn-words {
+    background: #9C27B0;
+    color: white;
+}
+
+.btn-words:hover {
+    background: #7B1FA2;
+}
+
 .btn-download {
     background: #607D8B;
     color: white;
@@ -190,4 +199,18 @@
     color: #888;
     font-style: italic;
     margin: 0;
+}
+
+.actions-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    padding: 15px;
+    background: #e8f5e9;
+    border-radius: 8px;
+}
+
+#regen-status {
+    font-size: 0.9em;
 }

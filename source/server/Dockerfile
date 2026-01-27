@@ -1,4 +1,4 @@
-FROM word-detective-bins:v0.1
+FROM word-detective-bins:latest
 
 WORKDIR /word-detective-server
 

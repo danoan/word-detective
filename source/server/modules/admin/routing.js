@@ -1,8 +1,12 @@
 import * as path from 'path';
 import { fileURLToPath } from 'url';
-import { readFile, writeFile } from 'fs/promises';
+import { readFile, writeFile, mkdir, rm, copyFile, rename } from 'fs/promises';
 import { createReadStream } from 'fs';
+import { execFile } from 'child_process';
+import { promisify } from 'util';
 import { binServices } from '../binary-services.js';
+
+const p_execFile = promisify(execFile);
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(__dirname, "../..");
@@ -20,6 +24,13 @@ const LANGUAGE_NAMES = {
     it: 'Italian',
     fr: 'French',
     pt: 'Portuguese'
+};
+
+const LANGUAGE_CODES = {
+    english: 'en',
+    italian: 'it',
+    french: 'fr',
+    portuguese: 'pt'
 };
 
 function parseWordSourceList(listResult) {
@@ -71,9 +82,10 @@ export let routing = function () {
 
             const groupedSources = {};
             for (const lang of Object.keys(LANGUAGE_NAMES)) {
+                const fullLang = LANGUAGE_MAP[lang];
                 groupedSources[lang] = {
                     name: LANGUAGE_NAMES[lang],
-                    sources: wordSources.filter(s => s.language === lang),
+                    sources: wordSources.filter(s => s.language === fullLang),
                     active: activeConfig[lang]?.wordSource || null
                 };
             }
@@ -97,9 +109,10 @@ export let routing = function () {
 
             const groupedSources = {};
             for (const lang of Object.keys(LANGUAGE_NAMES)) {
+                const fullLang = LANGUAGE_MAP[lang];
                 groupedSources[lang] = {
                     name: LANGUAGE_NAMES[lang],
-                    sources: wordSources.filter(s => s.language === lang),
+                    sources: wordSources.filter(s => s.language === fullLang),
                     active: activeConfig[lang]?.wordSource || null
                 };
             }
@@ -205,6 +218,146 @@ export let routing = function () {
         }
     }
 
+    async function viewWords(req, res) {
+        try {
+            const name = req.params.name;
+            const listResult = await binServices.wordSourceManagerList();
+            const wordSources = parseWordSourceList(listResult);
+
+            const source = wordSources.find(s => s.name === name);
+            if (!source || !source['text-filepath']) {
+                return res.status(404).send("Corpus not found");
+            }
+
+            const filePath = source['text-filepath'];
+            const content = await readFile(filePath, 'utf-8');
+            const words = content.split('\n').filter(w => w.trim()).sort();
+
+            res.render('admin/words', {
+                vars: {
+                    corpusName: name,
+                    language: source.language,
+                    words: JSON.stringify(words)
+                }
+            });
+        } catch (error) {
+            console.error("[admin][viewWords] Error:", error);
+            res.status(500).send("Error loading words: " + error.message);
+        }
+    }
+
+    async function createFromSelection(req, res) {
+        try {
+            const { name, language, words } = req.body;
+
+            if (!name || !language || !words || !Array.isArray(words)) {
+                return res.status(400).send("Name, language, and words array are required");
+            }
+
+            const fullLanguage = LANGUAGE_MAP[LANGUAGE_CODES[language]] || language;
+            if (!fullLanguage) {
+                return res.status(400).send("Invalid language");
+            }
+
+            // Write selected words to temp file
+            const tempPath = path.resolve(PROJECT_ROOT, `temp-${name}.txt`);
+            await writeFile(tempPath, words.join('\n') + '\n');
+
+            const wordCheckApp = path.resolve(PROJECT_ROOT, `bin/word-check-${fullLanguage}`);
+
+            try {
+                const result = await binServices.wordSourceManagerAdd(name, fullLanguage, wordCheckApp, tempPath);
+                console.info("[admin][createFromSelection] Result:", result);
+                res.json({ success: true, message: `Corpus '${name}' created with ${words.length} words` });
+            } finally {
+                try {
+                    const { unlink } = await import('fs/promises');
+                    await unlink(tempPath);
+                } catch { }
+            }
+        } catch (error) {
+            console.error("[admin][createFromSelection] Error:", error);
+            res.status(500).json({ success: false, error: error.message });
+        }
+    }
+
+    const WEEK_DAYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    const WEEK_PUZZLES_DIR = path.resolve(PROJECT_ROOT, 'games/week-puzzles');
+    const BIN_DIR = path.resolve(PROJECT_ROOT, 'bin');
+
+    async function regenerateWeekPuzzles(req, res) {
+        try {
+            const config = await loadActiveConfig();
+            const listResult = await binServices.wordSourceManagerList();
+            const wordSources = parseWordSourceList(listResult);
+
+            const results = [];
+
+            for (const langCode of Object.keys(LANGUAGE_MAP)) {
+                const fullLang = LANGUAGE_MAP[langCode];
+                const activeSourceName = config[langCode]?.wordSource;
+                const source = wordSources.find(s => s.name === activeSourceName && s.language === fullLang);
+
+                if (!source || !source['brick-filepath']) {
+                    results.push({ language: langCode, status: 'skipped', reason: 'No active corpus found' });
+                    continue;
+                }
+
+                const brickPath = source['brick-filepath'];
+                console.info(`[regenerateWeekPuzzles] Generating for ${langCode} using ${brickPath}`);
+
+                try {
+                    for (const day of WEEK_DAYS) {
+                        const outFolder = path.resolve(WEEK_PUZZLES_DIR, langCode, day);
+                        const assetsFolder = path.resolve(outFolder, 'assets');
+                        const jsFolder = path.resolve(outFolder, 'js');
+                        const jsonPuzzlePath = path.resolve(assetsFolder, 'puzzle.json');
+
+                        // Clean and create directories
+                        await rm(outFolder, { recursive: true, force: true });
+                        await mkdir(assetsFolder, { recursive: true });
+                        await mkdir(jsFolder, { recursive: true });
+
+                        // Generate puzzle JSON
+                        const wordDetectiveApp = path.resolve(BIN_DIR, 'word-detective');
+                        await p_execFile(wordDetectiveApp, [
+                            '-mrandom', '-l7', `-o${jsonPuzzlePath}`, `-b${brickPath}`
+                        ]);
+
+                        // Render puzzle HTML
+                        const renderScript = path.resolve(BIN_DIR, 'render-word-detective.py');
+                        const templatePath = path.resolve(WEEK_PUZZLES_DIR, 'templates/index-week-puzzles.ntl');
+                        await p_execFile('python3', [
+                            renderScript, templatePath, jsonPuzzlePath, outFolder, day
+                        ]);
+
+                        // Rename index.html to index.ntl
+                        await rename(
+                            path.resolve(outFolder, 'index.html'),
+                            path.resolve(outFolder, 'index.ntl')
+                        );
+
+                        // Copy JS file
+                        await copyFile(
+                            path.resolve(WEEK_PUZZLES_DIR, 'js/week-puzzles.js'),
+                            path.resolve(jsFolder, 'week-puzzles.js')
+                        );
+                    }
+
+                    results.push({ language: langCode, status: 'success', days: WEEK_DAYS.length });
+                } catch (langError) {
+                    console.error(`[regenerateWeekPuzzles] Error for ${langCode}:`, langError);
+                    results.push({ language: langCode, status: 'error', reason: langError.message });
+                }
+            }
+
+            res.json({ success: true, results });
+        } catch (error) {
+            console.error("[regenerateWeekPuzzles] Error:", error);
+            res.status(500).json({ success: false, error: error.message });
+        }
+    }
+
     return {
         dashboard,
         apiCorpora,
@@ -212,6 +365,9 @@ export let routing = function () {
         download,
         remove,
         activate,
+        viewWords,
+        createFromSelection,
+        regenerateWeekPuzzles,
         loadActiveConfig,
         parseWordSourceList
     };

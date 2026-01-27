@@ -15,6 +15,13 @@
             <p>Manage corpora and language bricks</p>
         </header>
 
+        <div class="actions-section">
+            <button class="btn btn-primary" onclick="regenerateWeekPuzzles()" id="regen-btn">
+                Regenerate Week Puzzles
+            </button>
+            <span id="regen-status"></span>
+        </div>
+
         <div id="corpora-container"></div>
 
         <div class="upload-section">
@@ -68,6 +75,7 @@
                                             <button type="submit" class="btn btn-small btn-activate">Activate</button>
                                         </form>
                                     ` : ''}
+                                    <a href="/admin/corpus/${source.name}/words" class="btn btn-small btn-words">Words</a>
                                     <a href="/admin/download/${source.name}" class="btn btn-small btn-download">Download</a>
                                     <form action="/admin/remove/${source.name}" method="POST" class="inline-form" onsubmit="return confirm('Are you sure you want to remove ${source.name}?');">
                                         <button type="submit" class="btn btn-small btn-remove">Remove</button>
@@ -78,6 +86,39 @@
                     </div>
                 `;
                 container.appendChild(section);
+            }
+        }
+
+        async function regenerateWeekPuzzles() {
+            const btn = document.getElementById('regen-btn');
+            const status = document.getElementById('regen-status');
+
+            btn.disabled = true;
+            btn.textContent = 'Generating...';
+            status.textContent = '';
+
+            try {
+                const response = await fetch('/admin/regenerate-week-puzzles', {
+                    method: 'POST'
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    const summary = result.results.map(r =>
+                        `${r.language}: ${r.status}${r.days ? ` (${r.days} days)` : ''}${r.reason ? ` - ${r.reason}` : ''}`
+                    ).join(', ');
+                    status.textContent = summary;
+                    status.style.color = 'green';
+                } else {
+                    status.textContent = 'Error: ' + result.error;
+                    status.style.color = 'red';
+                }
+            } catch (error) {
+                status.textContent = 'Error: ' + error.message;
+                status.style.color = 'red';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Regenerate Week Puzzles';
             }
         }
 

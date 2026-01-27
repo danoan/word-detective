@@ -38,5 +38,20 @@ admin.post('/activate/:language/:name', (req, res) => {
     routing.activate(req, res);
 });
 
+// Regenerate week puzzles
+admin.post('/regenerate-week-puzzles', (req, res) => {
+    routing.regenerateWeekPuzzles(req, res);
+});
+
+// View words in a corpus
+admin.get('/corpus/:name/words', (req, res) => {
+    routing.viewWords(req, res);
+});
+
+// Create new corpus from selected words
+admin.post('/corpus/create-from-selection', (req, res) => {
+    routing.createFromSelection(req, res);
+});
+
 // Serve admin static assets
 admin.use('/css', express.static(path.resolve(PROJECT_ROOT, 'assets/views/admin/css')));
