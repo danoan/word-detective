@@ -71,6 +71,30 @@
                 <button type="submit" class="btn btn-primary">Create Corpus</button>
             </form>
         </div>
+
+        <div class="upload-section url-section">
+            <h2>Create Corpus from URL</h2>
+            <form action="/admin/create-from-url" method="POST" class="upload-form">
+                <div class="form-group">
+                    <label for="url-name">Corpus Name:</label>
+                    <input type="text" id="url-name" name="name" placeholder="e.g., en-wiki" required>
+                </div>
+                <div class="form-group">
+                    <label for="url-language">Language:</label>
+                    <select id="url-language" name="language" required>
+                        <option value="en">English</option>
+                        <option value="it">Italian</option>
+                        <option value="fr">French</option>
+                        <option value="pt">Portuguese</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="url-input">URL:</label>
+                    <input type="url" id="url-input" name="url" placeholder="https://example.com/article" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Fetch & Create Corpus</button>
+            </form>
+        </div>
     </div>
 
     <script>
