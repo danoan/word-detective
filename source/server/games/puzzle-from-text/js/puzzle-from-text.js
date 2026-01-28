@@ -6,6 +6,8 @@ export async function setupWordDetective(reset_cookie=false,text='',text_checksu
 
   setDefaultConfiguration(config);
 
+  config.hint_display_behaviour = "always_visible";
+
   config.onload = function () {
     let div_hexagons = document.getElementById("container-hexagons");
     while (div_hexagons.childElementCount > 0) div_hexagons.removeChild(div_hexagons.childNodes[0]);

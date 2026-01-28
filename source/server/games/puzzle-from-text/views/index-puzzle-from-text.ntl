@@ -65,7 +65,6 @@
 
     <div class="container-buttons">
       <div class="button button-inline" onclick="control.erase_letter()">#interface.erase#</div>
-      <div class="button button-inline" onclick="set_default_hint_style();control.hint()">#interface.hint#</div>
       <div class="button button-inline" onclick="control.check_word()">#interface.check#</div>
     </div>
 
@@ -307,6 +306,11 @@
               get_user_input_word
             };
           });
+
+          // Switch to contextual hint handler (always visible for book puzzles)
+          // First call enters hint mode (default handler), second call switches to contextual handler
+          control.hint();
+          control.hint();
 
           showUI();
         });

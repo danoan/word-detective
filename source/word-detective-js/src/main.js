@@ -320,6 +320,9 @@ export function main(is_in_test_mode = false) {
 
   function configure_WORD_DETECTIVE(assets) {
     let word_detective_config = { "callbacks": {} };
+    if(config.hint_display_behaviour){
+        word_detective_config.hint_display_behaviour=config.hint_display_behaviour;
+    }
     word_detective_config.callbacks.check_word = check_word_callback;
     word_detective_config.callbacks.init = (init_callback_parameters) => init_puzzle(assets.puzzle, init_callback_parameters);
     word_detective_config.callbacks.end = display_word_list;

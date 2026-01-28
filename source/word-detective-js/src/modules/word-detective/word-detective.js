@@ -15,7 +15,8 @@ let default_config = {
     "check_word": null,
     "hint": null,
     "end": null
-  }
+  },
+  "hint_display_behaviour": "by_request"
 };
 
 export function create_WORD_DETECTIVE_api(gui, messages_json, _config) {
@@ -24,6 +25,10 @@ export function create_WORD_DETECTIVE_api(gui, messages_json, _config) {
 
   for(let key in _config.callbacks){
     config.callbacks[key] =  _config.callbacks[key];
+  }
+
+  if (_config.hint_display_behaviour) {
+    config.hint_display_behaviour = _config.hint_display_behaviour;
   }
 
   let messages = setup_messages(messages_json);
@@ -115,8 +120,10 @@ export function create_WORD_DETECTIVE_api(gui, messages_json, _config) {
 
     if (is_missing_word) {
       add_found_word(input_word);
-      current_mode_handler.reset();
-      current_mode_handler = display_handlers.normal_mode;
+      if (config.hint_display_behaviour !== "always_visible") {
+        current_mode_handler.reset();
+        current_mode_handler = display_handlers.normal_mode;
+      }
 
       display_handlers.messages.valid_word_message(control_handlers.word.get_difficulty(input_word));
       display_handlers.messages.update_missing_words_count(control_handlers.data.words_found.length,control_handlers.data.missing_words.length);
