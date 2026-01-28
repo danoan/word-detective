@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Detective Admin</title>
+    <link rel="stylesheet" href="/admin/css/admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <header class="admin-header">
+            <h1>Word Detective Admin</h1>
+            <p class="subtitle">Manage word corpora and puzzles</p>
+        </header>
+
+        <div class="actions-bar">
+            <button class="btn btn-primary" id="btn-regenerate">Regenerate Week Puzzles</button>
+            <span id="regenerate-status" class="status-text"></span>
+        </div>
+
+        <div id="corpora-container">
+            <!-- Language sections will be populated by JavaScript -->
+        </div>
+
+        <section class="upload-section">
+            <h2>Upload New Corpus</h2>
+            <form id="upload-form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="corpus-name">Corpus Name</label>
+                    <input type="text" id="corpus-name" name="name" required placeholder="e.g., en-10K">
+                </div>
+                <div class="form-group">
+                    <label for="corpus-language">Language</label>
+                    <select id="corpus-language" name="language" required>
+                        <option value="">Select language...</option>
+                        <option value="en">English</option>
+                        <option value="it">Italian</option>
+                        <option value="fr">French</option>
+                        <option value="pt">Portuguese</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="corpus-file">Corpus File (.txt)</label>
+                    <input type="file" id="corpus-file" name="corpus" accept=".txt" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Upload Corpus</button>
+                <span id="upload-status" class="status-text"></span>
+            </form>
+        </section>
+    </div>
+
+    <script>
+        const corporaData = #corporaData#;
+
+        function renderCorpora() {
+            const container = document.getElementById('corpora-container');
+            container.innerHTML = '';
+
+            const languages = ['en', 'it', 'fr', 'pt'];
+            for (const langCode of languages) {
+                const langData = corporaData[langCode];
+                if (!langData) continue;
+
+                const section = document.createElement('section');
+                section.className = 'language-section';
+                section.innerHTML = `
+                    <h2>${langData.name}</h2>
+                    <div class="corpora-list" id="corpora-${langCode}"></div>
+                `;
+
+                const list = section.querySelector('.corpora-list');
+
+                if (langData.corpora.length === 0) {
+                    list.innerHTML = '<p class="no-corpora">No corpora available for this language.</p>';
+                } else {
+                    for (const corpus of langData.corpora) {
+                        const item = document.createElement('div');
+                        item.className = 'corpus-item' + (corpus.isActive ? ' active' : '');
+                        item.innerHTML = `
+                            <div class="corpus-info">
+                                <span class="corpus-name">${corpus.name}</span>
+                                ${corpus.isActive ? '<span class="badge active-badge">Active</span>' : ''}
+                            </div>
+                            <div class="corpus-actions">
+                                <button class="btn btn-words" onclick="viewWords('${corpus.name}')">Words</button>
+                                ${!corpus.isActive ? `<button class="btn btn-activate" onclick="activateCorpus('${langCode}', '${corpus.name}')">Activate</button>` : ''}
+                                <button class="btn btn-download" onclick="downloadCorpus('${corpus.name}')">Download</button>
+                                <button class="btn btn-remove" onclick="removeCorpus('${corpus.name}')">Remove</button>
+                            </div>
+                        `;
+                        list.appendChild(item);
+                    }
+                }
+
+                container.appendChild(section);
+            }
+        }
+
+        async function refreshCorpora() {
+            try {
+                const response = await fetch('/admin/api/corpora');
+                const data = await response.json();
+                Object.assign(corporaData, data);
+                renderCorpora();
+            } catch (error) {
+                console.error('Failed to refresh corpora:', error);
+            }
+        }
+
+        function viewWords(name) {
+            window.location.href = `/admin/corpus/${encodeURIComponent(name)}/words`;
+        }
+
+        async function activateCorpus(language, name) {
+            try {
+                const response = await fetch(`/admin/activate/${language}/${encodeURIComponent(name)}`, {
+                    method: 'POST'
+                });
+                const result = await response.json();
+                if (result.success) {
+                    await refreshCorpora();
+                } else {
+                    alert('Failed to activate corpus: ' + (result.error || 'Unknown error'));
+                }
+            } catch (error) {
+                alert('Failed to activate corpus: ' + error.message);
+            }
+        }
+
+        function downloadCorpus(name) {
+            window.location.href = `/admin/download/${encodeURIComponent(name)}`;
+        }
+
+        async function removeCorpus(name) {
+            if (!confirm(`Are you sure you want to remove "${name}"? This action cannot be undone.`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/admin/remove/${encodeURIComponent(name)}`, {
+                    method: 'POST'
+                });
+                const result = await response.json();
+                if (result.success) {
+                    await refreshCorpora();
+                } else {
+                    alert('Failed to remove corpus: ' + (result.error || 'Unknown error'));
+                }
+            } catch (error) {
+                alert('Failed to remove corpus: ' + error.message);
+            }
+        }
+
+        document.getElementById('upload-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const statusEl = document.getElementById('upload-status');
+            statusEl.textContent = 'Uploading...';
+            statusEl.className = 'status-text';
+
+            try {
+                const response = await fetch('/admin/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    statusEl.textContent = result.message;
+                    statusEl.className = 'status-text success';
+                    this.reset();
+                    await refreshCorpora();
+                } else {
+                    statusEl.textContent = 'Error: ' + (result.error || 'Upload failed');
+                    statusEl.className = 'status-text error';
+                }
+            } catch (error) {
+                statusEl.textContent = 'Error: ' + error.message;
+                statusEl.className = 'status-text error';
+            }
+        });
+
+        document.getElementById('btn-regenerate').addEventListener('click', async function() {
+            const statusEl = document.getElementById('regenerate-status');
+            this.disabled = true;
+            statusEl.textContent = 'Regenerating puzzles...';
+            statusEl.className = 'status-text';
+
+            try {
+                const response = await fetch('/admin/regenerate-week-puzzles', {
+                    method: 'POST'
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    const successCount = result.results.filter(r => r.status === 'success').length;
+                    statusEl.textContent = `Completed: ${successCount}/4 languages regenerated`;
+                    statusEl.className = 'status-text success';
+                } else {
+                    statusEl.textContent = 'Error: ' + (result.error || 'Regeneration failed');
+                    statusEl.className = 'status-text error';
+                }
+            } catch (error) {
+                statusEl.textContent = 'Error: ' + error.message;
+                statusEl.className = 'status-text error';
+            } finally {
+                this.disabled = false;
+            }
+        });
+
+        renderCorpora();
+    </script>
+</body>
+</html>

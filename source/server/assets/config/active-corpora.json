@@ -1,0 +1,6 @@
+{
+  "en": { "wordSource": "en-5K" },
+  "it": { "wordSource": "it-7K" },
+  "fr": { "wordSource": "fr-5K" },
+  "pt": { "wordSource": "pt-5K" }
+}

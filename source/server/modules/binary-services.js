@@ -158,6 +158,44 @@ export let binServices = function(){
         }
     }
 
+    async function wordSourceManagerList() {
+        return p_execFile("word-source-manager", ["list"])
+            .then(result => {
+                console.info("[word-source-manager][list][stdout]:", result.stdout);
+                console.info("[word-source-manager][list][stderr]:", result.stderr);
+                return result.stdout;
+            })
+            .catch(error => {
+                throw error;
+            });
+    }
+
+    async function wordSourceManagerAdd(name, language, wordCheckApp, corpusPath) {
+        // Positional args: add <name> <language> <word_check_app> <corpus_path>
+        const args = ["add", name, language, wordCheckApp, corpusPath];
+        return p_execFile("word-source-manager", args)
+            .then(result => {
+                console.info("[word-source-manager][add][stdout]:", result.stdout);
+                console.info("[word-source-manager][add][stderr]:", result.stderr);
+                return result.stdout;
+            })
+            .catch(error => {
+                throw error;
+            });
+    }
+
+    async function wordSourceManagerRemove(name) {
+        return p_execFile("word-source-manager", ["remove", name])
+            .then(result => {
+                console.info("[word-source-manager][remove][stdout]:", result.stdout);
+                console.info("[word-source-manager][remove][stderr]:", result.stderr);
+                return result.stdout;
+            })
+            .catch(error => {
+                throw error;
+            });
+    }
+
       return {
           exportBrick,
           generatePuzzle,
@@ -165,7 +203,10 @@ export let binServices = function(){
           italianDictionary,
           requestWord,
           chatgptDictionary,
-          englishDictionary
+          englishDictionary,
+          wordSourceManagerList,
+          wordSourceManagerAdd,
+          wordSourceManagerRemove
       };
 
 }();

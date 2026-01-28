@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Words - #corpusName# - Word Detective Admin</title>
+    <link rel="stylesheet" href="/admin/css/admin.css">
+</head>
+<body>
+    <div class="admin-container words-container">
+        <a href="/admin" class="back-link">&larr; Back to Dashboard</a>
+
+        <header class="admin-header">
+            <h1>#corpusName#</h1>
+            <p class="subtitle">Corpus: #corpusLanguage#</p>
+        </header>
+
+        <section class="filters-section">
+            <div class="filter-group">
+                <label for="search-input">Search</label>
+                <input type="text" id="search-input" placeholder="Filter words...">
+            </div>
+            <div class="filter-group">
+                <label for="min-length">Min Length</label>
+                <input type="number" id="min-length" min="1" placeholder="Min">
+            </div>
+            <div class="filter-group">
+                <label for="max-length">Max Length</label>
+                <input type="number" id="max-length" min="1" placeholder="Max">
+            </div>
+            <div class="selection-controls">
+                <button class="btn btn-small btn-secondary" onclick="selectAll()">Select All</button>
+                <button class="btn btn-small btn-secondary" onclick="selectNone()">Select None</button>
+                <button class="btn btn-small btn-secondary" onclick="invertSelection()">Invert</button>
+                <button class="btn btn-small btn-secondary" onclick="clearFilters()">Clear Filters</button>
+            </div>
+        </section>
+
+        <section class="selection-info">
+            <span class="selected-count"><span id="selected-count">0</span> words selected</span>
+            <span class="visible-count"><span id="visible-count">0</span> words visible</span>
+        </section>
+
+        <div class="words-grid" id="words-grid">
+            <!-- Words will be populated by JavaScript -->
+        </div>
+
+        <section class="random-section">
+            <h3>Random Selection</h3>
+            <div class="random-controls">
+                <input type="number" id="random-count" min="1" value="50" placeholder="Count">
+                <button class="btn btn-primary" onclick="selectRandom()">Select Random</button>
+            </div>
+            <div class="random-words" id="random-words">
+                <!-- Random word chips will appear here -->
+            </div>
+        </section>
+
+        <section class="create-section">
+            <div class="form-group">
+                <label for="new-corpus-name">New Corpus Name</label>
+                <input type="text" id="new-corpus-name" placeholder="e.g., en-custom-50">
+            </div>
+            <button class="btn btn-primary" onclick="createCorpus()">Create Corpus from Selection</button>
+            <span id="create-status" class="status-text"></span>
+        </section>
+    </div>
+
+    <script>
+        const words = #wordsData#;
+        const corpusLanguage = '#corpusLanguage#';
+        const selectedWords = new Set();
+        const randomSelectedWords = new Set();
+
+        const languageNameToCode = {
+            'english': 'en',
+            'italian': 'it',
+            'french': 'fr',
+            'portuguese': 'pt'
+        };
+
+        function getCheckboxForWord(word) {
+            const item = document.querySelector(`.word-item[data-word="${CSS.escape(word)}"]`);
+            return item ? item.querySelector('input[type="checkbox"]') : null;
+        }
+
+        function renderWords() {
+            const grid = document.getElementById('words-grid');
+            grid.innerHTML = '';
+
+            for (const word of words) {
+                const item = document.createElement('div');
+                item.className = 'word-item';
+                item.dataset.word = word;
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = selectedWords.has(word);
+                checkbox.addEventListener('change', function() {
+                    toggleWord(word, this.checked);
+                });
+
+                const label = document.createElement('label');
+                label.textContent = word;
+                label.addEventListener('click', function() {
+                    checkbox.checked = !checkbox.checked;
+                    toggleWord(word, checkbox.checked);
+                });
+
+                item.appendChild(checkbox);
+                item.appendChild(label);
+                grid.appendChild(item);
+            }
+
+            updateCounts();
+        }
+
+        function toggleWord(word, checked) {
+            if (checked) {
+                selectedWords.add(word);
+            } else {
+                selectedWords.delete(word);
+                randomSelectedWords.delete(word);
+            }
+            updateCounts();
+            renderRandomWords();
+        }
+
+        function applyFilters() {
+            const search = document.getElementById('search-input').value.toLowerCase();
+            const minLength = parseInt(document.getElementById('min-length').value) || 0;
+            const maxLength = parseInt(document.getElementById('max-length').value) || Infinity;
+
+            const items = document.querySelectorAll('.word-item');
+            for (const item of items) {
+                const word = item.dataset.word;
+                const matchesSearch = word.toLowerCase().includes(search);
+                const matchesLength = word.length >= minLength && word.length <= maxLength;
+
+                if (matchesSearch && matchesLength) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            }
+
+            updateCounts();
+        }
+
+        function clearFilters() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('min-length').value = '';
+            document.getElementById('max-length').value = '';
+            applyFilters();
+        }
+
+        function getVisibleWords() {
+            const visible = [];
+            const items = document.querySelectorAll('.word-item:not(.hidden)');
+            for (const item of items) {
+                visible.push(item.dataset.word);
+            }
+            return visible;
+        }
+
+        function selectAll() {
+            const visibleWords = getVisibleWords();
+            for (const word of visibleWords) {
+                selectedWords.add(word);
+                const checkbox = getCheckboxForWord(word);
+                if (checkbox) checkbox.checked = true;
+            }
+            updateCounts();
+        }
+
+        function selectNone() {
+            const visibleWords = getVisibleWords();
+            for (const word of visibleWords) {
+                selectedWords.delete(word);
+                randomSelectedWords.delete(word);
+                const checkbox = getCheckboxForWord(word);
+                if (checkbox) checkbox.checked = false;
+            }
+            updateCounts();
+            renderRandomWords();
+        }
+
+        function invertSelection() {
+            const visibleWords = getVisibleWords();
+            for (const word of visibleWords) {
+                const checkbox = getCheckboxForWord(word);
+                if (selectedWords.has(word)) {
+                    selectedWords.delete(word);
+                    randomSelectedWords.delete(word);
+                    if (checkbox) checkbox.checked = false;
+                } else {
+                    selectedWords.add(word);
+                    if (checkbox) checkbox.checked = true;
+                }
+            }
+            updateCounts();
+            renderRandomWords();
+        }
+
+        function selectRandom() {
+            const count = parseInt(document.getElementById('random-count').value) || 50;
+            const visibleWords = getVisibleWords();
+
+            // Shuffle and pick
+            const shuffled = [...visibleWords].sort(() => Math.random() - 0.5);
+            const picked = shuffled.slice(0, count);
+
+            // Clear previous random selection
+            randomSelectedWords.clear();
+
+            // Select the random words
+            for (const word of picked) {
+                selectedWords.add(word);
+                randomSelectedWords.add(word);
+                const checkbox = getCheckboxForWord(word);
+                if (checkbox) checkbox.checked = true;
+            }
+
+            updateCounts();
+            renderRandomWords();
+        }
+
+        function renderRandomWords() {
+            const container = document.getElementById('random-words');
+            container.innerHTML = '';
+
+            for (const word of randomSelectedWords) {
+                const chip = document.createElement('span');
+                chip.className = 'random-word-chip';
+                chip.dataset.word = word;
+
+                const wordText = document.createTextNode(word + ' ');
+                chip.appendChild(wordText);
+
+                const replaceBtn = document.createElement('button');
+                replaceBtn.innerHTML = '&#8635;';
+                replaceBtn.title = 'Replace';
+                replaceBtn.addEventListener('click', () => replaceRandomWord(word));
+                chip.appendChild(replaceBtn);
+
+                const removeBtn = document.createElement('button');
+                removeBtn.innerHTML = '&times;';
+                removeBtn.title = 'Remove';
+                removeBtn.addEventListener('click', () => removeRandomWord(word));
+                chip.appendChild(removeBtn);
+
+                container.appendChild(chip);
+            }
+        }
+
+        function replaceRandomWord(word) {
+            // Find available words (visible, not selected)
+            const visibleWords = getVisibleWords();
+            const available = visibleWords.filter(w => !selectedWords.has(w));
+
+            if (available.length === 0) {
+                alert('No more available words to select');
+                return;
+            }
+
+            // Pick a random replacement
+            const replacement = available[Math.floor(Math.random() * available.length)];
+
+            // Remove old word
+            selectedWords.delete(word);
+            randomSelectedWords.delete(word);
+            const oldCheckbox = getCheckboxForWord(word);
+            if (oldCheckbox) oldCheckbox.checked = false;
+
+            // Add new word
+            selectedWords.add(replacement);
+            randomSelectedWords.add(replacement);
+            const newCheckbox = getCheckboxForWord(replacement);
+            if (newCheckbox) newCheckbox.checked = true;
+
+            updateCounts();
+            renderRandomWords();
+        }
+
+        function removeRandomWord(word) {
+            selectedWords.delete(word);
+            randomSelectedWords.delete(word);
+            const checkbox = getCheckboxForWord(word);
+            if (checkbox) checkbox.checked = false;
+
+            updateCounts();
+            renderRandomWords();
+        }
+
+        function updateCounts() {
+            document.getElementById('selected-count').textContent = selectedWords.size;
+            document.getElementById('visible-count').textContent = getVisibleWords().length;
+        }
+
+        async function createCorpus() {
+            const name = document.getElementById('new-corpus-name').value.trim();
+            if (!name) {
+                alert('Please enter a corpus name');
+                return;
+            }
+
+            if (selectedWords.size === 0) {
+                alert('Please select at least one word');
+                return;
+            }
+
+            const langCode = languageNameToCode[corpusLanguage.toLowerCase()] || corpusLanguage;
+            const statusEl = document.getElementById('create-status');
+            statusEl.textContent = 'Creating corpus...';
+            statusEl.className = 'status-text';
+
+            try {
+                const response = await fetch('/admin/corpus/create-from-selection', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        language: langCode,
+                        words: Array.from(selectedWords)
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    statusEl.textContent = result.message;
+                    statusEl.className = 'status-text success';
+                } else {
+                    statusEl.textContent = 'Error: ' + (result.error || 'Failed to create corpus');
+                    statusEl.className = 'status-text error';
+                }
+            } catch (error) {
+                statusEl.textContent = 'Error: ' + error.message;
+                statusEl.className = 'status-text error';
+            }
+        }
+
+        // Event listeners for filters
+        document.getElementById('search-input').addEventListener('input', applyFilters);
+        document.getElementById('min-length').addEventListener('input', applyFilters);
+        document.getElementById('max-length').addEventListener('input', applyFilters);
+
+        // Initial render
+        renderWords();
+    </script>
+</body>
+</html>
