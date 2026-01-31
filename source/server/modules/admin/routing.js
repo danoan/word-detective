@@ -93,6 +93,7 @@ export let routing = function () {
                 else if (key === 'text-filepath') source.textFilepath = value;
                 else if (key === 'brick-filepath') source.brickFilepath = value;
                 else if (key === 'added-requested-words-filepath') source.addedRequestedWordsFilepath = value;
+                else if (key === 'requested-words-filepath') source.requestedWordsFilepath = value;
             }
 
             if (source.name) {
@@ -398,6 +399,95 @@ export let routing = function () {
         }
     }
 
+    async function requestedWordsPage(req, res) {
+        const { name } = req.params;
+
+        try {
+            const listResult = await binServices.wordSourceManagerList();
+            const sources = parseWordSourceList(listResult);
+            const source = sources.find(s => s.name === name);
+
+            if (!source || !source.requestedWordsFilepath) {
+                return res.status(404).json({ error: "Corpus not found" });
+            }
+
+            let pendingWords = [];
+            try {
+                const tomlContent = await readFile(source.requestedWordsFilepath, 'utf8');
+                const match = tomlContent.match(/words\s*=\s*(\[.*?\])/s);
+                if (match) {
+                    pendingWords = JSON.parse(match[1].replace(/'/g, '"'));
+                }
+            } catch (e) {
+                // File doesn't exist or is empty
+            }
+
+            res.render(path.resolve(VIEWS_DIR, "requested-words.ntl"), {
+                vars: {
+                    corpusName: name,
+                    corpusLanguage: source.language,
+                    pendingWordsData: JSON.stringify(pendingWords)
+                }
+            });
+        } catch (error) {
+            console.error("[admin][requestedWordsPage] Error:", error);
+            res.redirect("/error/500");
+        }
+    }
+
+    async function processRequestedWords(req, res) {
+        const { name } = req.params;
+
+        res.setHeader('Content-Type', 'application/x-ndjson');
+        res.setHeader('Cache-Control', 'no-cache');
+        res.setHeader('Connection', 'keep-alive');
+
+        const child = binServices.spawnProcessRequestedWords(name);
+        let stdoutData = '';
+        let stderrBuffer = '';
+
+        child.stderr.on('data', (chunk) => {
+            stderrBuffer += chunk.toString();
+            let lines = stderrBuffer.split('\n');
+            stderrBuffer = lines.pop(); // keep incomplete line in buffer
+
+            for (const line of lines) {
+                if (!line.trim()) continue;
+                try {
+                    JSON.parse(line); // validate it's JSON
+                    res.write(line + '\n');
+                } catch (e) {
+                    // not JSON, skip
+                }
+            }
+        });
+
+        child.stdout.on('data', (chunk) => {
+            stdoutData += chunk.toString();
+        });
+
+        child.on('close', (code) => {
+            let success = code === 0;
+            let message = '';
+
+            try {
+                const result = JSON.parse(stdoutData);
+                success = result.Success;
+                message = result.Message;
+            } catch (e) {
+                message = success ? 'Processing completed.' : 'Processing failed.';
+            }
+
+            res.write(JSON.stringify({ type: "complete", success, message }) + '\n');
+            res.end();
+        });
+
+        child.on('error', (err) => {
+            res.write(JSON.stringify({ type: "complete", success: false, message: err.message }) + '\n');
+            res.end();
+        });
+    }
+
     return {
         dashboard,
         apiCorpora,
@@ -408,6 +498,8 @@ export let routing = function () {
         wordsPage,
         createFromSelection,
         regenerateWeekPuzzles,
+        requestedWordsPage,
+        processRequestedWords,
         loadActiveConfig,
         parseWordSourceList,
         languageNameFromCode,

@@ -49,6 +49,16 @@ admin.post('/corpus/create-from-selection', (req, res) => {
     routing.createFromSelection(req, res);
 });
 
+// Requested words page
+admin.get('/corpus/:name/requested-words', (req, res) => {
+    routing.requestedWordsPage(req, res);
+});
+
+// Process requested words (streaming)
+admin.post('/corpus/:name/process-requested-words', (req, res) => {
+    routing.processRequestedWords(req, res);
+});
+
 // Regenerate week puzzles
 admin.post('/regenerate-week-puzzles', (req, res) => {
     routing.regenerateWeekPuzzles(req, res);

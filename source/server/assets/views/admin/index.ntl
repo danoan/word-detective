@@ -83,6 +83,7 @@
                             </div>
                             <div class="corpus-actions">
                                 <button class="btn btn-words" onclick="viewWords('${corpus.name}')">Words</button>
+                                <button class="btn btn-requested" onclick="viewRequested('${corpus.name}')">Requested</button>
                                 ${!corpus.isActive ? `<button class="btn btn-activate" onclick="activateCorpus('${langCode}', '${corpus.name}')">Activate</button>` : ''}
                                 <button class="btn btn-download" onclick="downloadCorpus('${corpus.name}')">Download</button>
                                 <button class="btn btn-remove" onclick="removeCorpus('${corpus.name}')">Remove</button>
@@ -109,6 +110,10 @@
 
         function viewWords(name) {
             window.location.href = `/admin/corpus/${encodeURIComponent(name)}/words`;
+        }
+
+        function viewRequested(name) {
+            window.location.href = `/admin/corpus/${encodeURIComponent(name)}/requested-words`;
         }
 
         async function activateCorpus(language, name) {

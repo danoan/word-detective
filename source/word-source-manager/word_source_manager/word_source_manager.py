@@ -97,7 +97,8 @@ def action_process_requested_words(args):
     file_str = io.StringIO()
     requested_words = toml.load(d["requested-words-filepath"])
     valid_words = []
-    for word in requested_words["words"]:
+    total = len(requested_words["words"])
+    for i, word in enumerate(requested_words["words"]):
         word_check_args = [
             d["word-check-app-filepath"],
             "real-word",
@@ -118,6 +119,9 @@ def action_process_requested_words(args):
             valid_words.append(word)
         else:
             file_str.write(f"Word '{word}' was checked and it does not seem to exist. Not adding in the word source.\n")
+
+        sys.stderr.write(json.dumps({"type": "progress", "word": word, "valid": bool(json_object["Status"]), "index": i, "total": total}) + "\n")
+        sys.stderr.flush()
 
     with open(d["text-filepath"], "a") as f:
         for word in valid_words:

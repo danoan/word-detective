@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Requested Words - #corpusName# - Word Detective Admin</title>
+    <link rel="stylesheet" href="/admin/css/admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <a href="/admin" class="back-link">&larr; Back to Dashboard</a>
+
+        <header class="admin-header">
+            <h1>#corpusName#</h1>
+            <p class="subtitle">Requested Words &middot; #corpusLanguage#</p>
+        </header>
+
+        <section class="pending-section">
+            <h2>Pending Words <span class="pending-count" id="pending-count"></span></h2>
+            <div class="pending-words-list" id="pending-words-list">
+                <!-- Word chips populated by JS -->
+            </div>
+        </section>
+
+        <section class="process-section">
+            <button class="btn btn-primary" id="btn-process">Process Requested Words</button>
+            <span id="process-status" class="status-text"></span>
+        </section>
+
+        <section class="progress-section" id="progress-section">
+            <div class="progress-counter" id="progress-counter">0 / 0</div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <div class="progress-log" id="progress-log">
+                <!-- Log entries appear here -->
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const pendingWords = #pendingWordsData#;
+        const corpusName = '#corpusName#';
+
+        function renderPendingWords() {
+            const list = document.getElementById('pending-words-list');
+            const countEl = document.getElementById('pending-count');
+            const btn = document.getElementById('btn-process');
+
+            countEl.textContent = `(${pendingWords.length})`;
+
+            if (pendingWords.length === 0) {
+                list.innerHTML = '<p class="no-pending">No pending requested words.</p>';
+                btn.disabled = true;
+                return;
+            }
+
+            list.innerHTML = '';
+            for (const word of pendingWords) {
+                const chip = document.createElement('span');
+                chip.className = 'word-chip';
+                chip.textContent = word;
+                list.appendChild(chip);
+            }
+        }
+
+        document.getElementById('btn-process').addEventListener('click', async function() {
+            const btn = this;
+            const statusEl = document.getElementById('process-status');
+            const progressSection = document.getElementById('progress-section');
+            const progressBar = document.getElementById('progress-bar');
+            const progressCounter = document.getElementById('progress-counter');
+            const progressLog = document.getElementById('progress-log');
+
+            btn.disabled = true;
+            statusEl.textContent = 'Processing...';
+            statusEl.className = 'status-text';
+            progressSection.classList.add('visible');
+            progressBar.style.width = '0%';
+            progressCounter.textContent = `0 / ${pendingWords.length}`;
+            progressLog.innerHTML = '';
+
+            try {
+                const response = await fetch(`/admin/corpus/${encodeURIComponent(corpusName)}/process-requested-words`, {
+                    method: 'POST'
+                });
+
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let buffer = '';
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    buffer += decoder.decode(value, { stream: true });
+                    const lines = buffer.split('\n');
+                    buffer = lines.pop();
+
+                    for (const line of lines) {
+                        if (!line.trim()) continue;
+
+                        try {
+                            const msg = JSON.parse(line);
+
+                            if (msg.type === 'progress') {
+                                const pct = Math.round(((msg.index + 1) / msg.total) * 100);
+                                progressBar.style.width = pct + '%';
+                                progressCounter.textContent = `${msg.index + 1} / ${msg.total}`;
+
+                                const entry = document.createElement('div');
+                                entry.className = 'log-entry ' + (msg.valid ? 'log-valid' : 'log-invalid');
+                                entry.textContent = `${msg.word} — ${msg.valid ? 'valid' : 'invalid'}`;
+                                progressLog.appendChild(entry);
+                                progressLog.scrollTop = progressLog.scrollHeight;
+                            } else if (msg.type === 'complete') {
+                                if (msg.success) {
+                                    statusEl.textContent = 'Completed successfully.';
+                                    statusEl.className = 'status-text success';
+                                } else {
+                                    statusEl.textContent = 'Processing failed: ' + (msg.message || 'Unknown error');
+                                    statusEl.className = 'status-text error';
+                                }
+                            }
+                        } catch (e) {
+                            // skip non-JSON lines
+                        }
+                    }
+                }
+            } catch (error) {
+                statusEl.textContent = 'Error: ' + error.message;
+                statusEl.className = 'status-text error';
+            }
+        });
+
+        renderPendingWords();
+    </script>
+</body>
+</html>

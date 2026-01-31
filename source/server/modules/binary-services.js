@@ -2,7 +2,7 @@ import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { writeFile } from 'fs/promises'
 import { promisify } from 'util';
-import { execFile } from 'child_process';
+import { execFile, spawn } from 'child_process';
 
 const p_execFile = promisify(execFile);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -196,6 +196,10 @@ export let binServices = function(){
             });
     }
 
+    function spawnProcessRequestedWords(name) {
+        return spawn("word-source-manager", ["process-requested-words", name]);
+    }
+
       return {
           exportBrick,
           generatePuzzle,
@@ -206,7 +210,8 @@ export let binServices = function(){
           englishDictionary,
           wordSourceManagerList,
           wordSourceManagerAdd,
-          wordSourceManagerRemove
+          wordSourceManagerRemove,
+          spawnProcessRequestedWords
       };
 
 }();
