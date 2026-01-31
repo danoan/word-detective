@@ -416,7 +416,7 @@ export let routing = function () {
                 const tomlContent = await readFile(source.requestedWordsFilepath, 'utf8');
                 const match = tomlContent.match(/words\s*=\s*(\[.*?\])/s);
                 if (match) {
-                    pendingWords = JSON.parse(match[1].replace(/'/g, '"'));
+                    pendingWords = JSON.parse(match[1].replace(/'/g, '"').replace(/,\s*\]/, ']'));
                 }
             } catch (e) {
                 // File doesn't exist or is empty
