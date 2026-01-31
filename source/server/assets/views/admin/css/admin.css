@@ -514,3 +514,64 @@ body {
     background-color: #fdedec;
     color: #b03a2e;
 }
+
+/* Flagged words section */
+.flagged-section {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.flagged-section h2 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 1.25rem;
+}
+
+.flagged-count {
+    font-weight: 400;
+    color: #7f8c8d;
+    font-size: 1rem;
+}
+
+.flagged-words-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.no-flagged {
+    color: #7f8c8d;
+    font-style: italic;
+}
+
+.flagged-word-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    border-left: 3px solid #e74c3c;
+}
+
+.flagged-word-text {
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.flagged-word-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-flag-remove {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.btn-flag-ignore {
+    background-color: #95a5a6;
+    color: white;
+}

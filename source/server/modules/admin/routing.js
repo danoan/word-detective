@@ -422,11 +422,21 @@ export let routing = function () {
                 // File doesn't exist or is empty
             }
 
+            let flaggedWords = [];
+            try {
+                const flaggedWordsPath = path.join(path.dirname(source.textFilepath), 'flagged_words.txt');
+                const flaggedContent = await readFile(flaggedWordsPath, 'utf8');
+                flaggedWords = [...new Set(flaggedContent.trim().split('\n').filter(w => w.trim()))];
+            } catch (e) {
+                // File doesn't exist or is empty
+            }
+
             res.render(path.resolve(VIEWS_DIR, "requested-words.ntl"), {
                 vars: {
                     corpusName: name,
                     corpusLanguage: source.language,
-                    pendingWordsData: JSON.stringify(pendingWords)
+                    pendingWordsData: JSON.stringify(pendingWords),
+                    flaggedWordsData: JSON.stringify(flaggedWords)
                 }
             });
         } catch (error) {
@@ -488,6 +498,49 @@ export let routing = function () {
         });
     }
 
+    async function handleFlaggedWord(req, res) {
+        const { name } = req.params;
+        const { word, action } = req.body;
+
+        if (!word || !['remove', 'ignore'].includes(action)) {
+            return res.status(400).json({ error: "Invalid word or action" });
+        }
+
+        try {
+            const listResult = await binServices.wordSourceManagerList();
+            const sources = parseWordSourceList(listResult);
+            const source = sources.find(s => s.name === name);
+
+            if (!source || !source.textFilepath) {
+                return res.status(404).json({ error: "Corpus not found" });
+            }
+
+            // Remove word from flagged_words.txt
+            const flaggedWordsPath = path.join(path.dirname(source.textFilepath), 'flagged_words.txt');
+            try {
+                const flaggedContent = await readFile(flaggedWordsPath, 'utf8');
+                const remaining = flaggedContent.split('\n').filter(line => line.trim() && line.trim() !== word.trim());
+                await writeFile(flaggedWordsPath, remaining.length > 0 ? remaining.join('\n') + '\n' : '');
+            } catch (e) {
+                // File doesn't exist — nothing to remove from
+            }
+
+            // If removing, also remove from corpus and rebuild brick
+            if (action === 'remove') {
+                const corpusContent = await readFile(source.textFilepath, 'utf8');
+                const corpusLines = corpusContent.split('\n').filter(line => line.trim() !== word.trim());
+                await writeFile(source.textFilepath, corpusLines.join('\n'));
+
+                await binServices.exportBrick(source.language, source.textFilepath, source.brickFilepath);
+            }
+
+            res.json({ success: true });
+        } catch (error) {
+            console.error("[admin][handleFlaggedWord] Error:", error);
+            res.status(500).json({ error: "Failed to process flagged word" });
+        }
+    }
+
     return {
         dashboard,
         apiCorpora,
@@ -500,6 +553,7 @@ export let routing = function () {
         regenerateWeekPuzzles,
         requestedWordsPage,
         processRequestedWords,
+        handleFlaggedWord,
         loadActiveConfig,
         parseWordSourceList,
         languageNameFromCode,
