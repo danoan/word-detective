@@ -58,6 +58,7 @@ export function word_control_handler() {
 export function data_control_handler(){
   let missing_words = [];
   let words_found = [];
+  let words_revealed = new Set();
 
   function add_found_word(word) {
     words_found.push(word);
@@ -77,11 +78,22 @@ export function data_control_handler(){
     return false;
   }
 
+  function mark_as_revealed(word) {
+    words_revealed.add(word);
+  }
+
+  function is_revealed(word) {
+    return words_revealed.has(word);
+  }
+
   return {
     missing_words,
     words_found,
+    words_revealed,
     add_found_word,
     add_missing_word,
-    is_it_missing_word
+    is_it_missing_word,
+    mark_as_revealed,
+    is_revealed
   };
 }

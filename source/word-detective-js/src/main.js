@@ -143,6 +143,10 @@ function gui_WORD_DETECTIVE_api() {
 
   let gui = html_objects();
 
+  let reveal_button = document.createElement('div');
+  reveal_button.className = 'reveal-button';
+  gui.display.appendChild(reveal_button);
+
   function set_display_value(value,color=null) {
     clear_display_value();
     append_display_value(value,color);
@@ -159,14 +163,28 @@ function gui_WORD_DETECTIVE_api() {
 
   function get_display_value() {
     if (gui.display.childElementCount >0) {
-      return gui.display.children[0].innerHTML;
+      for (let child of gui.display.children) {
+        if (child !== reveal_button) return child.innerHTML;
+      }
     }
     return "";
   }
 
   function clear_display_value() {
-    while(gui.display.childElementCount>0) gui.display.removeChild(gui.display.children[0]);
-    gui.display.innerHTML = '';
+    let children = Array.from(gui.display.children);
+    for (let child of children) {
+      if (child !== reveal_button) {
+        gui.display.removeChild(child);
+      }
+    }
+  }
+
+  function show_reveal_button() {
+    reveal_button.style.display = 'block';
+  }
+
+  function hide_reveal_button() {
+    reveal_button.style.display = 'none';
   }
 
   function set_status_value(value) {
@@ -193,11 +211,15 @@ function gui_WORD_DETECTIVE_api() {
     gui.missing_words.innerHTML = '';
   }
 
-  function add_to_word_list(word) {
+  function add_to_word_list(word, isRevealed) {
     let li = document.createElement('li');
     li.append(word);
     li.style.animationName="new-word";
     li.style.animationDuration="0.5s";
+
+    if (isRevealed) {
+      li.classList.add('word-revealed');
+    }
 
     if(gui.word_list.childNodes.length>0){
       gui.word_list.insertBefore(li,gui.word_list.childNodes[0]);
@@ -228,6 +250,9 @@ function gui_WORD_DETECTIVE_api() {
     clear_missing_words_value,
     add_to_word_list,
     clear_word_list,
+    show_reveal_button,
+    hide_reveal_button,
+    reveal_button,
     reset
   };
 }
@@ -330,7 +355,7 @@ export function main(is_in_test_mode = false) {
     return create_WORD_DETECTIVE_api(gui_WORD_DETECTIVE_api(), assets.messages, word_detective_config);
 
     function check_word_callback(check_word_callback_parameters) {
-      save_found_words_in_cookie(check_word_callback_parameters.get_words_found);
+      save_found_words_in_cookie(check_word_callback_parameters.get_words_found, check_word_callback_parameters.is_revealed);
 
       if(check_word_callback_parameters.callback_status === check_word_callback_parameters.callback_status_values.UNRECOGNIZED_WORD ){
         if (WR !== null) {
@@ -339,12 +364,13 @@ export function main(is_in_test_mode = false) {
       }
     }
 
-    function save_found_words_in_cookie(get_words_found_function) {
+    function save_found_words_in_cookie(get_words_found_function, is_revealed_function) {
       let words_found_cookie = '';
 
       get_words_found_function().forEach((word) => {
         if (word.length > 0) {
-          words_found_cookie += word + ',';
+          let suffix = is_revealed_function(word) ? ':R' : '';
+          words_found_cookie += word + suffix + ',';
         }
       });
 
@@ -389,9 +415,11 @@ export function main(is_in_test_mode = false) {
       let str_words_found = puzzle_cookie.get();
 
       let _words_found = str_words_found.split(',');
-      _words_found.forEach((word) => {
-        if (word.length > 0) {
-          control_members.add_found_word(word);
+      _words_found.forEach((entry) => {
+        if (entry.length > 0) {
+          let isRevealed = entry.endsWith(':R');
+          let word = isRevealed ? entry.slice(0, -2) : entry;
+          control_members.add_found_word(word, isRevealed);
         }
       });
     }

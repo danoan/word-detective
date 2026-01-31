@@ -48,9 +48,12 @@ export function create_WORD_DETECTIVE_api(gui, messages_json, _config) {
     UNRECOGNIZED_WORD: Symbol("Unregcognized Word")
   };
 
-  function add_found_word(word){
+  function add_found_word(word, isRevealed){
+    if (isRevealed) {
+      control_handlers.data.mark_as_revealed(word);
+    }
     control_handlers.data.add_found_word(word);
-    gui.add_to_word_list(word);
+    gui.add_to_word_list(word, isRevealed);
   }
 
   function add_missing_word(word){
@@ -64,6 +67,7 @@ export function create_WORD_DETECTIVE_api(gui, messages_json, _config) {
       add_found_word,
       get_words_found: () => [...control_handlers.data.words_found],
       get_missing_words: () => [...control_handlers.data.missing_words],
+      is_revealed: (word) => control_handlers.data.is_revealed(word),
     };
 
     return Object.assign(default_parameters,...extraArgs);
@@ -97,9 +101,11 @@ export function create_WORD_DETECTIVE_api(gui, messages_json, _config) {
   function hint() {
     if (current_mode_handler === display_handlers.normal_mode) {
       current_mode_handler = display_handlers.hint_mode;
+      gui.show_reveal_button();
     } else if(current_mode_handler === display_handlers.hint_mode) {
       if(!display_handlers.hint_mode.next_handler()){
         current_mode_handler = display_handlers.normal_mode;
+        gui.hide_reveal_button();
       }
     }
     current_mode_handler.init(control_handlers.data.missing_words[0]);
@@ -123,6 +129,7 @@ export function create_WORD_DETECTIVE_api(gui, messages_json, _config) {
       if (config.hint_display_behaviour !== "always_visible") {
         current_mode_handler.reset();
         current_mode_handler = display_handlers.normal_mode;
+        gui.hide_reveal_button();
       }
 
       display_handlers.messages.valid_word_message(control_handlers.word.get_difficulty(input_word));
@@ -156,15 +163,65 @@ export function create_WORD_DETECTIVE_api(gui, messages_json, _config) {
     }, 2000);
   }
 
+  function reveal_word() {
+    clearTimeout(timeout_event);
+
+    let word = control_handlers.data.missing_words[0];
+    if (!word) {
+      reveal_word.unblock();
+      return;
+    }
+
+    add_found_word(word, true);
+
+    if (config.hint_display_behaviour !== "always_visible") {
+      current_mode_handler.reset();
+      current_mode_handler = display_handlers.normal_mode;
+      gui.hide_reveal_button();
+    }
+
+    display_handlers.messages.update_missing_words_count(
+      control_handlers.data.words_found.length,
+      control_handlers.data.missing_words.length
+    );
+
+    if (callbacks.check_word !== null) {
+      callbacks.check_word(pack_callback_params({
+        "callback_status_values": check_word_callback_status,
+        "callback_status": check_word_callback_status.MISSING_WORD,
+        "word": word
+      }));
+    }
+
+    current_mode_handler.init(control_handlers.data.missing_words[0]);
+    reveal_word.unblock();
+
+    timeout_event = setTimeout(() => {
+      gui.clear_status_value();
+      if (control_handlers.data.missing_words.length === 0) {
+        callbacks.end(pack_callback_params());
+      }
+    }, 2000);
+  }
+
   init();
 
-  return {
+  if (config.hint_display_behaviour === "always_visible") {
+    gui.show_reveal_button();
+  }
+
+  let api = {
     click_letter: block_decorator(click_letter),
     erase_letter: block_decorator(erase_letter),
     check_word: block_decorator(check_word),
     hint: block_decorator(hint),
+    reveal_word: block_decorator(reveal_word),
     add_hint_handler: display_handlers.hint_mode.add_hint_handler
   };
+
+  gui.reveal_button.onclick = api.reveal_word;
+
+  return api;
 
 }
 
