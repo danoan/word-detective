@@ -33,12 +33,14 @@
                 <button class="btn btn-small btn-secondary" onclick="selectNone()">Select None</button>
                 <button class="btn btn-small btn-secondary" onclick="invertSelection()">Invert</button>
                 <button class="btn btn-small btn-secondary" onclick="clearFilters()">Clear Filters</button>
+                <button class="btn btn-small btn-secondary" id="toggle-requested" onclick="toggleRequestedFilter()">Show requested only</button>
             </div>
         </section>
 
         <section class="selection-info">
             <span class="selected-count"><span id="selected-count">0</span> words selected</span>
             <span class="visible-count"><span id="visible-count">0</span> words visible</span>
+            <span class="requested-count"><span id="requested-count">0</span> requested words visible</span>
         </section>
 
         <div class="words-grid" id="words-grid">
@@ -68,9 +70,11 @@
 
     <script>
         const words = #wordsData#;
+        const requestedWords = new Set(#requestedWordsData#);
         const corpusLanguage = '#corpusLanguage#';
         const selectedWords = new Set();
         const randomSelectedWords = new Set();
+        let filterRequestedOnly = false;
 
         const languageNameToCode = {
             'english': 'en',
@@ -90,7 +94,7 @@
 
             for (const word of words) {
                 const item = document.createElement('div');
-                item.className = 'word-item';
+                item.className = 'word-item' + (requestedWords.has(word) ? ' requested' : '');
                 item.dataset.word = word;
 
                 const checkbox = document.createElement('input');
@@ -136,8 +140,9 @@
                 const word = item.dataset.word;
                 const matchesSearch = word.toLowerCase().includes(search);
                 const matchesLength = word.length >= minLength && word.length <= maxLength;
+                const matchesRequested = !filterRequestedOnly || requestedWords.has(word);
 
-                if (matchesSearch && matchesLength) {
+                if (matchesSearch && matchesLength && matchesRequested) {
                     item.classList.remove('hidden');
                 } else {
                     item.classList.add('hidden');
@@ -292,9 +297,19 @@
             renderRandomWords();
         }
 
+        function toggleRequestedFilter() {
+            filterRequestedOnly = !filterRequestedOnly;
+            const btn = document.getElementById('toggle-requested');
+            btn.textContent = filterRequestedOnly ? 'Show all' : 'Show requested only';
+            applyFilters();
+        }
+
         function updateCounts() {
+            const visibleWords = getVisibleWords();
             document.getElementById('selected-count').textContent = selectedWords.size;
-            document.getElementById('visible-count').textContent = getVisibleWords().length;
+            document.getElementById('visible-count').textContent = visibleWords.length;
+            document.getElementById('requested-count').textContent =
+                visibleWords.filter(w => requestedWords.has(w)).length;
         }
 
         async function createCorpus() {

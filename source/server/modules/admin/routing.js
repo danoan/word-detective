@@ -92,6 +92,7 @@ export let routing = function () {
                 else if (key === 'language') source.language = value;
                 else if (key === 'text-filepath') source.textFilepath = value;
                 else if (key === 'brick-filepath') source.brickFilepath = value;
+                else if (key === 'added-requested-words-filepath') source.addedRequestedWordsFilepath = value;
             }
 
             if (source.name) {
@@ -269,11 +270,22 @@ export let routing = function () {
             const content = await readFile(source.textFilepath, 'utf8');
             const words = content.trim().split('\n').filter(w => w.trim());
 
+            let requestedWords = [];
+            if (source.addedRequestedWordsFilepath) {
+                try {
+                    const reqContent = await readFile(source.addedRequestedWordsFilepath, 'utf8');
+                    requestedWords = reqContent.trim().split('\n').filter(w => w.trim());
+                } catch (e) {
+                    // File doesn't exist yet — no requested words to show
+                }
+            }
+
             res.render(path.resolve(VIEWS_DIR, "words.ntl"), {
                 vars: {
                     corpusName: name,
                     corpusLanguage: source.language,
-                    wordsData: JSON.stringify(words)
+                    wordsData: JSON.stringify(words),
+                    requestedWordsData: JSON.stringify(requestedWords)
                 }
             });
         } catch (error) {

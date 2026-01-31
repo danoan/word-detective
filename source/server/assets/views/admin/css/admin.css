@@ -312,6 +312,10 @@ body {
     font-size: 0.9rem;
 }
 
+.word-item.requested {
+    border-left: 3px solid #e67e22;
+}
+
 .word-item.hidden {
     display: none;
 }

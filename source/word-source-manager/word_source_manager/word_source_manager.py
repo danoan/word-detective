@@ -123,6 +123,17 @@ def action_process_requested_words(args):
         for word in valid_words:
             f.write(f"{word}\n")
 
+    added_requested_words_filepath = d.get(
+        "added-requested-words-filepath",
+        os.path.join(os.path.dirname(d["text-filepath"]), "added_requested_words.txt"),
+    )
+    with open(added_requested_words_filepath, "a") as f:
+        for word in valid_words:
+            f.write(f"{word}\n")
+
+    if "added-requested-words-filepath" not in d:
+        d["added-requested-words-filepath"] = added_requested_words_filepath
+
     export_brick(
         configuration_file["config"]["export-brick-app"], d["language"], d["text-filepath"], d["brick-filepath"]
     )
@@ -197,6 +208,9 @@ def action_remove(args):
             os.remove(d["text-filepath"])
             os.remove(d["brick-filepath"])
             os.remove(d["requested-words-filepath"])
+            added_path = d.get("added-requested-words-filepath")
+            if added_path and os.path.exists(added_path):
+                os.remove(added_path)
             os.removedirs(
                 os.path.dirname(d["text-filepath"]),
             )
@@ -230,6 +244,7 @@ def action_add(args):
     word_source_text_filepath = os.path.join(word_source_folder, f"{args.name}.txt")
     brick_filepath = os.path.join(word_source_folder, f"{args.name}.brk")
     requested_words_filepath = os.path.join(word_source_folder, "requested_words.toml")
+    added_requested_words_filepath = os.path.join(word_source_folder, "added_requested_words.txt")
 
     os.makedirs(word_source_folder, exist_ok=True)
     shutil.copyfile(args.word_source_filepath, word_source_text_filepath)
@@ -237,6 +252,9 @@ def action_add(args):
 
     with open(requested_words_filepath, "w") as f:
         f.write(requested_words_template.render())
+
+    with open(added_requested_words_filepath, "w") as f:
+        pass
 
     export_brick(
         configuration_file["config"]["export-brick-app"], args.language, args.word_source_filepath, brick_filepath
@@ -250,6 +268,7 @@ def action_add(args):
         "brick-filepath": brick_filepath,
         "word-check-app-filepath": args.word_check_app_filepath,
         "requested-words-filepath": requested_words_filepath,
+        "added-requested-words-filepath": added_requested_words_filepath,
         "creation-time": creation_time,
         "modification-time": creation_time,
     }
