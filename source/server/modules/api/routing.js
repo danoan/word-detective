@@ -2,7 +2,7 @@ import * as path from 'path';
 
 import { Stream } from 'stream';
 import { fileURLToPath } from 'url';
-import { readFile } from 'fs/promises';
+import { readFile, appendFile } from 'fs/promises';
 import { binServices } from '../binary-services.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -211,13 +211,46 @@ export let routing = function () {
     }
   }
 
+  async function flagWord(req, res) {
+    let languageCode = req.params["language"];
+    let word = req.params["word"];
+
+    try {
+      const activeConfig = await loadActiveConfig();
+      const activeSourceName = activeConfig[languageCode]?.wordSource;
+
+      if (!activeSourceName) {
+        console.error(`[flagWord] No active corpus configured for language: ${languageCode}`);
+        return res.status(500).json({ Success: false, Message: "No active corpus configured." });
+      }
+
+      const listResult = await binServices.wordSourceManagerList();
+      const sources = parseWordSourceList(listResult);
+      const source = sources.find(s => s.name === activeSourceName);
+
+      if (!source || !source.textFilepath) {
+        console.error(`[flagWord] Corpus "${activeSourceName}" not found`);
+        return res.status(500).json({ Success: false, Message: "Corpus not found." });
+      }
+
+      const flaggedWordsPath = path.join(path.dirname(source.textFilepath), 'flagged_words.txt');
+      await appendFile(flaggedWordsPath, word + '\n');
+
+      res.json({ Success: true, Message: `Word "${word}" flagged.` });
+    } catch (err) {
+      console.error("[flagWord] Error:", err);
+      res.status(500).json({ Success: false, Message: "Failed to flag word." });
+    }
+  }
+
   return {
     puzzleFromFile,
     puzzleFromString,
     randomPuzzle,
     wordDefinition,
     requestWord,
-    chatgptWordDefinition
+    chatgptWordDefinition,
+    flagWord
   };
 
 }();

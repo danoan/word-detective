@@ -4,6 +4,7 @@ import { create_WORD_DETECTIVE_api } from "./modules/word-detective/word-detecti
 import { word_definition } from "./modules/word-definition/word-definition.js";
 import { slider } from "./modules/slider/slider.js";
 import { word_request } from "./modules/word-request/word-request.js";
+import { word_flag } from "./modules/word-flag/word-flag.js";
 
 function gui_request_word() {
   const SHOW_NOTIFICATION_BAR_ANIMATION_NAME = 'show-notification-bar';
@@ -211,7 +212,7 @@ function gui_WORD_DETECTIVE_api() {
     gui.missing_words.innerHTML = '';
   }
 
-  function add_to_word_list(word, isRevealed) {
+  function add_to_word_list(word, isRevealed, onWordClick) {
     let li = document.createElement('li');
     li.append(word);
     li.style.animationName="new-word";
@@ -219,6 +220,14 @@ function gui_WORD_DETECTIVE_api() {
 
     if (isRevealed) {
       li.classList.add('word-revealed');
+    }
+
+    if (onWordClick) {
+      li.style.cursor = 'pointer';
+      li.addEventListener('click', function (e) {
+        e.stopPropagation();
+        onWordClick(word, li);
+      });
     }
 
     if(gui.word_list.childNodes.length>0){
@@ -282,6 +291,7 @@ export function main(is_in_test_mode = false) {
   if (config.enable_word_request){
     WR=configure_word_request();
   }
+  let WF = word_flag(config.language);
 
   if (config.onload !== null) {
     config.onload();
@@ -351,6 +361,7 @@ export function main(is_in_test_mode = false) {
     word_detective_config.callbacks.check_word = check_word_callback;
     word_detective_config.callbacks.init = (init_callback_parameters) => init_puzzle(assets.puzzle, init_callback_parameters);
     word_detective_config.callbacks.end = display_word_list;
+    word_detective_config.callbacks.flag_word = (word, li) => WF.show_popup(word, li);
 
     return create_WORD_DETECTIVE_api(gui_WORD_DETECTIVE_api(), assets.messages, word_detective_config);
 

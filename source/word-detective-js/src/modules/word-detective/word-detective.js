@@ -14,7 +14,8 @@ let default_config = {
     "erase_letter": null,
     "check_word": null,
     "hint": null,
-    "end": null
+    "end": null,
+    "flag_word": null
   },
   "hint_display_behaviour": "by_request"
 };
@@ -53,7 +54,7 @@ export function create_WORD_DETECTIVE_api(gui, messages_json, _config) {
       control_handlers.data.mark_as_revealed(word);
     }
     control_handlers.data.add_found_word(word);
-    gui.add_to_word_list(word, isRevealed);
+    gui.add_to_word_list(word, isRevealed, callbacks.flag_word || null);
   }
 
   function add_missing_word(word){
