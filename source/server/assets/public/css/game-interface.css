@@ -467,9 +467,7 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  height: 48px;
-  background-color: var(--pallete-1);
-  margin-bottom: 4px;
+  height: 100%;
   box-sizing: border-box;
 }
 
@@ -480,12 +478,12 @@
 .password-hint-nav {
   background: none;
   border: none;
-  color: var(--pallete-5);
+  color: var(--pallete-1);
   font-size: 28px;
   cursor: pointer;
   padding: 0 12px;
-  line-height: 48px;
-  opacity: 0.7;
+  line-height: 64px;
+  opacity: 0.5;
   flex-shrink: 0;
 }
 
@@ -503,7 +501,7 @@
 }
 
 .password-hint-word {
-  color: var(--pallete-5);
+  color: var(--pallete-1);
   font-size: 24px;
   font-weight: lighter;
   text-transform: uppercase;
@@ -512,7 +510,7 @@
 }
 
 .password-hint-counter {
-  color: var(--pallete-6);
+  color: var(--pallete-7);
   font-size: 13px;
   flex-shrink: 0;
 }

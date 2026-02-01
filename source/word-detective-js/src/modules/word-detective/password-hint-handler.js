@@ -43,7 +43,7 @@ export function password_hint_mode_factory(hints_map) {
       panel.addEventListener('touchend', on_touch_end, { passive: true });
 
       let display_text = document.getElementById('display-text');
-      display_text.parentNode.insertBefore(panel, display_text);
+      display_text.appendChild(panel);
     }
 
     function on_touch_start(e) {
