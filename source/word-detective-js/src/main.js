@@ -324,9 +324,7 @@ export function main(is_in_test_mode = false) {
         })
           .then(res => res.json())
           .then(data => {
-            if (data.hints && Object.keys(data.hints).length > 0) {
-              control.add_hint_handler(password_hint_mode_factory(data.hints));
-            }
+            control.add_hint_handler(password_hint_mode_factory(data.hints));
             return control;
           })
           .catch(() => control);
