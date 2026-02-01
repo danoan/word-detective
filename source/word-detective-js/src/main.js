@@ -5,6 +5,7 @@ import { word_definition } from "./modules/word-definition/word-definition.js";
 import { slider } from "./modules/slider/slider.js";
 import { word_request } from "./modules/word-request/word-request.js";
 import { word_flag } from "./modules/word-flag/word-flag.js";
+import { password_hint_mode_factory } from "./modules/word-detective/password-hint-handler.js";
 
 function gui_request_word() {
   const SHOW_NOTIFICATION_BAR_ANIMATION_NAME = 'show-notification-bar';
@@ -298,7 +299,7 @@ export function main(is_in_test_mode = false) {
   }
 
   return config.load_assets()
-    .then((assets) => new Promise(function (resolve) {
+    .then((assets) => {
       let control = configure_WORD_DETECTIVE(assets);
 
       if (is_in_test_mode) {
@@ -309,9 +310,25 @@ export function main(is_in_test_mode = false) {
         };
       }
 
-      resolve(control);
+      let puzzle_words = assets.puzzle.words || [];
+      if (puzzle_words.length === 0) {
+        return control;
+      }
 
-    }));
+      return fetch(`/api/${config.language}/password-hints`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ words: puzzle_words })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.hints && Object.keys(data.hints).length > 0) {
+            control.add_hint_handler(password_hint_mode_factory(data.hints));
+          }
+          return control;
+        })
+        .catch(() => control);
+    });
 
   function configure_word_definition() {
     return word_definition(config.language,gui_word_definition());

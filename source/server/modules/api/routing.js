@@ -211,6 +211,33 @@ export let routing = function () {
     }
   }
 
+  async function passwordHints(req, res) {
+    let languageCode = req.params["language"];
+    let words = req.body && req.body.words;
+
+    if (!Array.isArray(words)) {
+      return res.status(400).json({ hints: {} });
+    }
+
+    let hintsFilePath = path.resolve(ASSETS_DIR, `password/${languageCode}/words.json`);
+
+    try {
+      let data = await readFile(hintsFilePath, 'utf8');
+      let allHints = JSON.parse(data);
+      let result = {};
+
+      for (let word of words) {
+        if (allHints[word]) {
+          result[word] = allHints[word];
+        }
+      }
+
+      res.json({ hints: result });
+    } catch (error) {
+      res.json({ hints: {} });
+    }
+  }
+
   async function flagWord(req, res) {
     let languageCode = req.params["language"];
     let word = req.params["word"];
@@ -250,7 +277,8 @@ export let routing = function () {
     wordDefinition,
     requestWord,
     chatgptWordDefinition,
-    flagWord
+    flagWord,
+    passwordHints
   };
 
 }();
