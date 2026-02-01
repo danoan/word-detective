@@ -34,3 +34,7 @@ api.post('/:language/flag-word/:word', (req, res) => {
 api.post('/:language/password-hints', (req, res) => {
     routing.passwordHints(req, res);
 });
+
+api.get('/game-settings', (req, res) => {
+    routing.gameSettings(req, res);
+});

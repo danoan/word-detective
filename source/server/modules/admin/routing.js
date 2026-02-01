@@ -8,6 +8,7 @@ import { binServices } from '../binary-services.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(__dirname, "../..");
 const CONFIG_PATH = path.resolve(PROJECT_ROOT, "assets/config/active-corpora.json");
+const GAME_SETTINGS_PATH = path.resolve(PROJECT_ROOT, "assets/config/game-settings.json");
 const VIEWS_DIR = path.resolve(PROJECT_ROOT, "assets/views/admin");
 
 const LANGUAGE_CODE_TO_NAME = {
@@ -740,6 +741,51 @@ export let routing = function () {
         });
     }
 
+    async function gameSettingsPage(req, res) {
+        try {
+            const data = await readFile(GAME_SETTINGS_PATH, 'utf8');
+            const settings = JSON.parse(data);
+
+            res.render(path.resolve(VIEWS_DIR, "game-settings.ntl"), {
+                vars: {
+                    settingsData: JSON.stringify(settings)
+                }
+            });
+        } catch (error) {
+            console.error("[admin][gameSettingsPage] Error:", error);
+            res.redirect("/error/500");
+        }
+    }
+
+    async function saveGameSettings(req, res) {
+        try {
+            const { hint_modes, hint_display_behaviour, enable_word_request } = req.body;
+
+            const VALID_HINT_MODES = ['alternate_letter', 'password'];
+            const VALID_DISPLAY_BEHAVIOURS = ['by_request', 'always_visible'];
+
+            if (!Array.isArray(hint_modes) || !hint_modes.every(m => VALID_HINT_MODES.includes(m))) {
+                return res.status(400).json({ error: "Invalid hint_modes" });
+            }
+
+            if (!VALID_DISPLAY_BEHAVIOURS.includes(hint_display_behaviour)) {
+                return res.status(400).json({ error: "Invalid hint_display_behaviour" });
+            }
+
+            if (typeof enable_word_request !== 'boolean') {
+                return res.status(400).json({ error: "Invalid enable_word_request" });
+            }
+
+            const settings = { hint_modes, hint_display_behaviour, enable_word_request };
+            await writeFile(GAME_SETTINGS_PATH, JSON.stringify(settings, null, 2));
+
+            res.json({ success: true });
+        } catch (error) {
+            console.error("[admin][saveGameSettings] Error:", error);
+            res.status(500).json({ error: "Failed to save settings" });
+        }
+    }
+
     return {
         dashboard,
         apiCorpora,
@@ -756,6 +802,8 @@ export let routing = function () {
         addWords,
         passwordHintsPage,
         generatePasswordHints,
+        gameSettingsPage,
+        saveGameSettings,
         loadActiveConfig,
         parseWordSourceList,
         languageNameFromCode,

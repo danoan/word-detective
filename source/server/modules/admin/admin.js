@@ -79,6 +79,15 @@ admin.post('/password-hints/:language/generate', (req, res) => {
     routing.generatePasswordHints(req, res);
 });
 
+// Game settings
+admin.get('/game-settings', (req, res) => {
+    routing.gameSettingsPage(req, res);
+});
+
+admin.post('/game-settings', (req, res) => {
+    routing.saveGameSettings(req, res);
+});
+
 // Regenerate week puzzles
 admin.post('/regenerate-week-puzzles', (req, res) => {
     routing.regenerateWeekPuzzles(req, res);

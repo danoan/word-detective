@@ -1,10 +1,11 @@
 import { cookie_manager, config, main } from "/assets/js/word-detective-min.js";
-import { MissingResource, setDefaultConfiguration, DateGen,identifyLanguage } from "/assets/js/game-util.js"
+import { MissingResource, setDefaultConfiguration, DateGen,identifyLanguage,loadGameSettings } from "/assets/js/game-util.js"
 
 export async function setupWordDetective(){
   let language = identifyLanguage();
 
-  setDefaultConfiguration(config)
+  setDefaultConfiguration(config);
+  await loadGameSettings(config);
 
   let today = DateGen.generate(DateGen.DateFormula.TodayMidnight);
   let tomorrow = DateGen.generate(DateGen.DateFormula.TomorrowMidnight);

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Settings - Word Detective Admin</title>
+    <link rel="stylesheet" href="/admin/css/admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <a href="/admin" class="back-link">&larr; Back to Dashboard</a>
+
+        <header class="admin-header">
+            <h1>Game Settings</h1>
+            <p class="subtitle">Configure game behaviour defaults</p>
+        </header>
+
+        <form id="settings-form">
+            <section class="upload-section">
+                <div class="form-group">
+                    <label>Hint Modes</label>
+                    <div style="display:flex;gap:1rem;margin-top:0.25rem;">
+                        <label style="font-weight:normal;display:flex;align-items:center;gap:0.35rem;">
+                            <input type="checkbox" id="hint-alternate-letter" value="alternate_letter">
+                            alternate_letter
+                        </label>
+                        <label style="font-weight:normal;display:flex;align-items:center;gap:0.35rem;">
+                            <input type="checkbox" id="hint-password" value="password">
+                            password
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="hint-display-behaviour">Hint Display Behaviour</label>
+                    <select id="hint-display-behaviour">
+                        <option value="by_request">by_request</option>
+                        <option value="always_visible">always_visible</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label style="font-weight:normal;display:flex;align-items:center;gap:0.35rem;">
+                        <input type="checkbox" id="enable-word-request">
+                        Enable Word Request
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Save Settings</button>
+                <span id="save-status" class="status-text"></span>
+            </section>
+        </form>
+    </div>
+
+    <script>
+        const settingsData = #settingsData#;
+
+        function populateForm(data) {
+            document.getElementById('hint-alternate-letter').checked =
+                data.hint_modes && data.hint_modes.includes('alternate_letter');
+            document.getElementById('hint-password').checked =
+                data.hint_modes && data.hint_modes.includes('password');
+            document.getElementById('hint-display-behaviour').value =
+                data.hint_display_behaviour || 'by_request';
+            document.getElementById('enable-word-request').checked =
+                data.enable_word_request !== false;
+        }
+
+        function collectForm() {
+            let hint_modes = [];
+            if (document.getElementById('hint-alternate-letter').checked) {
+                hint_modes.push('alternate_letter');
+            }
+            if (document.getElementById('hint-password').checked) {
+                hint_modes.push('password');
+            }
+
+            return {
+                hint_modes,
+                hint_display_behaviour: document.getElementById('hint-display-behaviour').value,
+                enable_word_request: document.getElementById('enable-word-request').checked
+            };
+        }
+
+        document.getElementById('settings-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const statusEl = document.getElementById('save-status');
+            statusEl.textContent = 'Saving...';
+            statusEl.className = 'status-text';
+
+            try {
+                const response = await fetch('/admin/game-settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(collectForm())
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    statusEl.textContent = 'Settings saved.';
+                    statusEl.className = 'status-text success';
+                } else {
+                    statusEl.textContent = 'Error: ' + (result.error || 'Save failed');
+                    statusEl.className = 'status-text error';
+                }
+            } catch (error) {
+                statusEl.textContent = 'Error: ' + error.message;
+                statusEl.className = 'status-text error';
+            }
+        });
+
+        populateForm(settingsData);
+    </script>
+</body>
+</html>

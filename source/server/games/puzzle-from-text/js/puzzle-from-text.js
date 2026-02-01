@@ -1,10 +1,11 @@
 import { cookie_manager, config, main } from "/assets/js/word-detective-min.js";
-import { NoPuzzleGenerated, MissingResource, setDefaultConfiguration, DateGen, identifyLanguage } from "/assets/js/game-util.js"
+import { NoPuzzleGenerated, MissingResource, setDefaultConfiguration, DateGen, identifyLanguage, loadGameSettings } from "/assets/js/game-util.js"
 
 export async function setupWordDetective(reset_cookie=false,text='',text_checksum=''){
   let language = identifyLanguage();
 
   setDefaultConfiguration(config);
+  await loadGameSettings(config);
 
   config.hint_display_behaviour = "always_visible";
 

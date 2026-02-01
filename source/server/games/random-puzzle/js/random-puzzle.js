@@ -1,10 +1,11 @@
 import { config, main } from "/assets/js/word-detective-min.js";
-import { MissingResource,setDefaultConfiguration,identifyLanguage } from "/assets/js/game-util.js";
+import { MissingResource,setDefaultConfiguration,identifyLanguage,loadGameSettings } from "/assets/js/game-util.js";
 
 export async function  setupWordDetective(){
   let language = identifyLanguage();
 
   setDefaultConfiguration(config);
+  await loadGameSettings(config);
 
   config.words_found_cookie_id = '';
   config.iso_expiration_date = '';

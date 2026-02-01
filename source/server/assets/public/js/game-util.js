@@ -84,3 +84,15 @@ export function identifyLanguage(){
 export function gotoFromBaseURI(path){
   document.location.href=`${document.baseURI}/${path}`;
 }
+
+export async function loadGameSettings(config) {
+  try {
+    let response = await fetch('/api/game-settings');
+    let settings = await response.json();
+    for (let key in settings) {
+      config[key] = settings[key];
+    }
+  } catch (e) {
+    // Settings unavailable — keep defaults
+  }
+}

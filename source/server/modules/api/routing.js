@@ -8,6 +8,7 @@ import { binServices } from '../binary-services.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(__dirname, "../..");
 const CONFIG_PATH = path.resolve(PROJECT_ROOT, "assets/config/active-corpora.json");
+const GAME_SETTINGS_PATH = path.resolve(PROJECT_ROOT, "assets/config/game-settings.json");
 
 function languageFromLanguageCode(languageCode){
   if(languageCode==="en"){
@@ -270,6 +271,16 @@ export let routing = function () {
     }
   }
 
+  async function gameSettings(req, res) {
+    try {
+      const data = await readFile(GAME_SETTINGS_PATH, 'utf8');
+      res.json(JSON.parse(data));
+    } catch (error) {
+      console.error("[api][gameSettings] Error:", error);
+      res.status(500).json({ error: "Failed to read game settings" });
+    }
+  }
+
   return {
     puzzleFromFile,
     puzzleFromString,
@@ -278,7 +289,8 @@ export let routing = function () {
     requestWord,
     chatgptWordDefinition,
     flagWord,
-    passwordHints
+    passwordHints,
+    gameSettings
   };
 
 }();
