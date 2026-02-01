@@ -38,7 +38,9 @@
         </section>
 
         <section class="flagged-section">
-            <h2>Flagged Words <span class="flagged-count" id="flagged-count"></span></h2>
+            <h2>Flagged Words <span class="flagged-count" id="flagged-count"></span>
+                <button class="btn btn-small btn-download" id="btn-export-flagged" onclick="exportFlagged()">Export</button>
+            </h2>
             <div class="flagged-words-list" id="flagged-words-list">
                 <!-- Flagged word items populated by JS -->
             </div>
@@ -212,6 +214,19 @@
                 statusEl.className = 'status-text error';
             }
         });
+
+        function exportFlagged() {
+            if (flaggedWords.length === 0) {
+                alert('No flagged words to export');
+                return;
+            }
+            const blob = new Blob([flaggedWords.join('\n') + '\n'], { type: 'text/plain' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `${corpusName}-flagged-words.txt`;
+            a.click();
+            URL.revokeObjectURL(a.href);
+        }
 
         renderPendingWords();
         renderFlaggedWords();
