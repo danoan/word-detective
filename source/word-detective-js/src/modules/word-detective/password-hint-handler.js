@@ -8,42 +8,44 @@ export function password_hint_mode_factory(hints_map) {
     let touch_start_x = 0;
 
     function ensure_panel() {
-      if (panel) return;
+      if (!panel) {
+        panel = document.createElement('div');
+        panel.className = 'password-hints-panel hidden';
 
-      panel = document.createElement('div');
-      panel.className = 'password-hints-panel hidden';
+        let prev_btn = document.createElement('button');
+        prev_btn.className = 'password-hint-nav password-hint-prev';
+        prev_btn.textContent = '\u2039';
+        prev_btn.addEventListener('click', show_prev);
 
-      let prev_btn = document.createElement('button');
-      prev_btn.className = 'password-hint-nav password-hint-prev';
-      prev_btn.textContent = '\u2039';
-      prev_btn.addEventListener('click', show_prev);
+        let content = document.createElement('div');
+        content.className = 'password-hint-content';
 
-      let content = document.createElement('div');
-      content.className = 'password-hint-content';
+        let hint_word = document.createElement('span');
+        hint_word.className = 'password-hint-word';
 
-      let hint_word = document.createElement('span');
-      hint_word.className = 'password-hint-word';
+        let counter = document.createElement('span');
+        counter.className = 'password-hint-counter';
 
-      let counter = document.createElement('span');
-      counter.className = 'password-hint-counter';
+        content.appendChild(hint_word);
+        content.appendChild(counter);
 
-      content.appendChild(hint_word);
-      content.appendChild(counter);
+        let next_btn = document.createElement('button');
+        next_btn.className = 'password-hint-nav password-hint-next';
+        next_btn.textContent = '\u203A';
+        next_btn.addEventListener('click', show_next);
 
-      let next_btn = document.createElement('button');
-      next_btn.className = 'password-hint-nav password-hint-next';
-      next_btn.textContent = '\u203A';
-      next_btn.addEventListener('click', show_next);
+        panel.appendChild(prev_btn);
+        panel.appendChild(content);
+        panel.appendChild(next_btn);
 
-      panel.appendChild(prev_btn);
-      panel.appendChild(content);
-      panel.appendChild(next_btn);
+        panel.addEventListener('touchstart', on_touch_start, { passive: true });
+        panel.addEventListener('touchend', on_touch_end, { passive: true });
+      }
 
-      panel.addEventListener('touchstart', on_touch_start, { passive: true });
-      panel.addEventListener('touchend', on_touch_end, { passive: true });
-
-      let display_text = document.getElementById('display-text');
-      display_text.appendChild(panel);
+      if (!panel.parentNode) {
+        let display_text = document.getElementById('display-text');
+        display_text.appendChild(panel);
+      }
     }
 
     function on_touch_start(e) {
