@@ -279,7 +279,8 @@ export let config = {
   "default_error_handler": (error) => alert(error),
   "fatal_error_handler": null,
   "language":"en",
-  "enable_word_request":true
+  "enable_word_request":true,
+  "hint_modes": ["alternate_letter", "password"]
 };
 
 export let cookie_manager = _cookie_manager.cookie_manager;
@@ -315,19 +316,23 @@ export function main(is_in_test_mode = false) {
         return control;
       }
 
-      return fetch(`/api/${config.language}/password-hints`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ words: puzzle_words })
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.hints && Object.keys(data.hints).length > 0) {
-            control.add_hint_handler(password_hint_mode_factory(data.hints));
-          }
-          return control;
+      if (!config.hint_modes || config.hint_modes.includes('password')) {
+        return fetch(`/api/${config.language}/password-hints`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ words: puzzle_words })
         })
-        .catch(() => control);
+          .then(res => res.json())
+          .then(data => {
+            if (data.hints && Object.keys(data.hints).length > 0) {
+              control.add_hint_handler(password_hint_mode_factory(data.hints));
+            }
+            return control;
+          })
+          .catch(() => control);
+      } else {
+        return control;
+      }
     });
 
   function configure_word_definition() {
@@ -374,6 +379,9 @@ export function main(is_in_test_mode = false) {
     let word_detective_config = { "callbacks": {} };
     if(config.hint_display_behaviour){
         word_detective_config.hint_display_behaviour=config.hint_display_behaviour;
+    }
+    if(config.hint_modes){
+        word_detective_config.hint_modes=config.hint_modes;
     }
     word_detective_config.callbacks.check_word = check_word_callback;
     word_detective_config.callbacks.init = (init_callback_parameters) => init_puzzle(assets.puzzle, init_callback_parameters);

@@ -107,8 +107,11 @@ function default_hint_mode(gui) {
   };
 }
 
-export function hint_mode_display_handler(gui) {
-  let hint_handlers = [default_hint_mode(gui)];
+export function hint_mode_display_handler(gui, hint_modes) {
+  let hint_handlers = [];
+  if (!hint_modes || hint_modes.includes('alternate_letter')) {
+    hint_handlers.push(default_hint_mode(gui));
+  }
   let current_index = 0;
 
   function current_handler(){

@@ -17,7 +17,8 @@ let default_config = {
     "end": null,
     "flag_word": null
   },
-  "hint_display_behaviour": "by_request"
+  "hint_display_behaviour": "by_request",
+  "hint_modes": ["alternate_letter", "password"]
 };
 
 export function create_WORD_DETECTIVE_api(gui, messages_json, _config) {
@@ -31,12 +32,15 @@ export function create_WORD_DETECTIVE_api(gui, messages_json, _config) {
   if (_config.hint_display_behaviour) {
     config.hint_display_behaviour = _config.hint_display_behaviour;
   }
+  if (_config.hint_modes) {
+    config.hint_modes = _config.hint_modes;
+  }
 
   let messages = setup_messages(messages_json);
   let callbacks = config.callbacks;
   let display_handlers = {
     "normal_mode": normal_mode_display_handler(gui),
-    "hint_mode": hint_mode_display_handler(gui),
+    "hint_mode": hint_mode_display_handler(gui, config.hint_modes),
     "messages": messages_display_handler(gui, messages)
   };
   let control_handlers = {
