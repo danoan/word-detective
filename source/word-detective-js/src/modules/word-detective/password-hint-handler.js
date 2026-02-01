@@ -100,6 +100,7 @@ export function password_hint_mode_factory(hints_map) {
     }
 
     function init(word) {
+      gui.set_display_value('');
       ensure_panel();
       current_word = word;
       current_index = 0;
@@ -113,7 +114,6 @@ export function password_hint_mode_factory(hints_map) {
 
       panel.classList.remove('hidden');
       render();
-      gui.set_display_value('');
     }
 
     function click_letter(letter) {
