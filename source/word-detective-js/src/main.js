@@ -316,8 +316,10 @@ export function main(is_in_test_mode = false) {
         return control;
       }
 
+      let ready = Promise.resolve();
+
       if (!config.hint_modes || config.hint_modes.includes('password')) {
-        return fetch(`/api/${config.language}/password-hints`, {
+        ready = fetch(`/api/${config.language}/password-hints`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ words: puzzle_words })
@@ -325,12 +327,16 @@ export function main(is_in_test_mode = false) {
           .then(res => res.json())
           .then(data => {
             control.add_hint_handler(password_hint_mode_factory(data.hints));
-            return control;
           })
-          .catch(() => control);
-      } else {
-        return control;
+          .catch(() => {});
       }
+
+      return ready.then(() => {
+        if (config.hint_display_behaviour === "always_visible") {
+          control.hint();
+        }
+        return control;
+      });
     });
 
   function configure_word_definition() {
