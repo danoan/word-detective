@@ -498,6 +498,58 @@ export let routing = function () {
         });
     }
 
+    async function addWords(req, res) {
+        const { name } = req.params;
+        const { words: wordsText } = req.body;
+
+        if (!wordsText || typeof wordsText !== 'string') {
+            return res.status(400).json({ error: "Words text is required" });
+        }
+
+        try {
+            const listResult = await binServices.wordSourceManagerList();
+            const sources = parseWordSourceList(listResult);
+            const source = sources.find(s => s.name === name);
+
+            if (!source || !source.textFilepath) {
+                return res.status(404).json({ error: "Corpus not found" });
+            }
+
+            const newWords = wordsText.split('\n')
+                .map(w => w.trim().toLowerCase())
+                .filter(w => w.length > 0);
+
+            if (newWords.length === 0) {
+                return res.json({ success: true, message: "No words to add", addedWords: [] });
+            }
+
+            const content = await readFile(source.textFilepath, 'utf8');
+            const existingWords = new Set(content.trim().split('\n').filter(w => w.trim()));
+
+            const addedWords = newWords.filter(w => !existingWords.has(w));
+
+            if (addedWords.length === 0) {
+                return res.json({ success: true, message: "All words already exist in corpus", addedWords: [] });
+            }
+
+            const appendText = (content.endsWith('\n') ? '' : '\n') + addedWords.join('\n') + '\n';
+            await writeFile(source.textFilepath, content + appendText);
+
+            await binServices.exportBrick(source.language, source.textFilepath, source.brickFilepath);
+
+            const skipped = newWords.length - addedWords.length;
+            let message = `Added ${addedWords.length} word${addedWords.length !== 1 ? 's' : ''}`;
+            if (skipped > 0) {
+                message += ` (${skipped} duplicate${skipped !== 1 ? 's' : ''} skipped)`;
+            }
+
+            res.json({ success: true, message, addedWords });
+        } catch (error) {
+            console.error("[admin][addWords] Error:", error);
+            res.status(500).json({ error: "Failed to add words" });
+        }
+    }
+
     async function handleFlaggedWord(req, res) {
         const { name } = req.params;
         const { word, action } = req.body;
@@ -554,6 +606,7 @@ export let routing = function () {
         requestedWordsPage,
         processRequestedWords,
         handleFlaggedWord,
+        addWords,
         loadActiveConfig,
         parseWordSourceList,
         languageNameFromCode,

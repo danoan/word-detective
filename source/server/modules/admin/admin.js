@@ -59,6 +59,11 @@ admin.post('/corpus/:name/process-requested-words', (req, res) => {
     routing.processRequestedWords(req, res);
 });
 
+// Add words to corpus
+admin.post('/corpus/:name/add-words', (req, res) => {
+    routing.addWords(req, res);
+});
+
 // Handle flagged word action (remove/ignore)
 admin.post('/corpus/:name/flagged-word-action', (req, res) => {
     routing.handleFlaggedWord(req, res);

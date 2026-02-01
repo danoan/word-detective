@@ -66,6 +66,18 @@
             <button class="btn btn-primary" onclick="createCorpus()">Create Corpus from Selection</button>
             <span id="create-status" class="status-text"></span>
         </section>
+
+        <section class="add-words-section">
+            <h3>Add Words to Corpus</h3>
+            <div class="form-group">
+                <label for="add-words-textarea">Enter words (one per line)</label>
+                <textarea id="add-words-textarea" placeholder="word1&#10;word2&#10;word3"></textarea>
+            </div>
+            <div class="add-words-controls">
+                <button class="btn btn-primary" onclick="addWords()">Add Words</button>
+                <span id="add-words-status" class="status-text"></span>
+            </div>
+        </section>
     </div>
 
     <script>
@@ -349,6 +361,48 @@
                     statusEl.className = 'status-text success';
                 } else {
                     statusEl.textContent = 'Error: ' + (result.error || 'Failed to create corpus');
+                    statusEl.className = 'status-text error';
+                }
+            } catch (error) {
+                statusEl.textContent = 'Error: ' + error.message;
+                statusEl.className = 'status-text error';
+            }
+        }
+
+        async function addWords() {
+            const textarea = document.getElementById('add-words-textarea');
+            const text = textarea.value.trim();
+            if (!text) {
+                alert('Please enter at least one word');
+                return;
+            }
+
+            const statusEl = document.getElementById('add-words-status');
+            statusEl.textContent = 'Adding words...';
+            statusEl.className = 'status-text';
+
+            try {
+                const response = await fetch(`/admin/corpus/#corpusName#/add-words`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ words: text })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    statusEl.textContent = result.message;
+                    statusEl.className = 'status-text success';
+                    if (result.addedWords && result.addedWords.length > 0) {
+                        for (const word of result.addedWords) {
+                            words.push(word);
+                        }
+                        renderWords();
+                        applyFilters();
+                    }
+                    textarea.value = '';
+                } else {
+                    statusEl.textContent = 'Error: ' + (result.error || 'Failed to add words');
                     statusEl.className = 'status-text error';
                 }
             } catch (error) {
