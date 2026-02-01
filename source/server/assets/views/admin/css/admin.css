@@ -611,3 +611,85 @@ body {
     background-color: #95a5a6;
     color: white;
 }
+
+/* Language tabs */
+.language-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.language-tab {
+    padding: 8px 16px;
+    border-radius: 4px;
+    background-color: #ecf0f1;
+    color: #2c3e50;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: opacity 0.2s;
+}
+
+.language-tab:hover {
+    opacity: 0.9;
+}
+
+.language-tab.active {
+    background-color: #3498db;
+    color: white;
+}
+
+/* Hint chips */
+.hints-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.hint-chip {
+    display: inline-flex;
+    flex-direction: column;
+    background-color: #eaf7ea;
+    color: #1e8449;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.hint-chip:hover {
+    background-color: #d5f5d5;
+}
+
+.hint-chip-clues {
+    display: none;
+    font-size: 0.75rem;
+    color: #7f8c8d;
+    margin-top: 4px;
+}
+
+.hint-chip.expanded .hint-chip-clues {
+    display: block;
+}
+
+/* Password hints page */
+.hints-section,
+.missing-section,
+.generate-section {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.hints-section h2,
+.missing-section h2,
+.generate-section h2 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 1.25rem;
+}

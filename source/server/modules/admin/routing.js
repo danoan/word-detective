@@ -2,6 +2,7 @@ import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { readFile, writeFile, unlink } from 'fs/promises';
 import { createReadStream } from 'fs';
+import { spawn } from 'child_process';
 import { binServices } from '../binary-services.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -593,6 +594,152 @@ export let routing = function () {
         }
     }
 
+    async function passwordHintsPage(req, res) {
+        const languageCode = req.params.language;
+
+        if (!LANGUAGE_DISPLAY_NAMES[languageCode]) {
+            return res.status(400).json({ error: "Invalid language code" });
+        }
+
+        const languageName = LANGUAGE_DISPLAY_NAMES[languageCode];
+
+        try {
+            // Load existing hints
+            const hintsPath = path.resolve(PROJECT_ROOT, `assets/password/${languageCode}/words.json`);
+            let hintsData = {};
+            try {
+                const hintsContent = await readFile(hintsPath, 'utf8');
+                hintsData = JSON.parse(hintsContent);
+            } catch (e) {
+                // File doesn't exist yet
+            }
+
+            // Load active corpus words
+            const activeConfig = await loadActiveConfig();
+            const activeSourceName = activeConfig[languageCode]?.wordSource;
+            let missingWords = [];
+
+            if (activeSourceName) {
+                const listResult = await binServices.wordSourceManagerList();
+                const sources = parseWordSourceList(listResult);
+                const source = sources.find(s => s.name === activeSourceName);
+
+                if (source && source.textFilepath) {
+                    const content = await readFile(source.textFilepath, 'utf8');
+                    const corpusWords = content.trim().split('\n')
+                        .map(w => w.trim().toLowerCase())
+                        .filter(w => w.length >= 4 && /^[a-zA-Z\u00C0-\u024F]+$/.test(w));
+
+                    missingWords = corpusWords.filter(w => !(w in hintsData)).sort();
+                }
+            }
+
+            res.render(path.resolve(VIEWS_DIR, "password-hints.ntl"), {
+                vars: {
+                    languageCode,
+                    languageName,
+                    hintsData: JSON.stringify(hintsData),
+                    missingWords: JSON.stringify(missingWords)
+                }
+            });
+        } catch (error) {
+            console.error("[admin][passwordHintsPage] Error:", error);
+            res.redirect("/error/500");
+        }
+    }
+
+    async function generatePasswordHints(req, res) {
+        const languageCode = req.params.language;
+        const words = req.body.words;
+
+        if (!LANGUAGE_DISPLAY_NAMES[languageCode]) {
+            return res.status(400).json({ error: "Invalid language code" });
+        }
+
+        if (!words || !Array.isArray(words) || words.length === 0) {
+            return res.status(400).json({ error: "Words array is required" });
+        }
+
+        const tempPath = path.resolve(PROJECT_ROOT, `temp-password-hints-${Date.now()}.txt`);
+        const outputPath = path.resolve(PROJECT_ROOT, `assets/password/${languageCode}/words.json`);
+        const scriptPath = path.resolve(PROJECT_ROOT, `assets/password/generate-hints.py`);
+
+        try {
+            await writeFile(tempPath, words.join('\n') + '\n');
+        } catch (error) {
+            console.error("[admin][generatePasswordHints] Error writing temp file:", error);
+            return res.status(500).json({ error: "Failed to write temp file" });
+        }
+
+        res.setHeader('Content-Type', 'application/x-ndjson');
+        res.setHeader('Cache-Control', 'no-cache');
+        res.setHeader('Connection', 'keep-alive');
+
+        const child = spawn('python3', [
+            scriptPath,
+            '--corpus', tempPath,
+            '--output', outputPath,
+            '--lang', languageCode,
+            '--min-length', '1',
+            '--ndjson'
+        ]);
+
+        let stderrBuffer = '';
+
+        child.stderr.on('data', (chunk) => {
+            stderrBuffer += chunk.toString();
+            let lines = stderrBuffer.split('\n');
+            stderrBuffer = lines.pop();
+
+            for (const line of lines) {
+                if (!line.trim()) continue;
+                try {
+                    JSON.parse(line);
+                    res.write(line + '\n');
+                } catch (e) {
+                    // not JSON, skip
+                }
+            }
+        });
+
+        child.on('close', async (code) => {
+            // Flush remaining buffer
+            if (stderrBuffer.trim()) {
+                try {
+                    JSON.parse(stderrBuffer);
+                    res.write(stderrBuffer + '\n');
+                } catch (e) {
+                    // not JSON, skip
+                }
+            }
+
+            const success = code === 0;
+            res.write(JSON.stringify({
+                type: "complete",
+                success,
+                generated: words.length,
+                total: words.length,
+                message: success ? 'Generation completed.' : 'Generation failed.'
+            }) + '\n');
+            res.end();
+
+            try { await unlink(tempPath); } catch (e) { }
+        });
+
+        child.on('error', async (err) => {
+            res.write(JSON.stringify({
+                type: "complete",
+                success: false,
+                message: err.message,
+                generated: 0,
+                total: words.length
+            }) + '\n');
+            res.end();
+
+            try { await unlink(tempPath); } catch (e) { }
+        });
+    }
+
     return {
         dashboard,
         apiCorpora,
@@ -607,6 +754,8 @@ export let routing = function () {
         processRequestedWords,
         handleFlaggedWord,
         addWords,
+        passwordHintsPage,
+        generatePasswordHints,
         loadActiveConfig,
         parseWordSourceList,
         languageNameFromCode,

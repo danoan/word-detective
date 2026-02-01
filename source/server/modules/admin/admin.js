@@ -69,6 +69,16 @@ admin.post('/corpus/:name/flagged-word-action', (req, res) => {
     routing.handleFlaggedWord(req, res);
 });
 
+// Password hints management page
+admin.get('/password-hints/:language', (req, res) => {
+    routing.passwordHintsPage(req, res);
+});
+
+// Generate password hints (streaming)
+admin.post('/password-hints/:language/generate', (req, res) => {
+    routing.generatePasswordHints(req, res);
+});
+
 // Regenerate week puzzles
 admin.post('/regenerate-week-puzzles', (req, res) => {
     routing.regenerateWeekPuzzles(req, res);

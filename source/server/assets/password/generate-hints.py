@@ -94,6 +94,7 @@ def main():
     parser.add_argument("--lang", default="en", help="Language code: en, fr, it, pt (default: en)")
     parser.add_argument("--limit", type=int, default=0, help="Max number of NEW words to process (0 = all)")
     parser.add_argument("--min-length", type=int, default=4, help="Minimum word length (default: 4)")
+    parser.add_argument("--ndjson", action="store_true", help="Output progress as NDJSON to stderr")
     args = parser.parse_args()
 
     api_key = os.environ.get("OPENAI_API_KEY")
@@ -119,12 +120,23 @@ def main():
         return
 
     generated = 0
+    total = len(new_words)
     for i, word in enumerate(new_words):
         try:
             hints = generate_hints_for_word(client, word, args.lang)
             existing[word] = hints
             generated += 1
-            print(f"[{i + 1}/{len(new_words)}] {word}: {hints}")
+
+            if args.ndjson:
+                print(json.dumps({
+                    "type": "progress",
+                    "word": word,
+                    "hints": hints,
+                    "current": i + 1,
+                    "total": total
+                }), file=sys.stderr, flush=True)
+            else:
+                print(f"[{i + 1}/{total}] {word}: {hints}")
 
             # Save after every 10 words
             if generated % 10 == 0:
@@ -136,7 +148,16 @@ def main():
             time.sleep(0.5)
 
         except Exception as e:
-            print(f"[{i + 1}/{len(new_words)}] ERROR for '{word}': {e}", file=sys.stderr)
+            if args.ndjson:
+                print(json.dumps({
+                    "type": "progress",
+                    "word": word,
+                    "error": str(e),
+                    "current": i + 1,
+                    "total": total
+                }), file=sys.stderr, flush=True)
+            else:
+                print(f"[{i + 1}/{total}] ERROR for '{word}': {e}", file=sys.stderr)
             continue
 
     # Final save
@@ -144,8 +165,16 @@ def main():
     with open(args.output, "w", encoding="utf-8") as f:
         json.dump(existing, f, indent=2, ensure_ascii=False)
 
-    print(f"\nDone. Generated hints for {generated} new words.")
-    print(f"Total words in output: {len(existing)}")
+    if args.ndjson:
+        print(json.dumps({
+            "type": "complete",
+            "success": True,
+            "generated": generated,
+            "total": total
+        }), file=sys.stderr, flush=True)
+    else:
+        print(f"\nDone. Generated hints for {generated} new words.")
+        print(f"Total words in output: {len(existing)}")
 
 
 if __name__ == "__main__":
