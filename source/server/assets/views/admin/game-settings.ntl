@@ -46,6 +46,14 @@
                     </label>
                 </div>
 
+                <div class="form-group">
+                    <label for="puzzle-algorithm">Puzzle Algorithm</label>
+                    <select id="puzzle-algorithm">
+                        <option value="random">random</option>
+                        <option value="random-letters">random-letters</option>
+                    </select>
+                </div>
+
                 <button type="submit" class="btn btn-primary">Save Settings</button>
                 <span id="save-status" class="status-text"></span>
             </section>
@@ -64,6 +72,8 @@
                 data.hint_display_behaviour || 'by_request';
             document.getElementById('enable-word-request').checked =
                 data.enable_word_request !== false;
+            document.getElementById('puzzle-algorithm').value =
+                data.puzzle_algorithm || 'random';
         }
 
         function collectForm() {
@@ -78,7 +88,8 @@
             return {
                 hint_modes,
                 hint_display_behaviour: document.getElementById('hint-display-behaviour').value,
-                enable_word_request: document.getElementById('enable-word-request').checked
+                enable_word_request: document.getElementById('enable-word-request').checked,
+                puzzle_algorithm: document.getElementById('puzzle-algorithm').value
             };
         }
 

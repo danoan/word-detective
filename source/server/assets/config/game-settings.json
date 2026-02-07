@@ -1,5 +1,6 @@
 {
   "hint_modes": ["alternate_letter", "password"],
   "hint_display_behaviour": "by_request",
-  "enable_word_request": true
+  "enable_word_request": true,
+  "puzzle_algorithm": "random"
 }

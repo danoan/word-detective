@@ -9,6 +9,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(__dirname, "../..");
 const CONFIG_PATH = path.resolve(PROJECT_ROOT, "assets/config/active-corpora.json");
 const GAME_SETTINGS_PATH = path.resolve(PROJECT_ROOT, "assets/config/game-settings.json");
+const VALID_PUZZLE_ALGORITHMS = ["random", "random-letters"];
 
 function languageFromLanguageCode(languageCode){
   if(languageCode==="en"){
@@ -85,10 +86,23 @@ export let routing = function () {
     return sources;
   }
 
+  async function loadGameSettings() {
+    try {
+      const data = await readFile(GAME_SETTINGS_PATH, 'utf8');
+      return JSON.parse(data);
+    } catch (error) {
+      return {};
+    }
+  }
+
   async function randomPuzzle(req, res) {
     let languageCode = req.params["language"];
 
     try {
+      const gameSettings = await loadGameSettings();
+      const algorithm = VALID_PUZZLE_ALGORITHMS.includes(gameSettings.puzzle_algorithm)
+        ? gameSettings.puzzle_algorithm : "random";
+
       const activeConfig = await loadActiveConfig();
       const activeSourceName = activeConfig[languageCode]?.wordSource;
 
@@ -108,7 +122,8 @@ export let routing = function () {
 
       const jsonPuzzle = await binServices.generatePuzzle({
         "brick_filepath": source.brickFilepath,
-        "language": languageFromLanguageCode(languageCode)
+        "language": languageFromLanguageCode(languageCode),
+        "mode": algorithm
       });
 
       res.send(jsonPuzzle);

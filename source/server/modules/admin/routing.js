@@ -327,13 +327,27 @@ export let routing = function () {
         }
     }
 
+    async function loadGameSettings() {
+        try {
+            const data = await readFile(GAME_SETTINGS_PATH, 'utf8');
+            return JSON.parse(data);
+        } catch (error) {
+            return {};
+        }
+    }
+
     async function regenerateWeekPuzzles(req, res) {
         const results = [];
         const DAYS = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
         const BIN_DIR = path.resolve(PROJECT_ROOT, "bin");
         const OUTPUT_FOLDER = path.resolve(PROJECT_ROOT, "games/week-puzzles");
+        const VALID_PUZZLE_ALGORITHMS = ['random', 'random-letters'];
 
         try {
+            const gameSettings = await loadGameSettings();
+            const algorithm = VALID_PUZZLE_ALGORITHMS.includes(gameSettings.puzzle_algorithm)
+                ? gameSettings.puzzle_algorithm : 'random';
+
             const listResult = await binServices.wordSourceManagerList();
             const sources = parseWordSourceList(listResult);
             const activeConfig = await loadActiveConfig();
@@ -373,7 +387,7 @@ export let routing = function () {
                         await mkdir(jsFolder, { recursive: true });
 
                         const wordDetectiveApp = `${BIN_DIR}/word-detective`;
-                        execSync(`${wordDetectiveApp} -mrandom -l7 -o"${jsonPuzzlePath}" -b"${brickPath}"`);
+                        execSync(`${wordDetectiveApp} -m${algorithm} -l7 -o"${jsonPuzzlePath}" -b"${brickPath}"`);
 
                         const renderScript = `${BIN_DIR}/render-word-detective.py`;
                         const templatePath = `${OUTPUT_FOLDER}/templates/index-week-puzzles.ntl`;
@@ -801,10 +815,11 @@ export let routing = function () {
 
     async function saveGameSettings(req, res) {
         try {
-            const { hint_modes, hint_display_behaviour, enable_word_request } = req.body;
+            const { hint_modes, hint_display_behaviour, enable_word_request, puzzle_algorithm } = req.body;
 
             const VALID_HINT_MODES = ['alternate_letter', 'password'];
             const VALID_DISPLAY_BEHAVIOURS = ['by_request', 'always_visible'];
+            const VALID_PUZZLE_ALGORITHMS = ['random', 'random-letters'];
 
             if (!Array.isArray(hint_modes) || !hint_modes.every(m => VALID_HINT_MODES.includes(m))) {
                 return res.status(400).json({ error: "Invalid hint_modes" });
@@ -818,7 +833,11 @@ export let routing = function () {
                 return res.status(400).json({ error: "Invalid enable_word_request" });
             }
 
-            const settings = { hint_modes, hint_display_behaviour, enable_word_request };
+            if (!VALID_PUZZLE_ALGORITHMS.includes(puzzle_algorithm)) {
+                return res.status(400).json({ error: "Invalid puzzle_algorithm" });
+            }
+
+            const settings = { hint_modes, hint_display_behaviour, enable_word_request, puzzle_algorithm };
             await writeFile(GAME_SETTINGS_PATH, JSON.stringify(settings, null, 2));
 
             res.json({ success: true });
