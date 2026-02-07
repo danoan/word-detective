@@ -580,3 +580,118 @@ TEST_CASE("Generate Italian Puzzles",
     }
   }
 }
+
+/********************* RANDOM LETTERS ************************/
+
+TEST_CASE("Collect All Letters",
+          "[puzzle-generator][random-letters][collect-all-letters]") {
+  std::string BRICK_FILEPATH = PROJECT_SOURCE_DIR;
+  BRICK_FILEPATH += "/app/word-detective/test/input/en-5K.txt.brk";
+
+  WordDetective::Datastr::Brick brick;
+  std::ifstream ifs(BRICK_FILEPATH, std::ios::binary);
+
+  WordDetective::StandardExtensions::Brick::IO::Load::run(brick, ifs);
+
+  SECTION("Collect letters from English brick") {
+    auto letters = PuzzleGenerator::RandomLetters::collect_all_letters(brick);
+
+    // Should have collected some letters
+    REQUIRE(letters.size() > 0);
+
+    // All letters should be valid unicode code points (positive integers)
+    for (auto letter : letters) {
+      REQUIRE(letter > 0);
+    }
+
+    // Letters should be unique (first level of brick has unique keys)
+    std::set<int> unique_letters(letters.begin(), letters.end());
+    REQUIRE(unique_letters.size() == letters.size());
+  }
+}
+
+TEST_CASE("Generate Puzzle By Random Letters - English",
+          "[puzzle-generator][english][random-letters]") {
+  std::string BRICK_FILEPATH = PROJECT_SOURCE_DIR;
+  BRICK_FILEPATH += "/app/word-detective/test/input/en-5K.txt.brk";
+
+  WordDetective::Datastr::Brick brick;
+  std::ifstream ifs(BRICK_FILEPATH, std::ios::binary);
+
+  WordDetective::StandardExtensions::Brick::IO::Load::run(brick, ifs);
+
+  SECTION("7 letter puzzle with 3 attempts") {
+    // Run multiple times to test randomness
+    int successes = 0;
+    for (auto i = 0; i < 10; i++) {
+      auto puzzle_words =
+          PuzzleGenerator::RandomLetters::generate_puzzle_by_random_letters(
+              brick, 7, 3);
+
+      if (!puzzle_words.empty()) {
+        successes++;
+        // Verify all words use only letters from the puzzle
+        std::set<int> unicodes;
+        for (auto w : puzzle_words) {
+          auto vu = WordDetective::Utils::to_unicode_codes(w);
+          unicodes.insert(vu.begin(), vu.end());
+        }
+        // Should have at most 7 unique letters
+        REQUIRE(unicodes.size() <= 7);
+      }
+    }
+    // With a good corpus, we should get at least some successes
+    INFO("Successes: " << successes << " out of 10");
+  }
+
+  SECTION("5 letter puzzle") {
+    int successes = 0;
+    for (auto i = 0; i < 10; i++) {
+      auto puzzle_words =
+          PuzzleGenerator::RandomLetters::generate_puzzle_by_random_letters(
+              brick, 5, 3);
+
+      if (!puzzle_words.empty()) {
+        successes++;
+        std::set<int> unicodes;
+        for (auto w : puzzle_words) {
+          auto vu = WordDetective::Utils::to_unicode_codes(w);
+          unicodes.insert(vu.begin(), vu.end());
+        }
+        REQUIRE(unicodes.size() <= 5);
+      }
+    }
+    INFO("Successes: " << successes << " out of 10");
+  }
+}
+
+TEST_CASE("Generate Puzzle By Random Letters - Italian",
+          "[puzzle-generator][italian][random-letters]") {
+  std::string BRICK_FILEPATH = PROJECT_SOURCE_DIR;
+  BRICK_FILEPATH += "/app/word-detective/test/input/it-1K.txt.brk";
+
+  WordDetective::Datastr::Brick brick;
+  std::ifstream ifs(BRICK_FILEPATH, std::ios::binary);
+
+  WordDetective::StandardExtensions::Brick::IO::Load::run(brick, ifs);
+
+  SECTION("7 letter puzzle with 3 attempts") {
+    int successes = 0;
+    for (auto i = 0; i < 10; i++) {
+      auto puzzle_words =
+          PuzzleGenerator::RandomLetters::generate_puzzle_by_random_letters(
+              brick, 7, 3);
+
+      if (!puzzle_words.empty()) {
+        successes++;
+        std::set<int> unicodes;
+        for (auto w : puzzle_words) {
+          auto vu = WordDetective::Utils::to_unicode_codes(w);
+          unicodes.insert(vu.begin(), vu.end());
+        }
+        REQUIRE(unicodes.size() <= 7);
+      }
+    }
+    INFO("Successes: " << successes << " out of 10");
+  }
+}

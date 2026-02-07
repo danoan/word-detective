@@ -39,6 +39,20 @@ Datastr::Brick create_brick(std::istream& book_stream, WordDetective::Utils::Tex
 
 json random_puzzle(const Datastr::Brick& brick, size_t num_letters);
 
+/**
+ * @brief Generates a random puzzle by selecting random letters and checking if
+ * a valid puzzle exists
+ *
+ * @param brick The brick containing the word collection
+ * @param num_letters Number of letters to select (default 7)
+ * @param max_attempts Maximum attempts to find a valid puzzle (default 3)
+ * @return json JSON representation of the puzzle, or empty JSON if no valid
+ * puzzle found
+ */
+json random_puzzle_by_letters(const Datastr::Brick& brick,
+                              size_t num_letters = 7,
+                              size_t max_attempts = 3);
+
 json all_puzzles(const Datastr::Brick& brick, size_t num_letters,
                  size_t min_words);
 json puzzle_by_index(const Datastr::Brick& brick, size_t num_letters,

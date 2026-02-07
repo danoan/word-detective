@@ -46,6 +46,11 @@ int main(int argc, char* argv[]) {
              id.outputfilepath);
       break;
     }
+    case InputData::RANDOM_PUZZLE_BY_LETTERS: {
+      output(random_puzzle_by_letters(brick, id.num_letters),
+             id.outputfilepath);
+      break;
+    }
     case InputData::PUZZLE_BY_INDEX: {
       output(puzzle_by_index(brick, id.num_letters, id.min_words, id.index),
              id.outputfilepath);

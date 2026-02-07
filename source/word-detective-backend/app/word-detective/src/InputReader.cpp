@@ -5,7 +5,7 @@ void usage(char* argv[]) {
             << "[-L] language (default:english. (english,italian,french,portuguese))\n"
             << "[-l] number of letters in puzzle (default:5)\n"
             << "[-w] minimum number of words in a puzzle (default:5)\n"
-            << "[-m] output mode (all,random,index) (default:all)\n"
+            << "[-m] output mode (all,random,random-letters,index) (default:all)\n"
             << "[-i] puzzle index (default:0)\n"
             << "[-b] input brick filepath (default: reads from stdin)\n"
             << "[-o] output filepath (default: prints in stdout)\n";
@@ -36,6 +36,8 @@ InputData read_input(int argc, char* argv[]) {
           id.out_mode = InputData::ALL_PUZZLES;
         } else if (strcmp("random", optarg) == 0) {
           id.out_mode = InputData::RANDOM_PUZZLE;
+        } else if (strcmp("random-letters", optarg) == 0) {
+          id.out_mode = InputData::RANDOM_PUZZLE_BY_LETTERS;
         } else if (strcmp("index", optarg) == 0) {
           id.out_mode = InputData::PUZZLE_BY_INDEX;
         } else {

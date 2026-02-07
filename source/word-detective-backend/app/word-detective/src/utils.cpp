@@ -333,3 +333,51 @@ std::unordered_set<std::string> generate_puzzle(
   return word_collection;
 }
 }  // namespace PuzzleGenerator
+
+namespace PuzzleGenerator::RandomLetters {
+
+std::vector<int> collect_all_letters(const Brick& brick) {
+  std::vector<int> letters;
+  for (auto it = brick.begin(); it != brick.end(); ++it) {
+    letters.push_back((*it)->key());
+  }
+  return letters;
+}
+
+std::unordered_set<std::string> generate_puzzle_by_random_letters(
+    const Brick& brick, size_t num_letters, size_t max_attempts) {
+  std::vector<int> all_letters = collect_all_letters(brick);
+
+  if (all_letters.size() < num_letters) {
+    return {};
+  }
+
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  for (size_t attempt = 0; attempt < max_attempts; ++attempt) {
+    // Shuffle and pick first num_letters
+    std::shuffle(all_letters.begin(), all_letters.end(), gen);
+    std::vector<int> selected(all_letters.begin(),
+                              all_letters.begin() + num_letters);
+
+    // Sort to form a valid path (brick paths are sorted)
+    std::sort(selected.begin(), selected.end());
+
+    // Convert to string
+    std::string letters = WordDetective::Utils::from_unicode_codes(selected);
+
+    // Try to collect words for this letter combination
+    std::unordered_set<std::string> word_collection;
+    PuzzleGenerator::WordCollector::collect_words_from_all_subpaths(
+        word_collection, letters, brick);
+
+    if (!word_collection.empty()) {
+      return word_collection;
+    }
+  }
+
+  return {};
+}
+
+}  // namespace PuzzleGenerator::RandomLetters

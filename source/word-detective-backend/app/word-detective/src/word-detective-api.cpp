@@ -88,3 +88,21 @@ json random_puzzle(const Datastr::Brick& brick, size_t num_letters) {
 
   return json({});
 }
+
+json random_puzzle_by_letters(const Datastr::Brick& brick, size_t num_letters,
+                              size_t max_attempts) {
+  std::unordered_set<std::string> word_collection =
+      PuzzleGenerator::RandomLetters::generate_puzzle_by_random_letters(
+          brick, num_letters, max_attempts);
+
+  if (!word_collection.empty()) {
+    std::string letters = PuzzleGenerator::WordCollector::get_unique_characters(
+        word_collection.begin(), word_collection.end());
+
+    Puzzle::Puzzle puzzle{letters,
+                          {word_collection.begin(), word_collection.end()}};
+    return json(puzzle);
+  }
+
+  return json({});
+}

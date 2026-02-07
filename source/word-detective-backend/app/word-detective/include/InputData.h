@@ -6,7 +6,7 @@
 
 struct InputData {
   using Languages = WordDetective::Utils::Text::Languages;
-  enum OutputMode{ALL_PUZZLES,RANDOM_PUZZLE,PUZZLE_BY_INDEX};
+  enum OutputMode{ALL_PUZZLES,RANDOM_PUZZLE,PUZZLE_BY_INDEX,RANDOM_PUZZLE_BY_LETTERS};
 
   std::string filepath;
   std::string outputfilepath{};

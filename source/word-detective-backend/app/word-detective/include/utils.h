@@ -133,6 +133,33 @@ std::unordered_set<std::string> generate_puzzle(
 
 }  // namespace PuzzleGenerator
 
+namespace PuzzleGenerator::RandomLetters {
+using Brick = WordDetective::Datastr::Brick;
+
+/**
+ * @brief Collects all unique letters (unicode codes) from the first level of
+ * the brick
+ *
+ * @param brick The brick to collect letters from
+ * @return std::vector<int> Vector of unicode code points
+ */
+std::vector<int> collect_all_letters(const Brick& brick);
+
+/**
+ * @brief Generates a puzzle by randomly selecting letters and checking if
+ * valid words exist
+ *
+ * @param brick The brick containing the word collection
+ * @param num_letters Number of letters to select (default 7)
+ * @param max_attempts Maximum attempts to find a valid puzzle (default 3)
+ * @return std::unordered_set<std::string> Set of words, empty if no valid
+ * puzzle found
+ */
+std::unordered_set<std::string> generate_puzzle_by_random_letters(
+    const Brick& brick, size_t num_letters = 7, size_t max_attempts = 3);
+
+}  // namespace PuzzleGenerator::RandomLetters
+
 #include "utils.hpp"
 
 #endif
