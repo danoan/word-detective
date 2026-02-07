@@ -123,7 +123,16 @@ def action_process_requested_words(args):
         sys.stderr.write(json.dumps({"type": "progress", "word": word, "valid": bool(json_object["Status"]), "index": i, "total": total}) + "\n")
         sys.stderr.flush()
 
+    needs_newline = False
+    with open(d["text-filepath"], "rb") as f:
+        f.seek(0, 2)  # Go to end
+        if f.tell() > 0:  # File is not empty
+            f.seek(-1, 2)  # Go to one byte before end
+            needs_newline = f.read(1) != b'\n'
+
     with open(d["text-filepath"], "a") as f:
+        if needs_newline:
+            f.write("\n")
         for word in valid_words:
             f.write(f"{word}\n")
 
@@ -131,7 +140,17 @@ def action_process_requested_words(args):
         "added-requested-words-filepath",
         os.path.join(os.path.dirname(d["text-filepath"]), "added_requested_words.txt"),
     )
+    needs_newline = False
+    if os.path.exists(added_requested_words_filepath):
+        with open(added_requested_words_filepath, "rb") as f:
+            f.seek(0, 2)
+            if f.tell() > 0:
+                f.seek(-1, 2)
+                needs_newline = f.read(1) != b'\n'
+
     with open(added_requested_words_filepath, "a") as f:
+        if needs_newline:
+            f.write("\n")
         for word in valid_words:
             f.write(f"{word}\n")
 
