@@ -373,7 +373,13 @@ std::unordered_set<std::string> generate_puzzle_by_random_letters(
         word_collection, letters, brick);
 
     if (!word_collection.empty()) {
-      return word_collection;
+      // Verify all selected letters are used by the collected words
+      std::string used_letters = PuzzleGenerator::WordCollector::get_unique_characters(
+          word_collection.begin(), word_collection.end());
+      auto used_unicodes = WordDetective::Utils::to_unicode_codes(used_letters);
+      if (used_unicodes.size() == num_letters) {
+        return word_collection;
+      }
     }
   }
 

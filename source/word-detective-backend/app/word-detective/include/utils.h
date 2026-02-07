@@ -151,12 +151,12 @@ std::vector<int> collect_all_letters(const Brick& brick);
  *
  * @param brick The brick containing the word collection
  * @param num_letters Number of letters to select (default 7)
- * @param max_attempts Maximum attempts to find a valid puzzle (default 3)
+ * @param max_attempts Maximum attempts to find a valid puzzle (default 5)
  * @return std::unordered_set<std::string> Set of words, empty if no valid
  * puzzle found
  */
 std::unordered_set<std::string> generate_puzzle_by_random_letters(
-    const Brick& brick, size_t num_letters = 7, size_t max_attempts = 3);
+    const Brick& brick, size_t num_letters = 7, size_t max_attempts = 5);
 
 }  // namespace PuzzleGenerator::RandomLetters
 

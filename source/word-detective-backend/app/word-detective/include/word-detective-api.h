@@ -45,13 +45,13 @@ json random_puzzle(const Datastr::Brick& brick, size_t num_letters);
  *
  * @param brick The brick containing the word collection
  * @param num_letters Number of letters to select (default 7)
- * @param max_attempts Maximum attempts to find a valid puzzle (default 3)
+ * @param max_attempts Maximum attempts to find a valid puzzle (default 5)
  * @return json JSON representation of the puzzle, or empty JSON if no valid
  * puzzle found
  */
 json random_puzzle_by_letters(const Datastr::Brick& brick,
                               size_t num_letters = 7,
-                              size_t max_attempts = 3);
+                              size_t max_attempts = 5);
 
 json all_puzzles(const Datastr::Brick& brick, size_t num_letters,
                  size_t min_words);
