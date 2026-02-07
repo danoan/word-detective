@@ -500,6 +500,48 @@ export let routing = function () {
         });
     }
 
+    async function removeWords(req, res) {
+        const { name } = req.params;
+        const { words: wordsToRemove } = req.body;
+
+        if (!wordsToRemove || !Array.isArray(wordsToRemove) || wordsToRemove.length === 0) {
+            return res.status(400).json({ error: "Words array is required" });
+        }
+
+        try {
+            const listResult = await binServices.wordSourceManagerList();
+            const sources = parseWordSourceList(listResult);
+            const source = sources.find(s => s.name === name);
+
+            if (!source || !source.textFilepath) {
+                return res.status(404).json({ error: "Corpus not found" });
+            }
+
+            const content = await readFile(source.textFilepath, 'utf8');
+            const existingWords = content.trim().split('\n').filter(w => w.trim());
+
+            const removeSet = new Set(wordsToRemove.map(w => w.trim().toLowerCase()));
+            const remainingWords = existingWords.filter(w => !removeSet.has(w.trim().toLowerCase()));
+            const removedCount = existingWords.length - remainingWords.length;
+
+            if (removedCount === 0) {
+                return res.json({ success: true, message: "No matching words found to remove", removedCount: 0 });
+            }
+
+            await writeFile(source.textFilepath, remainingWords.join('\n') + '\n');
+            await binServices.exportBrick(source.language, source.textFilepath, source.brickFilepath);
+
+            res.json({
+                success: true,
+                message: `Removed ${removedCount} word${removedCount !== 1 ? 's' : ''} from corpus`,
+                removedCount
+            });
+        } catch (error) {
+            console.error("[admin][removeWords] Error:", error);
+            res.status(500).json({ error: "Failed to remove words" });
+        }
+    }
+
     async function addWords(req, res) {
         const { name } = req.params;
         const { words: wordsText } = req.body;
@@ -800,6 +842,7 @@ export let routing = function () {
         processRequestedWords,
         handleFlaggedWord,
         addWords,
+        removeWords,
         passwordHintsPage,
         generatePasswordHints,
         gameSettingsPage,

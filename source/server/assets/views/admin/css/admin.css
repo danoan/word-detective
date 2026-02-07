@@ -152,6 +152,11 @@ body {
     color: white;
 }
 
+.btn-danger {
+    background-color: #c0392b;
+    color: white;
+}
+
 .btn-words {
     background-color: #9b59b6;
     color: white;
@@ -399,6 +404,25 @@ body {
 .create-section .form-group {
     margin-bottom: 0;
     flex: 1;
+}
+
+/* Remove words section */
+.remove-section {
+    background-color: #fdecea;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.remove-section h3 {
+    margin-bottom: 10px;
+    color: #c0392b;
+}
+
+.warning-text {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
 }
 
 /* Add words section */
